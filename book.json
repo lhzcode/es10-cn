@@ -1,0 +1,26 @@
+{
+    "structure": {
+        "readme": "introduction.md"
+    },
+    "plugins": [
+        "hide-element",
+        "back-to-top-button",
+        "chapter-fold",
+        "splitter",
+        "-lunr",
+        "-search",
+        "search-pro",
+        "myseo"
+    ],
+    "pluginsConfig": {
+        "hide-element": {
+            "elements": [
+                ".gitbook-link"
+            ]
+        },
+        "myseo":{
+            "description": "Ecma标准定义了2019年ECMAScript语言。这是第十版的ECMAScript语言规范。自1997年出版的第一版，ECMAScript已经是世界上最广泛使用的通用编程语言。它是众所周知的嵌入在Web浏览器中的语言，但也已广泛用于服务器和嵌入式应用程序",
+            "keywords": "es10,es10中文,es10翻译,es10文档,es10中文文档,ecmascript 2019,es中文,es翻译,es文档,es中文文档"
+        }
+    }
+}
