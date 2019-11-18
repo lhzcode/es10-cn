@@ -1,6 +1,6 @@
 # 7 抽象操作
 
- 这些抽象操作不是语言本身的一部分；它们被定义在这里是为了协助语言的语义规范。 在本规范中定义了其他更专门的抽象操作。
+这些抽象操作不是语言本身的一部分；它们被定义在这里是为了协助语言的语义规范。 在本规范中定义了其他更专门的抽象操作。
 
 ## 7.1 类型转换 <div id="sec-type-conversion"></div>
 
@@ -24,7 +24,6 @@ ECMAScript运行环境会在需要时执行自动类型转换。定义一套关�
 3. 返回 input
 
 > 注意
->
 > 当不带提示地调用ToPrimitive时，通常它的行为就像提示是Number。但是，对象可以通过定义@@ toPrimitive方法来替代此行为。在本规范中定义的对象中，只有日期对象（请参见20.3.4.45）和符号对象（请参见19.4.3.5）会覆盖默认的ToPrimitive行为。日期对象不将提示视为字符串。
 
 #### 7.1.1.1 OrdinaryToPrimitive ( O, hint ) <div id="sec-ordinarytoprimitive"></div>
@@ -411,7 +410,7 @@ ToString 抽象操作将数字 m 转换为字符串格式的给出如下所示�
 
 3. 返回 index。
 
-## 7.2 测试和比较操作 <div id="sec-testing-and-comparison.md"></div>
+## 7.2 测试和比较操作 <div id="sec-testing-and-comparison"></div>
 
 ### 7.2.1 RequireObjectCoercible ( argument ) <div id="sec-requireobjectcoerible"></div>
 
@@ -965,7 +964,7 @@ ToString 抽象操作将数字 m 转换为字符串格式的给出如下所示�
 1. 断言: Type(iterResult) 是 Object.
 2. 返回 ToBoolean(? Get(iterResult, "done")).
 
-### 7.4.4  IteratorValue ( iterResult ) <div id="sec-interatorvalue"></div>
+### 7.4.4  IteratorValue ( iterResult ) <div id="sec-iteratorvalue"></div>
 
 具有参数iterResult的抽象操作IteratorValue执行以下步骤：
 
