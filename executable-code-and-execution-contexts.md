@@ -292,9 +292,9 @@
 
 #### 8.1.1.4 全局环境记录 <div id="global-environment-records"></div>
 
-全局环境记录用于表示在共同领域中处理的所有ECMAScript脚本元素共享的最外部作用域。全局环境记录为内置全局变量（第18节），全局对象的属性以及脚本中发生的所有顶级声明（13.2.8、13.2.10）提供了绑定。
+全局环境记录用于表示在共同作用域中处理的所有ECMAScript脚本元素共享的最外部作用域。全局环境记录为内置全局变量（第18节），全局对象的属性以及脚本中发生的所有顶级声明（13.2.8、13.2.10）提供了绑定。
 
-逻辑上，全局环境记录是单个记录，但是它被指定为封装对象的复合记录环境记录和声明性环境记录。对象环境记录的基本对象是相关领域记录的全局对象。此全局对象是全局环境返回的值记录的GetThisBinding具体方法。全局环境记录的对象环境记录组件包含所有内置全局变量的绑定（第18节）以及FunctionDeclaration引入的所有绑定，包含在其中的GeneratorDeclaration，AsyncFunctionDeclaration，AsyncGeneratorDeclaration或VariableStatement全局代码。全局代码中所有其他ECMAScript声明的绑定包含在全局环境记录的声明性环境记录组件中。
+逻辑上，全局环境记录是单个记录，但是它被指定为封装对象的复合记录环境记录和声明性环境记录。对象环境记录的基本对象是相关作用域记录的全局对象。此全局对象是全局环境返回的值记录的GetThisBinding具体方法。全局环境记录的对象环境记录组件包含所有内置全局变量的绑定（第18节）以及FunctionDeclaration引入的所有绑定，包含在其中的GeneratorDeclaration，AsyncFunctionDeclaration，AsyncGeneratorDeclaration或VariableStatement全局代码。全局代码中所有其他ECMAScript声明的绑定包含在全局环境记录的声明性环境记录组件中。
 
 可以直接在全局对象上创建属性。因此，全局环境记录的对象环境记录组件可能包含由FunctionDeclaration，GeneratorDeclaration，AsyncFunctionDeclaration，AsyncGeneratorDeclaration或VariableDeclaration声明显式创建的绑定，以及隐式创建为全局对象属性的绑定。为了识别使用声明显式创建的绑定，全局环境记录使用其CreateGlobalVarBinding和CreateGlobalFunctionBinding具体方法维护绑定名称的列表。
 
@@ -302,10 +302,10 @@
 
 | 字段名                | 值                             | 含义                                                         |
 | --------------------- | ------------------------------ | ------------------------------------------------------------ |
-| [[ObjectRecord]]      | Object Environment Record      | 绑定对象是global object。 它包含全局内置绑定以及FunctionDeclaration, GeneratorDeclaration, and VariableDeclaration在全局代码中绑定 相关联的领域(realm). |
+| [[ObjectRecord]]      | Object Environment Record      | 绑定对象是global object。 它包含全局内置绑定以及FunctionDeclaration, GeneratorDeclaration, and VariableDeclaration在全局代码中绑定 相关联的作用域(realm). |
 | [[GlobalThisValue]]   | Object                         | 在全局范围内返回的值。 主机(hosts)可以提供任何ECMAScript对象值。 |
-| [[DeclarativeRecord]] | Declarative Environment Record | 包含除了FunctionDeclaration，GeneratorDeclaration和VariableDeclaration绑定之外的关联领域代码的全局代码中的所有声明的绑定. |
-| [[VarNames]]          | List of String                 | 由相关领域的全局代码中的FunctionDeclaration，GeneratorDeclaration和VariableDeclaration声明绑定的字符串名称。 |
+| [[DeclarativeRecord]] | Declarative Environment Record | 包含除了FunctionDeclaration，GeneratorDeclaration和VariableDeclaration绑定之外的关联作用域代码的全局代码中的所有声明的绑定. |
+| [[VarNames]]          | List of String                 | 由相关作用域的全局代码中的FunctionDeclaration，GeneratorDeclaration和VariableDeclaration声明绑定的字符串名称。 |
 
 | 方法                                 | 目的                                                         |
 | ------------------------------------ | ------------------------------------------------------------ |
@@ -667,25 +667,25 @@ e. 返回 ? targetER.GetBindingValue(N2, true).
 4. 设置 env的外部词法环境引用为 E.
 5. 返回 env.
 
-## 8.2 领域 <div id="realms"></div>
+## 8.2 作用域 <div id="realms"></div>
 
-在执行之前，必须将所有ECMAScript代码与一个领域相关联。从概念上讲，领域由一组内部对象，一个ECMAScript全局环境，在该全局环境范围内加载的所有ECMAScript代码以及其他关联的状态和资源组成。
+在执行之前，必须将所有ECMAScript代码与一个作用域相关联。从概念上讲，作用域由一组内部对象，一个ECMAScript全局环境，在该全局环境范围内加载的所有ECMAScript代码以及其他关联的状态和资源组成。
 
-在本规范中，领域以表20中指定的字段表示为领域记录：
+在本规范中，作用域以表20中指定的字段表示为作用域记录：
 
 | 字段名           | 值                                                       | 含义                                                         |
 | ---------------- | -------------------------------------------------------- | ------------------------------------------------------------ |
-| [[Intrinsics]]   | 记录其字段名称是内在键且其值是对象的记录                 | 与该领域相关联的代码使用的内在值                             |
-| [[GlobalObject]] | Object                                                   | 此领域的全局对象                                             |
-| [[GlobalEnv]]    | 词法环境                                                 | 这个领域的全局环境                                           |
-| [[TemplateMap]]  | 一组 Record { [[Site]]: Parse Node, [[Array]]: Object }. | 使用其领域记录的[[TemplateMap]]为每个领域分别规范化模板对象。每个[[Site]]值都是作为TemplateLiteral的解析节点。关联的[[Array]]值是传递给标签函数的相应模板对象。<br />注：一旦解析节点变得不可访问，相应的[[Array]]也将不可访问，并且如果实现从[[TemplateMap]]列表中删除该对，则将不可观察。 |
-| [[HostDefined]]  | 任何，默认值是不确定的。                                 | 保留该字段供需要将其他信息与领域记录项关联的主机环境使用。   |
+| [[Intrinsics]]   | 记录其字段名称是内在键且其值是对象的记录                 | 与该作用域相关联的代码使用的内在值                             |
+| [[GlobalObject]] | Object                                                   | 此作用域的全局对象                                             |
+| [[GlobalEnv]]    | 词法环境                                                 | 这个作用域的全局环境                                           |
+| [[TemplateMap]]  | 一组 Record { [[Site]]: Parse Node, [[Array]]: Object }. | 使用其作用域记录的[[TemplateMap]]为每个作用域分别规范化模板对象。每个[[Site]]值都是作为TemplateLiteral的解析节点。关联的[[Array]]值是传递给标签函数的相应模板对象。<br />注：一旦解析节点变得不可访问，相应的[[Array]]也将不可访问，并且如果实现从[[TemplateMap]]列表中删除该对，则将不可观察。 |
+| [[HostDefined]]  | 任何，默认值是不确定的。                                 | 保留该字段供需要将其他信息与作用域记录项关联的主机环境使用。   |
 
 ### 8.2.1 CreateRealm ( ) <div id="sec-createrealm"></div>
 
 不带参数的抽象操作CreateRealm执行以下步骤：
 
-1. 令 realmRec 为新的领域记录项.
+1. 令 realmRec 为新的作用域记录项.
 2. 执行 CreateIntrinsics(realmRec).
 3. 设置 realmRec.[[GlobalObject]] 为 undefined.d
 4. 设置 realmRec.[[GlobalEnv]] 为 undefined.
@@ -749,12 +749,12 @@ e. 返回 ? targetER.GetBindingValue(N2, true).
 | --------------------- | ------------------------------------------------------------ |
 | code evaluation state | 执行，暂停和恢复与该执行上下文相关联的代码的执行所需的任何状态。 |
 | Function              | 如果这个执行环境正在执行函数对象的代码，那么这个组件的值就是该函数对象。 如果上下文执行脚本或模块的代码，则该值为null。 |
-| Realm                 | 相关代码访问ECMAScript资源的领域记录项。                     |
+| Realm                 | 相关代码访问ECMAScript资源的作用域记录项。                     |
 | ScriptOrModule        | 关联代码源自的模块记录或脚本记录。 如果没有原始脚本或模块，那么在 InitializeHostDefinedRealm，值为null |
 
 通过运行的执行上下文对代码的评估可以在本规范中定义的各个点暂停。一旦正在运行的执行上下文已被挂起，则其他执行上下文可能会成为正在运行的执行上下文并开始评估其代码。在稍后的某个时间，挂起的执行上下文可能会再次变为运行中的执行上下文，并在先前被挂起的位置继续评估其代码。执行上下文之间正在运行的执行上下文状态的转换通常以类似堆栈的后进先出方式发生。但是，某些ECMAScript功能要求正在运行的执行上下文进行非LIFO转换。
 
-正在运行的执行上下文的领域组件的值也称为当前领域记录。正在运行的执行上下文的Function组件的值也称为活动函数对象。
+正在运行的执行上下文的作用域组件的值也称为当前作用域记录。正在运行的执行上下文的Function组件的值也称为活动函数对象。
 
 ECMAScript代码的执行上下文具有表22中列出的其他状态组件。
 
@@ -830,7 +830,7 @@ ResolveBinding抽象操作用于确定作为字符串值传递的名称的绑定
 抽象操作GetGlobalObject返回当前运行的执行上下文使用的全局对象。GetGlobalObject执行以下步骤：
 
 1. 令 ctx 为运行时执行上下文
-2. 令 currentRealm 为 ctx's 领域.
+2. 令 currentRealm 为 ctx's 作用域.
 3. 返回 currentRealm.[[GlobalObject]].
 
 ## 8.4 任务和任务队列 <div id="jobs-and-job-queues"></div>
@@ -843,7 +843,7 @@ Job是抽象操作，当目前没有其他ECMAScript计算正在进行时，它�
 | ------------------ | ------------------------ | ------------------------------------------------------------ |
 | [[Job]]            | 任务抽象操作的名称       | 这是在启动此PendingJob的执行时执行的抽象操作。 任务是使用NextJob而不是返回表示它们已经完成的抽象操作。 |
 | [[Arguments]]      | 一个数组                 | 激活时要传递给[[Job]]的参数值列表。                          |
-| [[Realm]]          | 一个 领域 记录           | 当此PendingJob启动时，用于初始执行上下文的领域记录。         |
+| [[Realm]]          | 一个 作用域 记录           | 当此PendingJob启动时，用于初始执行上下文的作用域记录。         |
 | [[ScriptOrModule]] | 脚本记录或者模块记录     | 当此PendingJob启动时，用于初始执行上下文的脚本或模块。       |
 | [[HostDefined]]    | 任意，默认值为 undefined | 字段保留供主要环境使用，需要将附加信息与挂起的任务相关联。   |
 
@@ -872,7 +872,7 @@ EnqueueJob抽象操作需要三个参数：queueName，job和arguments。它执�
 2. 断言: job 是任务的名称.
 3. 断言: arguments是一个List，其元素数与job所需的参数数相同。
 4. 令 callerContext 为运行时执行上下文.
-5. 令 callerRealm 为 callerContext's 领域.
+5. 令 callerRealm 为 callerContext's 作用域.
 6. 令 callerScriptOrModule 为 callerContext's ScriptOrModule.
 7. 令 pending 为 PendingJob { [[Job]]: job, [[Arguments]]: arguments, [[Realm]]: callerRealm, [[ScriptOrModule]]:
 callerScriptOrModule, [[HostDefined]]: undefined }.
@@ -887,11 +887,11 @@ callerScriptOrModule, [[HostDefined]]: undefined }.
 1. 令 realm 为 CreateRealm().
 2. 令 newContext 为新的执行上下文.
 3. 设置 newContext 的函数为 null.
-4. 设置 newContext 的领域为 realm.
+4. 设置 newContext 的作用域为 realm.
 5. 设置 the ScriptOrModule of newContext 为 null.
 6. 将newContext推入执行上下文堆栈；newContext现在是运行中的执行上下文
-7. 如果宿主要求使用外来对象作为领域的全局对象，则将global设为以实现定义的方式创建的对象。否则，请使global为undefined，表示应将普通对象创建为全局对象
-8. 如果宿主要求领域的全局范围中的this绑定返回除全局对象之外的对象，则使thisValue为以实现定义的方式创建的此类对象。否则，请使thisValue处于未定义状态，指示领域的全局this绑定应为全局对象。
+7. 如果宿主要求使用外来对象作为作用域的全局对象，则将global设为以实现定义的方式创建的对象。否则，请使global为undefined，表示应将普通对象创建为全局对象
+8. 如果宿主要求作用域的全局范围中的this绑定返回除全局对象之外的对象，则使thisValue为以实现定义的方式创建的此类对象。否则，请使thisValue处于未定义状态，指示作用域的全局this绑定应为全局对象。
 9. 执行 SetRealmGlobalObject(realm, global, thisValue).
 10. 令 globalObj 为 ? SetDefaultGlobalBindings(realm).
 11. 在globalObj上创建任何实现定义的全局对象属性。

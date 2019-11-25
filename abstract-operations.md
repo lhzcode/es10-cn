@@ -430,8 +430,8 @@ ToString 抽象操作将数字 m 转换为字符串格式的给出如下所示�
 抽象操作IsArray采用一个实参作为参数，并执行以下步骤：
 
 1. 如果 Type(argument)不是对象，返回 false。
-2. 如果 argument 是一个数组怪异对象，返回 true。
-3. 如果 argument 是一个代理怪异对象，那么
+2. 如果 argument 是一个数组异类对象，返回 true。
+3. 如果 argument 是一个代理异类对象，那么
    1. 如果 argument.[[ProxyHandler]]  是 null，抛出TypeError异常。
    2. 令 target 为  argument.[[ProxyTarget]]  
    3. 返回 ? IsArray(target). 
@@ -888,16 +888,16 @@ ToString 抽象操作将数字 m 转换为字符串格式的给出如下所示�
 1. 断言: obj 是一个可被调用的对象.
 2. 如果 obj 有 [[Realm]] 内部插槽, 那么
    1. 返回 obj 的 [[Realm]] 内部插槽.
-3. 如果 obj 是绑定函数的怪异对象, 那么
+3. 如果 obj 是绑定函数的异类对象, 那么
     1. 令 target 为 obj.[[BoundTargetFunction]].
   2. 返回 ? GetFunctionRealm(target).
-4. 如果 obj 是一个代理怪异对象, 那么
+4. 如果 obj 是一个代理异类对象, 那么
      1. 如果 obj.[[ProxyHandler]]是 null, 抛出 TypeError 异常.
      2. 令 proxyTarget 为 obj.[[ProxyTarget]].
      3. 返回 ? GetFunctionRealm(proxyTarget).
 5. 返回当前的Realm记录。
 
-> 注：仅当obj是不具有[[Realm]]内部插槽的非标准函数怪异对象时，才可以执行步骤5。
+> 注：仅当obj是不具有[[Realm]]内部插槽的非标准函数异类对象时，才可以执行步骤5。
 
 ### 7.3.23 CopyDataProperties ( target, source, excludedItems ) <div id="sec-copydataproperties"></div>
 
