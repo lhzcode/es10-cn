@@ -10,9 +10,9 @@
 - [x] [6 ECMAScript数据类型和值](ecmascript-data-types-and-values.md#sec-ecmascript-data-types-and-values)
 - [x] [7 抽象操作](abstract-operations.md#sec-abstract-operation)
 - [x] [8 可执行代码和可执行上下文](executable-code-and-execution-contexts.md)
-- [ ] 9 普通和异类对象行为
-- [ ] 10 ECMAScript语言：源代码
-- [ ] 11 ECMAScript语言：词法语法
+- [x] [9 普通和异类对象行为](ordinary-and-exotic-object-behaviours.md)
+- [x] [10 ECMAScript语言：源代码](source-code.md)
+- [x] [11 ECMAScript语言：词法语法](lexical-grammar.md)
 - [ ] 12 ECMAScript语言：表达式
 - [ ] 13 ECMAScript语言：语句和声明
 - [ ] 14 ECMAScript语言：函数和类
