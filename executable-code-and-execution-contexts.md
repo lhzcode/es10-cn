@@ -890,7 +890,7 @@ callerScriptOrModule, [[HostDefined]]: undefined }.
 4. 设置 newContext 的作用域为 realm.
 5. 设置 the ScriptOrModule of newContext 为 null.
 6. 将newContext推入执行上下文堆栈；newContext现在是运行中的执行上下文
-7. 如果宿主要求使用外来对象作为作用域的全局对象，则将global设为以实现定义的方式创建的对象。否则，请使global为undefined，表示应将普通对象创建为全局对象
+7. 如果宿主要求使用异类对象作为作用域的全局对象，则将global设为以实现定义的方式创建的对象。否则，请使global为undefined，表示应将普通对象创建为全局对象
 8. 如果宿主要求作用域的全局范围中的this绑定返回除全局对象之外的对象，则使thisValue为以实现定义的方式创建的此类对象。否则，请使thisValue处于未定义状态，指示作用域的全局this绑定应为全局对象。
 9. 执行 SetRealmGlobalObject(realm, global, thisValue).
 10. 令 globalObj 为 ? SetDefaultGlobalBindings(realm).
