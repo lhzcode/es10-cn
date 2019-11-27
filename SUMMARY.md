@@ -388,10 +388,10 @@
         * [9.5.12 [[Call]] ( thisArgument, argumentsList )](ordinary-and-exotic-object-behaviours.md#sec-proxy-object-internal-methods-and-internal-slots-call-thisargument-argumentslist)
         * [9.5.13 [[Construct]] ( argumentsList, newTarget )](ordinary-and-exotic-object-behaviours.md#sec-proxy-object-internal-methods-and-internal-slots-construct-argumentslist-newtarget)
         * [9.5.14 ProxyCreate ( target, handler )](ordinary-and-exotic-object-behaviours.md#sec-proxycreate)
-* 10 ECMAScript语言：源代码
+* [10 ECMAScript语言：源代码](source-code.md)
     * [10.1 源文本](source-code.md#source-text)
-        * [10.1.1 SS: UTF16Encoding ( cp )](http://www.ecma-international.org/ecma-262/10.0/index.html#sec-utf16encoding)
-        * [10.1.2 SS: UTF16Decode ( lead, trail )](http://www.ecma-international.org/ecma-262/10.0/index.html#sec-utf16decode)
+        * [10.1.1 SS: UTF16Encoding ( cp )](source-code.md#sec-utf16encoding)
+        * [10.1.2 SS: UTF16Decode ( lead, trail )](source-code.md#sec-utf16decode)
     * [10.2 源代码类型](source-code.md#type-of-source-code)
         * [10.2.1 严格模式代码](source-code.md#strict-mode-code)
         * [10.2.2 非ECMAScript函数](source-code.md#non-ecmascript-functions)
