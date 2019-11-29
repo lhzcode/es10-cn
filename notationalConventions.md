@@ -1,10 +1,3 @@
-```
-description 一个上下文无关文法由一定数量的产生式组成。每个产生式的左边部分是一个被称为非终结符的抽象符号，右边部分是零或多个非终结符和终结符的有序排列。任何文法，它的终结符都来自指定的字母集。
-```
-```
-keywords ES10,ES中文,ES翻译,ES2019,ES文档,ES规范,ECMAScript10,ECMAScript中文,ECMAScript翻译,ECMAScript2019,ECMAScript文档,ECMAScript规范,记法约定,notationalConventions
-```
-
 # 5 记法约定
 
 ## 5.1 句法和文法 <div id="sec-algorithm-conventions-abstract-operations"></div>
@@ -541,3 +534,9 @@ The mathematical function floor(x) produces the largest integer (closest to posi
 
 > 注意 floor(x) = x-(x modulo 1). （译注：即模运算是向0方向舍入） 
 
+```
+description 一个上下文无关文法由一定数量的产生式组成。每个产生式的左边部分是一个被称为非终结符的抽象符号，右边部分是零或多个非终结符和终结符的有序排列。任何文法，它的终结符都来自指定的字母集。
+```
+```
+keywords ES10,ES中文,ES翻译,ES2019,ES文档,ES规范,ECMAScript10,ECMAScript中文,ECMAScript翻译,ECMAScript2019,ECMAScript文档,ECMAScript规范,记法约定,notationalConventions
+```

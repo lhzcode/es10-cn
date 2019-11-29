@@ -1,10 +1,3 @@
-```
-description 这些抽象操作不是语言本身的一部分；它们被定义在这里是为了协助语言的语义规范。 在本规范中定义了其他更专门的抽象操作。
-```
-```
-keywords ES10,ES中文,ES翻译,ES2019,ES文档,ES规范,ECMAScript10,ECMAScript中文,ECMAScript翻译,ECMAScript2019,ECMAScript文档,ECMAScript规范,抽象操作,abstract-operations
-```
-
 # 7 抽象操作
 
 这些抽象操作不是语言本身的一部分；它们被定义在这里是为了协助语言的语义规范。 在本规范中定义了其他更专门的抽象操作。
@@ -1056,3 +1049,9 @@ ListIterator next方法是一个标准的内置函数对象（第17节），该�
 8. 设置 O.[[ListIteratorNextIndex]] 为 index+1.
 9. 返回 CreateIterResultObject(list[index], false).
 
+```
+description 这些抽象操作不是语言本身的一部分；它们被定义在这里是为了协助语言的语义规范。 在本规范中定义了其他更专门的抽象操作。
+```
+```
+keywords ES10,ES中文,ES翻译,ES2019,ES文档,ES规范,ECMAScript10,ECMAScript中文,ECMAScript翻译,ECMAScript2019,ECMAScript文档,ECMAScript规范,抽象操作,abstract-operations
+```

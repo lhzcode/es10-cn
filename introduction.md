@@ -1,10 +1,3 @@
-```
-description Ecma标准定义了2019年ECMAScript语言。这是第十版的ECMAScript语言规范。自1997年出版的第一版，ECMAScript已经是世界上最广泛使用的通用编程语言。它是众所周知的嵌入在Web浏览器中的语言，但也已广泛用于服务器和嵌入式应用程序
-```
-```
-keywords ES10,ES中文,ES翻译,ES2019,ES文档,ES规范,ECMAScript10,ECMAScript中文,ECMAScript翻译,ECMAScript2019,ECMAScript文档,ECMAScript规范,Ecma介绍,introduction
-```
-
 # 介绍
 
 Ecma标准定义了2019年ECMAScript语言。这是第十版的ECMAScript语言规范。自1997年出版的第一版，ECMAScript已经是世界上最广泛使用的通用编程语言。它是众所周知的嵌入在Web浏览器中的语言，但也已广泛用于服务器和嵌入式应用程序
@@ -42,3 +35,10 @@ ECMA-262, Project Editor, 6th Edition
 Brian Terlson
 
 ECMA-262, Project Editor, 7th through 10th Editions 
+
+```
+description Ecma标准定义了2019年ECMAScript语言。这是第十版的ECMAScript语言规范。自1997年出版的第一版，ECMAScript已经是世界上最广泛使用的通用编程语言。它是众所周知的嵌入在Web浏览器中的语言，但也已广泛用于服务器和嵌入式应用程序
+```
+```
+keywords ES10,ES中文,ES翻译,ES2019,ES文档,ES规范,ECMAScript10,ECMAScript中文,ECMAScript翻译,ECMAScript2019,ECMAScript文档,ECMAScript规范,Ecma介绍,introduction
+```

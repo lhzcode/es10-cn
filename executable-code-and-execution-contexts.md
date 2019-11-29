@@ -1,11 +1,4 @@
-```
-description 词法环境是一个用于定义特定变量和函数标识符在 ECMAScript 代码的词法嵌套结构上关联关系的规范类型。一个词法环境由一个环境记录项和可能为空的外部词法环境引用构成。通常词法环境会与 ECMAScript 代码诸如 FunctionDeclaration、WithStatement 或者 TryStatement 的 Catch 块这样的特定句法结构相联系，且类似代码每次执行都会有一个新的词法环境被创建出来。
-```
-```
-keywords ES10,ES中文,ES翻译,ES2019,ES文档,ES规范,ECMAScript10,ECMAScript中文,ECMAScript翻译,ECMAScript2019,ECMAScript文档,ECMAScript规范,可执行代码和可执行上下文,lexical-environments
-```
-
-## 8 可执行代码和可执行上下文
+# 8 可执行代码和可执行上下文
 
 ## 8.1 词法环境 <div id="sec-lexical-environments.md"></div>
 
@@ -1020,3 +1013,10 @@ callerScriptOrModule, [[HostDefined]]: undefined }.
 ​	每个具有专用执行线程的未阻塞代理程序最终都会在共享执行线程的一组代理程序中前进，一个代理程序最终会使代理程序向前前进，除非通过提供阻塞的显式API，否则该代理程序不会导致另一个代理程序被阻塞。
 
 > 注：这与内存模型中的活动性保证一起，确保所有“ SeqCst”写入最终对于所有代理都是可见的。
+
+```
+description 词法环境是一个用于定义特定变量和函数标识符在 ECMAScript 代码的词法嵌套结构上关联关系的规范类型。一个词法环境由一个环境记录项和可能为空的外部词法环境引用构成。通常词法环境会与 ECMAScript 代码诸如 FunctionDeclaration、WithStatement 或者 TryStatement 的 Catch 块这样的特定句法结构相联系，且类似代码每次执行都会有一个新的词法环境被创建出来。
+```
+```
+keywords ES10,ES中文,ES翻译,ES2019,ES文档,ES规范,ECMAScript10,ECMAScript中文,ECMAScript翻译,ECMAScript2019,ECMAScript文档,ECMAScript规范,可执行代码和可执行上下文,lexical-environments
+```

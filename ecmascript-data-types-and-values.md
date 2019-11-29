@@ -1,11 +1,3 @@
-```
-description 本规范的算法操作的值每一个都有其相应的类型。 可能的值类型正是本节中定义的值类型。类型又进一步分为ECMAScript语言类型（language types）以及规范类型（specification types）。
-```
-```
-keywords ES10,ES中文,ES翻译,ES2019,ES文档,ES规范,ECMAScript10,ECMAScript中文,ECMAScript翻译,ECMAScript2019,ECMAScript文档,ECMAScript规范,ECMAScript数据类型和值,ecmascript-data-types-and-values
-```
-
-
 # 6 ECMAScript数据类型和值 <div id="sec-ecmascript-data-types-and-values"></div>
 
 本规范的算法操作的值每一个都有其相应的类型。 可能的值类型正是本节中定义的值类型。类型又进一步分为ECMAScript语言类型（language types）以及规范类型（specification types）。 
@@ -862,3 +854,10 @@ super引用是一种引用，用于表示使用super关键字表示的名称绑�
    4. count递减1.
 
 8. 返回 NormalCompletion(empty)。
+
+```
+description 本规范的算法操作的值每一个都有其相应的类型。 可能的值类型正是本节中定义的值类型。类型又进一步分为ECMAScript语言类型（language types）以及规范类型（specification types）。
+```
+```
+keywords ES10,ES中文,ES翻译,ES2019,ES文档,ES规范,ECMAScript10,ECMAScript中文,ECMAScript翻译,ECMAScript2019,ECMAScript文档,ECMAScript规范,ECMAScript数据类型和值,ecmascript-data-types-and-values
+```
