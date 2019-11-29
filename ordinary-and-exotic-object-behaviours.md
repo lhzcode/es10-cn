@@ -4,6 +4,7 @@ description 所有普通对象都有一个称为[[Prototype]]的内部插槽。�
 ```
 keywords ES10,ES中文,ES翻译,ES2019,ES文档,ES规范,ECMAScript10,ECMAScript中文,ECMAScript翻译,ECMAScript2019,ECMAScript文档,ECMAScript规范,普通和异类对象行为,ordinary-and-exotic-object-behaviours
 ```
+
 # 9 普通和异类对象行为
 
 ## 9.1 普通对象内部方法和内部插槽 <div id="ordinary-object-internal-methods-and-internal-slots"></div>
@@ -1091,7 +1092,7 @@ a. 返回 OrdinaryDefineOwnProperty(A, "length", newLenDesc).
 
 #### 9.4.4.2 [[DefineOwnProperty]] ( P, Desc ) <div id="sec-arguments-exotic-objects-defineownproperty-p-desc"></div>
 
-使用属性键P和属性描述符Desc调用时，参数异域对象的[[DefineOwnProperty]]内部方法将执行以下步骤：
+使用属性键P和属性描述符Desc调用时，参数异类对象的[[DefineOwnProperty]]内部方法将执行以下步骤：
 
 1. 令 args 为参数对象.
 

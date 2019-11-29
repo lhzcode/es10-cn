@@ -4,6 +4,7 @@ description ECMAScript是一种在宿主环境中执行计算并处理计算对�
 ```
 keywords ES10,ES中文,ES翻译,ES2019,ES文档,ES规范,ECMAScript10,ECMAScript中文,ECMAScript翻译,ECMAScript2019,ECMAScript文档,ECMAScript规范,ES概述,overview
 ```
+
 # 4 概述
 
 本节包含对ECMAScript语言非规范性的概述。

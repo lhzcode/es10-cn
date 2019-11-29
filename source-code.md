@@ -4,7 +4,9 @@ description ECMAScript代码使用Unicode表示。ECMAScript源文本是一系�
 ```
 keywords ES10,ES中文,ES翻译,ES2019,ES文档,ES规范,ECMAScript10,ECMAScript中文,ECMAScript翻译,ECMAScript2019,ECMAScript文档,ECMAScript规范,ECMAScript语言 源代码,source-code
 ```
+
 # 10 ECMAScript语言：源代码
+
 ## 10.1 源文本 <div id="source-text"></div>
 
 语法：
