@@ -11,13 +11,18 @@
         "-lunr",
         "-search",
         "search-pro",
-        "easyseo-7dtime"
+        "easyseo",
+        "myseo"
     ],
     "pluginsConfig": {
         "hide-element": {
             "elements": [
                 ".gitbook-link"
             ]
+        },
+        "myseo":{
+            "description": "",
+            "keywords": ""
         }
     }
 }
