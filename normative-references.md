@@ -1,3 +1,9 @@
+```
+description 下面的文档链接对于本规范的应用程序是必不可少的。对于标注了日期的引用，代表只适用于标注的那个版本。对于没有标注日期的引用，则适用于最新的版本（包括修正案）。 
+```
+```
+keywords ES10,ES中文,ES翻译,ES2019,ES文档,ES规范,ECMAScript10,ECMAScript中文,ECMAScript翻译,ECMAScript2019,ECMAScript文档,ECMAScript规范,规范性引用,normative-references
+```
 # 3 规范性引用
 
 下面的文档链接对于本规范的应用程序是必不可少的。对于标注了日期的引用，代表只适用于标注的那个版本。对于没有标注日期的引用，则适用于最新的版本（包括修正案）。 

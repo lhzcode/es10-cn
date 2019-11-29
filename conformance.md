@@ -1,3 +1,9 @@
+```
+description 符合标准的ECMAScript实现，必须提供并支持本规范描述的所有类型、值、对象、属性、函数、程序语法和语义。
+```
+```
+keywords ES10,ES中文,ES翻译,ES2019,ES文档,ES规范,ECMAScript10,ECMAScript中文,ECMAScript翻译,ECMAScript2019,ECMAScript文档,ECMAScript规范,一致性,conformance
+```
 # 2 一致性
 
 符合标准的ECMAScript实现，必须提供并支持本规范描述的所有类型、值、对象、属性、函数、程序语法和语义。

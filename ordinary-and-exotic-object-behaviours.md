@@ -1,3 +1,9 @@
+```
+description 所有普通对象都有一个称为[[Prototype]]的内部插槽。此内部插槽的值可以为null或一个对象，用于实现继承。[[Prototype]]对象的数据属性被继承（作为子对象的属性可见），是为了取值权限，而不是赋值权限。访问器属性被继承，同时获得取值权限和赋值权限。
+```
+```
+keywords ES10,ES中文,ES翻译,ES2019,ES文档,ES规范,ECMAScript10,ECMAScript中文,ECMAScript翻译,ECMAScript2019,ECMAScript文档,ECMAScript规范,普通和异类对象行为,ordinary-and-exotic-object-behaviours
+```
 # 9 普通和异类对象行为
 
 ## 9.1 普通对象内部方法和内部插槽 <div id="ordinary-object-internal-methods-and-internal-slots"></div>

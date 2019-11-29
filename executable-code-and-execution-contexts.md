@@ -1,3 +1,9 @@
+```
+description 词法环境是一个用于定义特定变量和函数标识符在 ECMAScript 代码的词法嵌套结构上关联关系的规范类型。一个词法环境由一个环境记录项和可能为空的外部词法环境引用构成。通常词法环境会与 ECMAScript 代码诸如 FunctionDeclaration、WithStatement 或者 TryStatement 的 Catch 块这样的特定句法结构相联系，且类似代码每次执行都会有一个新的词法环境被创建出来。
+```
+```
+keywords ES10,ES中文,ES翻译,ES2019,ES文档,ES规范,ECMAScript10,ECMAScript中文,ECMAScript翻译,ECMAScript2019,ECMAScript文档,ECMAScript规范,可执行代码和可执行上下文,lexical-environments
+```
 ## 8 可执行代码和可执行上下文
 ## 8.1 词法环境 <div id="sec-lexical-environments.md"></div>
 

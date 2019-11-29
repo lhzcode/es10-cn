@@ -1,3 +1,9 @@
+```
+description ECMAScript代码使用Unicode表示。ECMAScript源文本是一系列代码点。从U+0000到U+10FFFF的所有Unicode码点，包括代理码点，都可能出现在ECMAScript语法允许的源文本中。用于存储和交换ECMAScript源文本的实际编码与该规范无关。不管外部源文本如何编码，符合ECMAScript的实现都将源文本当作源字符值的等效序列来处理，每个源字符都是一个Unicode码点。不需要执行ECMAScript一致性实现即可对源代码进行任何标准化文本，或者表现得好像他们正在对源文本进行规范化。
+```
+```
+keywords ES10,ES中文,ES翻译,ES2019,ES文档,ES规范,ECMAScript10,ECMAScript中文,ECMAScript翻译,ECMAScript2019,ECMAScript文档,ECMAScript规范,ECMAScript语言 源代码,source-code
+```
 # 10 ECMAScript语言：源代码
 ## 10.1 源文本 <div id="source-text"></div>
 

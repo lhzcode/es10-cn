@@ -1,3 +1,9 @@
+```
+description 首先将ECMAScript脚本或模块的源文本转换成一系列输入元素，这些输入元素是标记，行终止符，注释或空白。从左到右扫描源文本，重复使用尽可能长的代码点序列作为下一个输入元素。
+```
+```
+keywords ES10,ES中文,ES翻译,ES2019,ES文档,ES规范,ECMAScript10,ECMAScript中文,ECMAScript翻译,ECMAScript2019,ECMAScript文档,ECMAScript规范,lexical-grammar
+```
 # 11 ECMAScript语言：词法语法
 首先将ECMAScript脚本或模块的源文本转换成一系列输入元素，这些输入元素是标记，行终止符，注释或空白。从左到右扫描源文本，重复使用尽可能长的代码点序列作为下一个输入元素。
 
