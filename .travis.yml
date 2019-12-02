@@ -6,7 +6,7 @@ cache: npm
 notifications:
   email:
     recipients:
-      - lhzdaze@gmail.com # 设置通知邮件
+      - lhzdaze@gmail.com
     on_success: change
     on_failure: always
 
@@ -31,4 +31,4 @@ branches:
 
 env:
   global:
-    - REF=github.com/lhzcode/es10-cn.git # 设置 github 地址
+    - REF=github.com/lhzcode/es10-cn.git

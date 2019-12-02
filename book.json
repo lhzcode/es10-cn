@@ -11,8 +11,8 @@
         "-lunr",
         "-search",
         "search-pro",
-        "easyseo",
-        "myseo"
+        "myseo",
+        "easyseo"
     ],
     "pluginsConfig": {
         "hide-element": {
