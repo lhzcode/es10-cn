@@ -1024,7 +1024,7 @@ TemplateSpans : TemplateTail
 TemplateSpans : TemplateMiddleList TemplateTail
 ```
 
-1. 返回 the result of SubstitutionEvaluation of TemplateMiddleList.
+1. 返回 TemplateMiddleList 的 SubstitutionEvaluation 结果.
 
 ```
 TemplateMiddleList : TemplateMiddle Expression
@@ -1175,7 +1175,7 @@ ParenthesizedExpression : ( Expression )
 
 ## 12.3 左值表达式 <div id="sec-left-hand-side-expressions"></div>
 
-语法
+**语法**
 
 ```
 MemberExpression[Yield, Await] :
@@ -1239,15 +1239,15 @@ CallExpression : CoverCallExpressionAndAsyncArrowHead
 
 #### 12.3.1.2 静态语义：Contains <div id="sec-static-semantics-static-semantics-contains"></div>
 
-带有参数符号。
+带有参数symbol。
 
 ```
 MemberExpression : MemberExpression . IdentifierName
 ```
 
-1. 若 MemberExpression Contains symbol 是 true, 返回 true.
-2. 若 symbol 是 a ReservedWord, 返回 false.
-3. 若 symbol 是 an Identifier and StringValue of symbol 是 the same value as the StringValue of IdentifierName, 返回
+1. 若 MemberExpression 包含 symbol 是 true, 返回 true.
+2. 若 symbol 是 ReservedWord, 返回 false.
+3. 若 symbol 是 Identifier，并且 symbol 的 StringValue 和 IdentifierName 的 StringValue 值相同 , 返回
 true.
 4. 返回 false
 
@@ -1255,9 +1255,9 @@ true.
 SuperProperty : super . IdentifierName
 ```
 
-1. 若 symbol 是 the ReservedWord super, 返回 true.
-2. 若 symbol 是 a ReservedWord, 返回 false.
-3. 若 symbol 是 an Identifier and StringValue of symbol 是 the same value as the StringValue of IdentifierName, 返回
+1. 若 symbol 是 ReservedWord super, 返回 true.
+2. 若 symbol 是 ReservedWord, 返回 false.
+3. 若 symbol 是 Identifier，并且 symbol 的 StringValue 和 IdentifierName 的 StringValue 值相同 , 返回
 true.
 4. 返回 false.
 
@@ -1265,11 +1265,11 @@ true.
 CallExpression : CallExpression . IdentifierName
 ```
 
-1. 若 CallExpression Contains symbol 是 true, 返回 true.
-2. 若 symbol 是 a ReservedWord, 返回 false.
-3. 若 symbol 是 an Identifier and StringValue of symbol 是 the same value as the StringValue of IdentifierName, 返回
+1. 若 CallExpression 包含 symbol 是 true, 返回 true.
+2. 若 symbol 是 ReservedWord, 返回 false.
+3. 若 symbol 是 Identifier，并且 symbol 的 StringValue 和 IdentifierName 的 StringValue 值相同 , 返回
 true.
-4. 返回 false.s
+4. 返回 false.
 
 #### 12.3.1.3 静态语义：IsFunctionDefinition <div id="sec-static-semantics-static-semantics-isfunctiondefinition"></div>
 
@@ -1296,7 +1296,7 @@ LeftHandSideExpression :
 MemberExpression : PrimaryExpression
 ```
 
-1. 若 PrimaryExpression 是 either an ObjectLiteral or an ArrayLiteral, 返回 true.
+1. 若 PrimaryExpression 是 ObjectLiteral 或 ArrayLiteral, 返回 true.
 
 2. 返回 false.
 
@@ -1405,7 +1405,7 @@ NewTarget :
 > CallExpression [ <identifier-name-string> ]
 > ```
 >
-> 其中，<identifier-name-string>是对IdentifierName的StringValue求值的结果。
+> 其中，\<identifier-name-string>是对IdentifierName的StringValue求值的结果。
 
 #### 12.3.2.1 运行时语义：Evaluation <div id="sec-property-accessors-runtime-semantics-evaluation"></div>
 
@@ -1419,9 +1419,8 @@ MemberExpression : MemberExpression [ Expression ]
 4. 令 propertyNameValue 为 ? GetValue(propertyNameReference).
 5. 令 bv 为 ? RequireObjectCoercible(baseValue).
 6. 令 propertyKey 为 ? ToPropertyKey(propertyNameValue).
-7. 若 the code matched by this MemberExpression 是 strict mode code, 令 strict 为 true, 否则 令 strict 为 false.
-8. 返回 a value of type Reference whose base value component 是 bv, whose referenced name component 是
-propertyKey, and whose strict reference flag 是 strict.
+7. 若通过这个 MemberExpression 匹配到的是严格模式代码, 令 strict 为 true, 否则 令 strict 为 false.
+8. 返回类型为Reference的值，其基本值成分为bv，其引用名称成分为 propertyKey，其严格引用标志为strict。
 
 ```
 MemberExpression : MemberExpression . IdentifierName
@@ -1431,21 +1430,20 @@ MemberExpression : MemberExpression . IdentifierName
 2. 令 baseValue 为 ? GetValue(baseReference).
 3. 令 bv 为 ? RequireObjectCoercible(baseValue).
 4. 令 propertyNameString 为IdentifierName的StringValue
-5. 若 the code matched by this MemberExpression 是 strict mode code, 令 strict 为 true, 否则 令 strict 为 false.
-6. 返回 a value of type Reference whose base value component 是 bv, whose referenced name component 是
-propertyNameString, and whose strict reference flag 是 strict.
+5. 若通过这个 MemberExpression 匹配到的是严格模式代码, 令 strict 为 true, 否则 令 strict 为 false.
+6. 返回类型为Reference的值，其基本值成分为bv，其引用名称成分为 propertyKey，其严格引用标志为strict。
 
 ```
 CallExpression : CallExpression [ Expression ]
 ```
 
-以与MemberExpression：MemberExpression [Expression]完全相同的方式求值，除了所包含的CallExpression在步骤1中求值。
+除了所包含的CallExpression在步骤1中求值，以与MemberExpression：MemberExpression [Expression]完全相同的方式求值。
 
 ```
 CallExpression : CallExpression . IdentifierName
 ```
 
-以与MemberExpression：MemberExpression完全相同的方式求值。IdentifierName，但所包含的CallExpression在步骤1中求值。
+除了所包含的CallExpression在步骤1中求值，以与MemberExpression：MemberExpression . IdentifierName 完全相同的方式求值。
 
 ### 12.3.3 new 运算符 <div id="sec-new-operator"></div>
 
@@ -1467,15 +1465,15 @@ MemberExpression : new MemberExpression Arguments
 
 抽象操作EvaluateNew带有参数ConstructExpr，而参数执行以下步骤：
 
-1. 断言: constructExpr 是 either a NewExpression or a MemberExpression.
-2. 断言: arguments 是 either empty or an Arguments.
-3. 令 ref 为constructExpr的运算结果
+1. 断言: constructExpr 是 NewExpression 或 MemberExpression.
+2. 断言: arguments 是 empty 或 Arguments.
+3. 令 ref 为 constructExpr 的运算结果
 4. 令 constructor 为 ? GetValue(ref).
 5. 若 arguments 是 empty, 令 argList 为一个新的空列表
 6. 否则,
 a. 令 argList 为arguments的ArgumentListEvaluation
 b. ReturnIfAbrupt(argList).
-7. 若 IsConstructor(constructor) 是 false, throw a TypeError exception.
+7. 若 IsConstructor(constructor) 是 false,抛出 TypeError 异常.
 8. 返回 ? Construct(constructor, argList).
 
 ### 12.3.4 函数回调 <div id="sec-function-calls"></div>
@@ -1490,21 +1488,20 @@ CallExpression : CoverCallExpressionAndAsyncArrowHead
 3. 令 arguments 为expr的Arguments
 4. 令 ref 为memberExpr的运算结果
 5. 令 func 为 ? GetValue(ref).
-6. 若 Type(ref) 是 Reference and IsPropertyReference(ref) 是 false and GetReferencedName(ref) 是 "eval", 那么
-   a. 若 SameValue(func, %eval%) 是 true, 那么
-   i. 令 argList 为 ? ArgumentListEvaluation of arguments.
-   ii. 若 argList has no elements, 返回 undefined.
-   iii. 令 evalText 为 the first element of argList.
-   iv. 若 the source code matching this CallExpression 是 strict mode code, 令 strictCaller 为 true. Otherwise
-   令 strictCaller 为 false.
-   v. 令 evalRealm 为 the current Realm Record.
-   vi. 执行 ? HostEnsureCanCompileStrings(evalRealm, evalRealm).
-   vii. 返回 ? PerformEval(evalText, evalRealm, strictCaller, true).
-7. 令 thisCall 为 this CallExpression.
+6. 若 Type(ref) 是 Reference 同时 IsPropertyReference(ref) 是 false 同时 GetReferencedName(ref) 是 "eval", 那么
+   1. 若 SameValue(func, %eval%) 是 true, 那么
+      2. 令 argList 为 ? arguments的ArgumentListEvaluation.
+      2. 若 argList 没有元素, 返回 undefined.
+      3. 令 evalText 为 argList 的第一个元素.
+      4. 若匹配这个 CallExpression 的源代码是严格模式代码, 令 strictCaller 为 true. 否则，令 strictCaller 为 false.
+      5. 令 evalRealm 为当前作用域记录项.
+      6. 执行 ? HostEnsureCanCompileStrings(evalRealm, evalRealm).
+      7. 返回 ? PerformEval(evalText, evalRealm, strictCaller, true).
+7. 令 thisCall 为这个 CallExpression.
 8. 令 tailCall 为 IsInTailPosition(thisCall).
 9. 返回 ? EvaluateCall(func, ref, arguments, tailCall).
 
-执行步骤6.a.vii的CallExpression执行是直接执行。
+执行步骤6.1.7的CallExpression执行是直接执行。
 
 ```
 CallExpression : CallExpression Arguments
@@ -1521,22 +1518,21 @@ CallExpression : CallExpression Arguments
 抽象操作EvaluateCall将值func，值ref，解析节点参数和布尔参数tailPosition用作参数。它执行以下步骤：
 
 1. 若 Type(ref) 是 Reference, 那么
-a. 若 IsPropertyReference(ref) 是 true, 那么
-i. 令 thisValue 为 GetThisValue(ref).
-b. 否则 the base of ref 是 an Environment Record,
-i. 令 refEnv 为 GetBase(ref).
-ii. 令 thisValue 为 refEnv.WithBaseObject().
+1. 若 IsPropertyReference(ref) 是 true, 那么
+  1. 令 thisValue 为 GetThisValue(ref).
+2.  否则 ref 的基础是环境记录项,
+  1. 令 refEnv 为 GetBase(ref).
+  2. 令 thisValue 为 refEnv.WithBaseObject().
 2. 否则 Type(ref) 不是 Reference,
-a. 令 thisValue 为 undefined.
+  1. 令 thisValue 为 undefined.
 3. 令 argList 为arguments的ArgumentListEvaluation
 4. ReturnIfAbrupt(argList).
-5. 若 Type(func) 不是 Object, throw a TypeError exception.
-6. 若 IsCallable(func) 是 false, throw a TypeError exception.
+5. 若 Type(func) 不是 Object,抛出 TypeError 异常.
+6. 若 IsCallable(func) 是 false,抛出 TypeError 异常.
 7. 若 tailPosition 是 true, 执行 PrepareForTailCall().
 8. 令 result 为 Call(func, thisValue, argList).
-9. 断言: 若 tailPosition 是 true, the above call will not 返回 here, but instead evaluation will continue as 若 the
-following 返回 has already occurred.
-10. 断言: 若 result 不是 an abrupt completion, 那么 Type(result) 是 an ECMAScript language type.
+9. 断言: 若 tailPosition 是 true, 上述回调不会在此处返回, 相反，运算将会继续，就像以下的返回已经发生。
+10. 断言: 若 result 不是 abrupt completion, 那么 Type(result) 是 ECMAScript 语言类型.
 11. 返回 result.
 
 ### 12.3.5super 关键字 <div id="sec-super-keyword"></div>
@@ -1551,7 +1547,7 @@ SuperProperty : super [ Expression ]
 3. 令 propertyNameReference 为Expression的运算结果
 4. 令 propertyNameValue 为 ? GetValue(propertyNameReference).
 5. 令 propertyKey 为 ? ToPropertyKey(propertyNameValue).
-6. 若 the code matched by this SuperProperty 是 strict mode code, 令 strict 为 true, 否则 令 strict 为 false.
+6. 若通过这个 SuperProperty 匹配到的是严格模式代码, 令 strict 为 true, 否则 令 strict 为 false.
 7. 返回 ? MakeSuperPropertyReference(actualThis, propertyKey, strict).
 
 ```
@@ -1561,7 +1557,7 @@ SuperProperty : super . IdentifierName
 1. 令 env 为 GetThisEnvironment().
 2. 令 actualThis 为 ? env.GetThisBinding().
 3. 令 propertyKey 为IdentifierName的StringValue
-4. 若 the code matched by this SuperProperty 是 strict mode code, 令 strict 为 true, 否则 令 strict 为 false.
+4. 若通过这个 SuperProperty 匹配到的是严格模式代码, 令 strict 为 true, 否则 令 strict 为 false.
 5. 返回 ? MakeSuperPropertyReference(actualThis, propertyKey, strict).
 
 ```
@@ -1586,7 +1582,7 @@ SuperCall : super Arguments
 3. 令 activeFunction 为 envRec.[[FunctionObject]].
 4. 断言: activeFunction 是 an ECMAScript function object.
 5. 令 superConstructor 为 ! activeFunction.\[\[GetPrototypeOf]]().
-6. 若 IsConstructor(superConstructor) 是 false, throw a TypeError exception.
+6. 若 IsConstructor(superConstructor) 是 false,抛出 TypeError 异常.
 7. 返回 superConstructor
 
 #### 12.3.5.3 运行时语义：MakeSuperPropertyReference ( actualThis, propertyKey, strict ) <div id="sec-makesuperpropertyreference"></div>
@@ -1597,7 +1593,7 @@ SuperCall : super Arguments
 2. 断言: env.HasSuperBinding() 是 true.
 3. 令 baseValue 为 ? env.GetSuperBase().
 4. 令 bv 为 ? RequireObjectCoercible(baseValue).
-5. 返回 a value of type Reference that 是 a Super Reference whose base value component 是 bv, whose referenced name component 是 propertyKey, whose thisValue component 是 actualThis, and whose strict reference flag 是 strict.
+5. 返回类型为Reference的值，它是super引用，其基本值部分是bv，其引用名称部分为propertyKey，其thisValue部分为ActualThis，其严格引用标志为strict
 
 ### 12.3.6 参数列表 <div id="sec-argument-lists"></div>
 
@@ -1617,7 +1613,7 @@ ArgumentList : AssignmentExpression
 
 1. 令 ref 为AssignmentExpression的运算结果
 2. 令 arg 为 ? GetValue(ref).
-3. 返回 a List whose sole item 是 arg.
+3. 返回唯一项目是 arg的列表.
 
 ```
 ArgumentList : ... AssignmentExpression
@@ -1628,10 +1624,10 @@ ArgumentList : ... AssignmentExpression
 3. 令 spreadObj 为 ? GetValue(spreadRef).
 4. 令 iteratorRecord 为 ? GetIterator(spreadObj).
 5. 重复,
-a. 令 next 为 ? IteratorStep(iteratorRecord).
-b. 若 next 是 false, 返回 list.
-c. 令 nextArg 为 ? IteratorValue(next).
-d. Append nextArg as the last element of list
+1. 令 next 为 ? IteratorStep(iteratorRecord).
+2. 若 next 是 false, 返回 list.
+3. 令 nextArg 为 ? IteratorValue(next).
+4. 添加nextArg到列表的最后一个元素
 
 ```
 ArgumentList : ArgumentList , AssignmentExpression
@@ -1641,7 +1637,7 @@ ArgumentList : ArgumentList , AssignmentExpression
 2. ReturnIfAbrupt(precedingArgs).
 3. 令 ref 为AssignmentExpression的运算结果
 4. 令 arg 为 ? GetValue(ref).
-5. Append arg to the end of precedingArgs.
+5. 添加 arg 到 precedingArgs 的末尾.
 6. 返回 precedingArgs.
 
 ```
@@ -1649,19 +1645,14 @@ ArgumentList : ArgumentList , ... AssignmentExpression
 ```
 
 1. 令 precedingArgs 为ArgumentList的ArgumentListEvaluation
-
 2. ReturnIfAbrupt(precedingArgs).
-
 3. 令 spreadRef 为AssignmentExpression的运算结果
-
 4. 令 iteratorRecord 为 ? GetIterator(? GetValue(spreadRef)).
-
 5. 重复,
-    a. 令 next 为 ? IteratorStep(iteratorRecord).
-    b. 若 next 是 false, 返回 precedingArgs.
-    c. 令 nextArg 为 ? IteratorValue(next).
-
-  d. Append nextArg as the last element of precedingArgs.
+    1. 令 next 为 ? IteratorStep(iteratorRecord).
+    2. 若 next 是 false, 返回 precedingArgs.
+    3. 令 nextArg 为 ? IteratorValue(next).
+    4. 添加 nextArg 到 precedingArgs 的最后一个元素.
 
 ### 12.3.7 标记模板 <div id="sec-tagged-templates"></div>
 
@@ -1675,7 +1666,7 @@ MemberExpression : MemberExpression TemplateLiteral
 
 1. 令 tagRef 为MemberExpression的运算结果
 2. 令 tagFunc 为 ? GetValue(tagRef).
-3. 令 thisCall 为 this MemberExpression.
+3. 令 thisCall 为这个 MemberExpression.
 4. 令 tailCall 为 IsInTailPosition(thisCall).
 5. 返回 ? EvaluateCall(tagFunc, tagRef, TemplateLiteral, tailCall).
 
@@ -1685,7 +1676,7 @@ CallExpression : CallExpression TemplateLiteral
 
 1. 令 tagRef 为CallExpression的运算结果
 2. 令 tagFunc 为 ? GetValue(tagRef).
-3. 令 thisCall 为 this CallExpression.
+3. 令 thisCall 为 这个 CallExpression.
 4. 令 tailCall 为 IsInTailPosition(thisCall).
 5. 返回 ? EvaluateCall(tagFunc, tagRef, TemplateLiteral, tailCall).
 
@@ -1701,7 +1692,7 @@ NewTarget : new . target
 
 ## 12.4 更新表达式 <div id="sec-update-expressions"></div>
 
-语法
+**语法**
 
 ```
 UpdateExpression[Yield, Await] :
@@ -1720,9 +1711,9 @@ UpdateExpression :
     LeftHandSideExpression --
 ```
 
-如果LeftHandSideExpression的AssignmentTargetType无效，则是早期参考错误。
+如果LeftHandSideExpression的AssignmentTargetType是invalid，则是早期引用错误。
 
-如果LeftHandSideExpression的AssignmentTargetType严格，则这是早期的语法错误。
+如果LeftHandSideExpression的AssignmentTargetType是strict，则这是早期的语法错误。
 
 ```
 UpdateExpression :
@@ -1730,9 +1721,9 @@ UpdateExpression :
     -- UnaryExpression
 ```
 
-如果UnaryExpression的AssignmentTargetType无效，则是早期参考错误。
+如果UnaryExpression的AssignmentTargetType是invalid，则是早期引用错误。
 
-如果UnaryExpression的AssignmentTargetType严格，则这是早期的语法错误。
+如果UnaryExpression的AssignmentTargetType是strict，则这是早期的语法错误。
 
 ### 12.4.2 静态语义：IsFunctionDefinition <div id="sec-update-expressions-static-semantics-isfunctiondefinition"></div>
 
@@ -1767,8 +1758,7 @@ UpdateExpression : LeftHandSideExpression ++
 
 1. 令 lhs 为LeftHandSideExpression的运算结果
 2. 令 oldValue 为 ? ToNumber(? GetValue(lhs)).
-3. 令 newValue 为 the result of adding the value 1 to oldValue, using the same rules as for the + operator (see
-12.8.5).
+3. 令 newValue 为使用与+运算符相同的规则将值1添加到oldValue的结果（参见 12.8.5）
 4. 执行 ? PutValue(lhs, newValue).
 5. 返回 oldValue
 
@@ -1781,8 +1771,7 @@ UpdateExpression : LeftHandSideExpression --
 
 1. 令 lhs 为LeftHandSideExpression的运算结果
 2. 令 oldValue 为 ? ToNumber(? GetValue(lhs)).
-3. 令 newValue 为 the result of subtracting the value 1 from oldValue, using the same rules as for the - operator (see
-12.8.5).
+3. 令 newValue使用与-运算符相同的规则将值1添加到oldValue的结果（参见 12.8.5）
 4. 执行 ? PutValue(lhs, newValue).
 5. 返回 oldValue.
 
@@ -1795,8 +1784,7 @@ UpdateExpression : ++ UnaryExpression
 
 1. 令 expr 为UnaryExpression的运算结果
 2. 令 oldValue 为 ? ToNumber(? GetValue(expr)).
-3. 令 newValue 为 the result of adding the value 1 to oldValue, using the same rules as for the + operator (see
-12.8.5).
+3. 令 newValue 为使用与+运算符相同的规则将值1添加到oldValue的结果（参见 12.8.5）
 4. 执行 ? PutValue(expr, newValue).
 5. 返回 newValue.
 
@@ -1809,13 +1797,13 @@ UpdateExpression : -- UnaryExpression
 
 1. 令 expr 为UnaryExpression的运算结果
 2. 令 oldValue 为 ? ToNumber(? GetValue(expr)).
-3. 令 newValue 为 the result of subtracting the value 1 from oldValue, using the same rules as for the - operator (see 12.8.5).
+3. 令 newValue 为与-运算符相同的规则将值1添加到oldValue的结果（参见 12.8.5）
 4. 执行 ? PutValue(expr, newValue).
 5. 返回 newValue.
 
 ## 12.5 一元运算符 <div id="sec-unary-operators"></div>
 
-语法
+**语法**
 
 ```
 UnaryExpression[Yield, Await] :
@@ -1897,17 +1885,17 @@ UnaryExpression : delete UnaryExpression
 2. ReturnIfAbrupt(ref).
 3. 若 Type(ref) 不是 Reference, 返回 true.
 4. 若 IsUnresolvableReference(ref) 是 true, 那么
-a. 断言: IsStrictReference(ref) 是 false.
-b. 返回 true.
+1. 断言: IsStrictReference(ref) 是 false.
+2. 返回 true.
 5. 若 IsPropertyReference(ref) 是 true, 那么
-a. 若 IsSuperReference(ref) 是 true, throw a ReferenceError exception.
-b. 令 baseObj 为 ! ToObject(GetBase(ref)).
-c. 令 deleteStatus 为 ? baseObj.\[\[Delete]](GetReferencedName(ref)).
-d. 若 deleteStatus 是 false and IsStrictReference(ref) 是 true, throw a TypeError exception.
-e. 返回 deleteStatus.
-6. 否则 ref 是 a Reference to an Environment Record binding,
-a. 令 bindings 为 GetBase(ref).
-b. 返回 ? bindings.DeleteBinding(GetReferencedName(ref)).
+  1. 若 IsSuperReference(ref) 是 true,抛出 ReferenceError 异常.
+  2. 令 baseObj 为 ! ToObject(GetBase(ref)).
+  3. 令 deleteStatus 为 ? baseObj.\[\[Delete]](GetReferencedName(ref)).
+  4. 若 deleteStatus 是 false 并且 IsStrictReference(ref) 是 true,抛出 TypeError 异常.
+  5. 返回 deleteStatus.
+6. 否则 ref 是对环境记录绑定的引用，
+  1. 令 bindings 为 GetBase(ref).
+  2. 返回 ? bindings.DeleteBinding(GetReferencedName(ref)).
 
 > 注意
 >
@@ -1939,24 +1927,24 @@ UnaryExpression : typeof UnaryExpression
 
 1. 令 val 为UnaryExpression的运算结果
 2. 若 Type(val) 是 Reference, 那么
-a. 若 IsUnresolvableReference(val) 是 true, 返回 "undefined".
-3. Set val to ? GetValue(val).
-4. 返回 a String according to Table 35.
+1. 若 IsUnresolvableReference(val) 是 true, 返回 "undefined".
+3. 设置 val 为 ? GetValue(val).
+4. 返回字符串，根据Table 35.
 
-| Type of val                                                  | Result                                                       |
-| ------------------------------------------------------------ | ------------------------------------------------------------ |
-| Undefined                                                    | `"undefined"`                                                |
-| Null                                                         | `"object"`                                                   |
-| Boolean                                                      | `"boolean"`                                                  |
-| Number                                                       | `"number"`                                                   |
-| String                                                       | `"string"`                                                   |
-| Symbol                                                       | `"symbol"`                                                   |
-| Object (ordinary and does not implement [[Call]]) 普通且不实现[[Call]]内部方法的对象 | `"object"`                                                   |
-| Object (standard exotic and does not implement [[Call]]) 非普通且不实现[[Call]]内部方法的对象 | `"object"`                                                   |
-| Object (implements [[Call]]) 实现[[Call]]内部方法的对象      | `"function"`                                                 |
-| Object (non-standard exotic and does not implement [[Call]]) 非标准且没有实现[[Call]]的对象 | 实现定义。 不能是“undefined”，“boolean”，“function”，“number”，“symbol”或“string”。 |
+| val类型                               | 结果                                                         |
+| ------------------------------------- | ------------------------------------------------------------ |
+| Undefined                             | `"undefined"`                                                |
+| Null                                  | `"object"`                                                   |
+| Boolean                               | `"boolean"`                                                  |
+| Number                                | `"number"`                                                   |
+| String                                | `"string"`                                                   |
+| Symbol                                | `"symbol"`                                                   |
+| Object (普通且不实现[[Call]])         | `"object"`                                                   |
+| Object (标准异类且不实现[[Call]])     | `"object"`                                                   |
+| Object (实现[[Call]])                 | `"function"`                                                 |
+| Object (非标准异类且没有实现[[Call]]) | 实现定义。 不能是“undefined”，“boolean”，“function”，“number”，“symbol”或“string”。 |
 
-> 注意：不建议为非标准奇异对象定义新类型的结果值。如果可能，应将“对象”用于此类对象。
+> 注意：不建议为非标准异类对象定义新类型的结果值。如果可能，应将“object”用于此类对象。
 
 ### 12.5.6 一元+ 运算符 <div id="sec-unary-plus-operator"></div>
 > 注意
@@ -1987,7 +1975,7 @@ UnaryExpression : - UnaryExpression
 1. 令 expr 为UnaryExpression的运算结果
 2. 令 oldValue 为 ? ToNumber(? GetValue(expr)).
 3. 若 oldValue 是 NaN, 返回 NaN.
-4. 返回 the result of negating oldValue; that 是, compute a Number with the same magnitude but opposite sign
+4. 返回否定oldValue的结果; 也就是说，计算一个具有相同大小但符号相反的数字。
 
 ### 12.5.8 按位非运算符 ( ~ ) <div id="sec-bitwise-not-operator"></div>
 #### 12.5.8.1 运行时语义：Evaluation <div id="sec-bitwise-not-operator-runtime-semantics-evaluation"></div>
@@ -1998,7 +1986,7 @@ UnaryExpression : ~ UnaryExpression
 
 1. 令 expr 为UnaryExpression的运算结果
 2. 令 oldValue 为 ? ToInt32(? GetValue(expr)).
-3. 返回 the result of applying bitwise complement to oldValue. The result 是 a signed 32-bit integer.
+3. 返回对oldValue部分按位补码的结果。结果是一个有符号的32位整数。
 
 ### 12.5.9 逻辑非运算符( ! ) <div id="sec-logical-not-operator"></div>
 #### 12.5.9.1 运行时语义：Evaluation <div id="sec-logical-not-operator-runtime-semantics-evaluation"></div>
@@ -2014,7 +2002,7 @@ UnaryExpression : ! UnaryExpression
 
 ## 12.6 指数运算符 <div id="sec-exp-operator"></div>
 
-语法
+**语法**
 
 ```
 ExponentiationExpression[Yield, Await] :
@@ -2052,35 +2040,35 @@ ExponentiationExpression : UpdateExpression ** ExponentiationExpression
 4. 令 rightValue 为 ? GetValue(right).
 5. 令 base 为 ? ToNumber(leftValue).
 6. 令 exponent 为 ? ToNumber(rightValue).
-7. 返回 the result of Applying the ** operator with base and exponent as specified in 12.6.4.
+7. 返回将**运算符与12.6.4中指定的base和exponent相乘的结果。
 
 ### 12.6.4 使用** 运算符 <div id="sec-applying-the-exp-operator"></div>
 
 返回将底数提高到幂指数的结果的与实现有关的近似值。
 
-若 exponent 是 NaN, the result 是 NaN.
-若 exponent 是 +0, the result 是 1, even 若 base 是 NaN.
-若 exponent 是 -0, the result 是 1, even 若 base 是 NaN.
-若 base 是 NaN and exponent 是 nonzero, the result 是 NaN.
-若 abs(base) > 1 and exponent 是 +∞, the result 是 +∞.
-若 abs(base) > 1 and exponent 是 -∞, the result 是 +0.
-若 abs(base) 是 1 and exponent 是 +∞, the result 是 NaN.
-若 abs(base) 是 1 and exponent 是 -∞, the result 是 NaN.
-若 abs(base) < 1 and exponent 是 +∞, the result 是 +0.
-若 abs(base) < 1 and exponent 是 -∞, the result 是 +∞.
-若 base 是 +∞ and exponent > 0, the result 是 +∞.
-若 base 是 +∞ and exponent < 0, the result 是 +0.
-若 base 是 -∞ and exponent > 0 and exponent 是 an odd integer, the result 是 -∞.
-若 base 是 -∞ and exponent > 0 and exponent 不是 an odd integer, the result 是 +∞.
-若 base 是 -∞ and exponent < 0 and exponent 是 an odd integer, the result 是 -0.
-若 base 是 -∞ and exponent < 0 and exponent 不是 an odd integer, the result 是 +0.
-若 base 是 +0 and exponent > 0, the result 是 +0.
-若 base 是 +0 and exponent < 0, the result 是 +∞.
-若 base 是 -0 and exponent > 0 and exponent 是 an odd integer, the result 是 -0.
-若 base 是 -0 and exponent > 0 and exponent 不是 an odd integer, the result 是 +0.
-若 base 是 -0 and exponent < 0 and exponent 是 an odd integer, the result 是 -∞.
-若 base 是 -0 and exponent < 0 and exponent 不是 an odd integer, the result 是 +∞.
-若 base < 0 and base 是 finite and exponent 是 finite and exponent 不是 an integer, the result 是 NaN.
+若 exponent 是 NaN, 结果是 NaN.
+若 exponent 是 +0, 结果是 1, 即使 base 是 NaN.
+若 exponent 是 -0, 结果是 1, 即使 base 是 NaN.
+若 base 是 NaN 并且 exponent 是 nonzero, 结果是 NaN.
+若 abs(base) > 1 并且 exponent 是 +∞, 结果是 +∞.
+若 abs(base) > 1 并且 exponent 是 -∞, 结果是 +0.
+若 abs(base) 是 1 并且 exponent 是 +∞, 结果是 NaN.
+若 abs(base) 是 1 并且 exponent 是 -∞, 结果是 NaN.
+若 abs(base) < 1 并且 exponent 是 +∞, 结果是 +0.
+若 abs(base) < 1 并且 exponent 是 -∞, 结果是 +∞.
+若 base 是 +∞ 并且 exponent > 0, 结果是 +∞.
+若 base 是 +∞ 并且 exponent < 0, 结果是 +0.
+若 base 是 -∞ 并且 exponent > 0 并且 exponent 是奇数整数, 结果是 -∞.
+若 base 是 -∞ 并且 exponent > 0 并且 exponent 不是奇数整数, 结果是 +∞.
+若 base 是 -∞ 并且 exponent < 0 并且 exponent 是奇数整数, 结果是 -0.
+若 base 是 -∞ 并且 exponent < 0 并且 exponent 不是奇数整数, 结果是 +0.
+若 base 是 +0 并且 exponent > 0, 结果是 +0.
+若 base 是 +0 并且 exponent < 0, 结果是 +∞.
+若 base 是 -0 并且 exponent > 0 并且 exponent 是奇数整数, 结果是 -0.
+若 base 是 -0 并且 exponent > 0 并且 exponent 不是奇数整数, 结果是 +0.
+若 base 是 -0 并且 exponent < 0 并且 exponent 是奇数整数, 结果是 -∞.
+若 base 是 -0 并且 exponent < 0 并且 exponent 不是奇数整数, 结果是 +∞.
+若 base < 0 并且 base 是有限的 并且 exponent 是有限的，并且 exponent 不是整数, 结果是 NaN.
 
 > 注意
 >
@@ -2127,47 +2115,46 @@ MultiplicativeExpression : MultiplicativeExpression MultiplicativeOperator Expon
 4. 令 rightValue 为 ? GetValue(right).
 5. 令 lnum 为 ? ToNumber(leftValue).
 6. 令 rnum 为 ? ToNumber(rightValue).
-7. 返回 the result of applying the MultiplicativeOperator (*, /, or %) to lnum and rnum as specified in 12.7.3.1, 12.7.3.2, or 12.7.3.3.
+7. 返回将12.7.3.1、12.7.3.2或12.7.3.3中指定的MultiplicativeOperator（*，/或％）应用于lnum和rnum的结果。
 
 #### 12.7.3.1 使用* 运算符 <div id="sec-applying-the-mul-operator"></div>
 
-\* MultiplicativeOperator执行乘法，产生其操作数的乘积。乘法是可交换的。由于有限的精度，乘法在ECMAScript中并不总是关联的。
+\* MultiplicativeOperator执行乘法，产生其操作数的乘积。乘法具有交换律。由于有限的精度，乘法在ECMAScript中并不总是有结合律。
 
 浮点乘法的结果受IEEE 754-2008二进制双精度算法的规则支配：
 
-如果任一操作数为NaN，则结果为NaN。
+- 如果任一操作数为NaN，则结果为NaN。
 
-如果两个操作数具有相同的符号，则结果的符号为正；
+- 如果两个操作数具有相同的符号，则结果的符号为正；如果两个操作数具有不同的符号，则结果为负。
+- 无穷大乘以零会产生NaN。
 
-如果两个操作数具有不同的符号，则结果为负。无穷大乘以零会产生NaN。
+- 无穷大与无穷大相乘会导致无穷大。该标志由上述规则确定。
 
-无穷大与无穷大相乘会导致无穷大。该标志由上述规则确定。
+- 无穷大与有限非零值的乘积导致有符号无穷大。该标志由上述规则确定。
 
-无穷大与有限非零值的乘积导致有符号无穷大。该标志由上述规则确定。
-
-在其余情况下，不涉及无穷大或NaN时，将使用IEEE 754-2008四舍五入到偶数模式来计算乘积并四舍五入到最接近的可表示值。如果幅度太大而无法表示，则结果是适当符号的无穷大。如果幅度太小而无法表示，则结果为适当符号的零。ECMAScript语言需要支持IEEE 754-2008所定义的渐进式下溢。
+- 在其余情况下，不涉及无穷大或NaN时，将使用IEEE 754-2008四舍五入到偶数模式来计算乘积并四舍五入到最接近的可表示值。如果幅度太大而无法表示，则结果是适当符号的无穷大。如果幅度太小而无法表示，则结果为适当符号的零。ECMAScript语言需要支持IEEE 754-2008所定义的渐进式下溢。
 
 #### 12.7.3.2 使用/ 运算符 <div id="sec-applying-the-div-operator"></div>
 
 / MultiplicativeOperator执行除法，产生其操作数的商。左操作数是除数，右操作数是除数。ECMAScript不执行整数除法。所有除法运算的操作数和结果均为双精度浮点数。除法的结果由IEEE 754-2008算法的规范确定：
 
-如果任一操作数为NaN，则结果为NaN。
+- 如果任一操作数为NaN，则结果为NaN。
 
-如果两个操作数具有相同的符号，则结果的符号为正；如果两个操作数具有不同的符号，则结果为负。
+- 如果两个操作数具有相同的符号，则结果的符号为正；如果两个操作数具有不同的符号，则结果为负。
 
-无限除以无限会得到NaN。
+- 无限除以无限会得到NaN。
 
-无穷大除以零会导致无穷大。该标志由上述规则确定。
+- 无穷大除以零会导致无穷大。该标志由上述规则确定。
 
-无穷大除以非零有限值会导致有符号无穷大。该标志由上述规则确定。
+- 无穷大除以非零有限值会导致有符号无穷大。该标志由上述规则确定。
 
-有限值除以无穷大将得出零。该标志由上述规则确定。
+- 有限值除以无穷大将得出零。该标志由上述规则确定。
 
-将零除以零会产生NaN；将零除以任何其他有限值将得出零，其符号由上述规则确定。
+- 将零除以零会产生NaN；将零除以任何其他有限值将得出零，其符号由上述规则确定。
 
-非零有限值除以零会导致有符号无穷大。该标志由上述规则确定。
+- 非零有限值除以零会导致有符号无穷大。该标志由上述规则确定。
 
-在其余情况下，既不涉及无穷大，也不涉及零，也不涉及NaN，则使用IEEE 754-2008四舍五入到偶数模式来计算商并四舍五入到最接近的可表示值。如果幅度太大而无法表示，则操作会溢出；结果是适当符号的无穷大。如果幅度太小而无法表示，则操作会下溢，并且结果为适当符号的零。ECMAScript语言需要支持IEEE 754-2008所定义的渐进式下溢。
+- 在其余情况下，既不涉及无穷大，也不涉及零，也不涉及NaN，则使用IEEE 754-2008四舍五入到偶数模式来计算商并四舍五入到最接近的可表示值。如果幅度太大而无法表示，则操作会溢出；结果是适当符号的无穷大。如果幅度太小而无法表示，则操作会下溢，并且结果为适当符号的零。ECMAScript语言需要支持IEEE 754-2008所定义的渐进式下溢。
 
 #### 12.7.3.3 使用% 运算符 <div id="sec-applying-the-mod-operator"></div>
 
@@ -2181,11 +2168,11 @@ MultiplicativeExpression : MultiplicativeExpression MultiplicativeOperator Expon
 
 ECMAScript浮点余数运算的结果由IEEE算术规则确定：
 
-如果任一操作数为NaN，则结果为NaN。
+- 如果任一操作数为NaN，则结果为NaN。
 
-结果的符号等于股息的符号。
+- 结果的符号等于被除数的符号。
 
-如果被除数是无穷大，或者除数是零，或者两者都是，则结果为NaN。如果除数是有限的，并且除数是无穷大，则结果等于除数。如果被除数为零，并且除数为非零且有限，则结果与被除数相同。在其余情况下，既不涉及无穷大，也不涉及零，也不涉及NaN，则除数n和除数d的浮点余数r由数学关系r = n-（d×q）定义，其中q是一个整数，仅当n / d为负时才为负，而只有当n / d为正时才为正，并且其大小应尽可能大而不会超过n和d的真数学商。使用IEEE 754-2008将r计算为四舍五入并舍入为最接近的可表示值，并舍入为偶数模式
+- 如果被除数是无穷大，或者除数是零，或者两者都是，则结果为NaN。如果除数是有限的，并且除数是无穷大，则结果等于除数。如果被除数为零，并且除数为非零且有限，则结果与被除数相同。在其余情况下，既不涉及无穷大，也不涉及零，也不涉及NaN，则除数n和除数d的浮点余数r由数学关系r = n-（d×q）定义，其中q是一个整数，仅当n / d为负时才为负，而只有当n / d为正时才为正，并且其大小应尽可能大而不会超过n和d的真数学商。使用IEEE 754-2008将r计算为四舍五入并舍入为最接近的可表示值，并舍入为偶数模式
 
 ## 12.8 加法运算符 <div id="sec-additive-operators"></div>
 
@@ -2237,14 +2224,14 @@ AdditiveExpression : AdditiveExpression + MultiplicativeExpression
 5. 令 lprim 为 ? ToPrimitive(lval).
 6. 令 rprim 为 ? ToPrimitive(rval).
 7. 若 Type(lprim) 是 String or Type(rprim) 是 String, 那么
-a. 令 lstr 为 ? ToString(lprim).
-b. 令 rstr 为 ? ToString(rprim).
-c. 返回 the string-concatenation of lstr and rstr.
+1. 令 lstr 为 ? ToString(lprim).
+2. 令 rstr 为 ? ToString(rprim).
+3. 返回 lstr 和 rstr 的 string-concatenation.
 8. 令 lnum 为 ? ToNumber(lprim).
 9. 令 rnum 为 ? ToNumber(rprim).
-10. 返回 the result of applying the addition operation to lnum and rnum. See the Note below 12.8.5.
+10. 返回将加法运算应用于lnum和rnum的结果。参见 12.8.5下的注意事项.
 
-> 注1：在第5步和第6步中对ToPrimitive的调用中未提供任何提示。除Date对象外，所有标准对象都处理没有提示的情况，就好像给出了提示编号一样。Date对象处理提示的缺失，就像提示字符串已给出一样。外来对象可以其他某种方式处理提示的缺失。
+> 注1：在第5步和第6步中对ToPrimitive的调用中未提供任何提示。除Date对象外，所有标准对象都处理没有提示的情况，就好像给出了提示编号一样。Date对象处理提示的缺失，就像提示字符串已给出一样。异类对象可以其他某种方式处理提示的缺失。
 >
 > 注2：步骤7与抽象关系比较算法的步骤3不同，它使用逻辑或运算代替逻辑与运算。
 
@@ -2262,39 +2249,39 @@ AdditiveExpression : AdditiveExpression - MultiplicativeExpression
 4. 令 rval 为 ? GetValue(rref).
 5. 令 lnum 为 ? ToNumber(lval).
 6. 令 rnum 为 ? ToNumber(rval).
-7. 返回 the result of applying the subtraction operation to lnum and rnum. See the note below 12.8.5.
+7. 返回将减法运算应用于lnum和rnum的结果。参见 12.8.5下的注意事项.
 
 ### 12.8.5 加法作用于数字 <div id="sec-applying-the-additive-operators-to-numbers"></div>
 
 当将+运算符应用于两个数字类型的操作数时，它们将执行加法运算，从而产生操作数之和。-运算符执行减法运算，产生两个数字操作数的差。
 
-加法是可交换的运算，但并不总是关联的。
+加法是可交换的运算，但并不总是可结合的。
 
 加法的结果使用IEEE 754-2008二进制双精度算法的规则确定：
 
-如果任一操作数为NaN，则结果为NaN。
+- 如果任一操作数为NaN，则结果为NaN。
 
-具有相反符号的两个无穷大之和为NaN。
+- 具有相反符号的两个无穷大之和为NaN。
 
-同一符号的两个无穷大之和就是该符号的无穷大。
+- 同一符号的两个无穷大之和就是该符号的无穷大。
 
-无穷大与有限值之和等于无穷操作数。
+- 无穷大与有限值之和等于无穷操作数。
 
-两个负零的总和为-0。两个正零或符号相反的两个零的总和为+0。
+- 两个负零的总和为-0。两个正零或符号相反的两个零的总和为+0。
 
-零和非零有限值之和等于非零操作数。
+- 零和非零有限值之和等于非零操作数。
 
-两个大小相同且符号相反的非零有限值的总和为+0。
+- 两个大小相同且符号相反的非零有限值的总和为+0。
 
-在其余情况下，既不涉及无穷大，也不涉及零，也不涉及NaN，并且操作数具有相同的符号或具有不同的大小，则使用IEEE 754-2008舍入到最接近的值，计算总和并舍入到最接近的可表示值。，与偶数模式相关。如果幅度太大而无法表示，则操作会溢出结果就是适当符号的无穷大。ECMAScript语言需要逐步支持IEEE 754-2008定义的下溢。
+- 在其余情况下，既不涉及无穷大，也不涉及零，也不涉及NaN，并且操作数具有相同的符号或具有不同的大小，则使用IEEE 754-2008舍入到最接近的值，计算总和并舍入到最接近的可表示值。，与偶数模式相关。如果幅度太大而无法表示，则操作会溢出结果就是适当符号的无穷大。ECMAScript语言需要逐步支持IEEE 754-2008定义的下溢。
 
 > 注意
 >
-> -运算符应用于两个数字类型的操作数时会进行减法运算，从而产生其操作数之差；左边的操作数是被减数，右边的操作数是被减数。给定数值操作数a和b，总是-a-b产生与a +（-b）相同的结果
+> -运算符应用于两个数字类型的操作数时会进行减法运算，从而产生其操作数之差；左边的操作数是被减数，右边的操作数是被减数。给定数值操作数a和b，a - b总是产生与a +（-b）相同的结果
 
 ## 12.9 按位移运算符 <div id="sec-bitwise-shift-operators"></div>
 
-语法
+**语法**
 
 ```
 ShiftExpression[Yield, Await] :
@@ -2344,8 +2331,8 @@ ShiftExpression : ShiftExpression << AdditiveExpression
 4. 令 rval 为 ? GetValue(rref).
 5. 令 lnum 为 ? ToInt32(lval).
 6. 令 rnum 为 ? ToUint32(rval).
-7. 令 shiftCount 为 the result of masking out all but the least significant 5 bits of rnum, that 是, compute rnum & 0x1F.
-8. 返回 the result of left shifting lnum by shiftCount bits. The result 是 a signed 32-bit integer.
+7. 令 shiftCount 为屏蔽掉rnum的除最低有效5位以外的所有位的结果，即计算rnum和 0x1F。
+8. 返回将lnum左移shiftCount位的结果。结果是一个有符号的32位整数。
 
 ### 12.9.4 带号右移位运算符( >> ) <div id="sec-signed-right-shift-operator"></div>
 
@@ -2365,8 +2352,8 @@ ShiftExpression : ShiftExpression >> AdditiveExpression
 4. 令 rval 为 ? GetValue(rref).
 5. 令 lnum 为 ? ToInt32(lval).
 6. 令 rnum 为 ? ToUint32(rval).
-7. 令 shiftCount 为 the result of masking out all but the least significant 5 bits of rnum, that 是, compute rnum & 0x1F.
-8. 返回 the result of performing a sign-extending right shift of lnum by shiftCount bits. The most significant bit 是 propagated. The result 是 a signed 32-bit integer
+7. 令 shiftCount 为屏蔽掉rnum的除最低有效5位以外的所有位的结果，即计算rnum＆0x1F。
+8. 返回通过shiftCount位执行lnum的符号扩展右移的结果。最高有效位被传递。结果是一个有符号的32位整数
 
 ### 12.9.5 不带号右移位运算符( >>> ) <div id="sec-unsigned-right-shift-operator"></div>
 
@@ -2384,14 +2371,14 @@ ShiftExpression : ShiftExpression >>> AdditiveExpression
 4. 令 rval 为 ? GetValue(rref).
 5. 令 lnum 为 ? ToUint32(lval).
 6. 令 rnum 为 ? ToUint32(rval).
-7. 令 shiftCount 为 the result of masking out all but the least significant 5 bits of rnum, that 是, compute rnum & 0x1F.
-8. 返回 the result of performing a zero-filling right shift of lnum by shiftCount bits. Vacated bits are filled with zero. The result 是 an unsigned 32-bit integer.
+7. 令 shiftCount 为屏蔽掉rnum的除最低有效5位以外的所有位的结果，即计算 rnum 和 0x1F。
+8. 返回通过shiftCount位执行lnum的零填充右移的结果。空位用零填充，结果是32位无符号整数。
 
 ## 12.10 关系运算符 <div id="sec-relational-operators"></div>
 
 > 注1：关系运算符的求值结果始终为布尔类型，反映了运算符命名的关系是否在其两个操作数之间成立
 
-语法
+**语法**
 
 ```
 RelationalExpression[In, Yield, Await] :
@@ -2444,9 +2431,9 @@ RelationalExpression : RelationalExpression < ShiftExpression
 2. 令 lval 为 ? GetValue(lref).
 3. 令 rref 为ShiftExpression的运算结果
 4. 令 rval 为 ? GetValue(rref).
-5. 令 r 为 the result of performing Abstract Relational Comparison lval < rval.
+5. 令 r 为执行抽象关系比较 lval <rval 的结果。
 6. ReturnIfAbrupt(r).
-7. 若 r 是 undefined, 返回 false. Otherwise, 返回 r.
+7. 若 r 是 undefined, 返回 false. 否则, 返回 r.
 
 ```
 RelationalExpression : RelationalExpression > ShiftExpression
@@ -2456,9 +2443,9 @@ RelationalExpression : RelationalExpression > ShiftExpression
 2. 令 lval 为 ? GetValue(lref).
 3. 令 rref 为ShiftExpression的运算结果
 4. 令 rval 为 ? GetValue(rref).
-5. 令 r 为 the result of performing Abstract Relational Comparison rval < lval with LeftFirst equal to false.
+5. 令 r 为在LeftFirst等于false的情况下执行抽象关系比较rval <lval的结果。
 6. ReturnIfAbrupt(r).
-7. 若 r 是 undefined, 返回 false. Otherwise, 返回 r
+7. 若 r 是 undefined, 返回 false. 否则, 返回 r
 
 ```
 RelationalExpression : RelationalExpression <= ShiftExpression
@@ -2468,9 +2455,9 @@ RelationalExpression : RelationalExpression <= ShiftExpression
 2. 令 lval 为 ? GetValue(lref).
 3. 令 rref 为ShiftExpression的运算结果
 4. 令 rval 为 ? GetValue(rref).
-5. 令 r 为 the result of performing Abstract Relational Comparison rval < lval with LeftFirst equal to false.
+5. 令 r 为在LeftFirst等于false的情况下执行抽象关系比较rval <lval的结果。
 6. ReturnIfAbrupt(r).
-7. 若 r 是 true or undefined, 返回 false. Otherwise, 返回 true.
+7. 若 r 是 true or undefined, 返回 false. 否则, 返回 true.
 
 ```
 RelationalExpression : RelationalExpression >= ShiftExpression
@@ -2480,9 +2467,9 @@ RelationalExpression : RelationalExpression >= ShiftExpression
 2. 令 lval 为 ? GetValue(lref).
 3. 令 rref 为ShiftExpression的运算结果
 4. 令 rval 为 ? GetValue(rref).
-5. 令 r 为 the result of performing Abstract Relational Comparison lval < rval.
+5. 令 r 为执行抽象关系比较 lval <rval 的结果。
 6. ReturnIfAbrupt(r).
-7. 若 r 是 true or undefined, 返回 false. Otherwise, 返回 true.
+7. 若 r 是 true or undefined, 返回 false. 否则, 返回 true.
 
 ```
 RelationalExpression : RelationalExpression instanceof ShiftExpression
@@ -2503,18 +2490,18 @@ RelationalExpression : RelationalExpression in ShiftExpression
 
 3. 令 rref 为ShiftExpression的运算结果
 4. 令 rval 为 ? GetValue(rref).
-5. 若 Type(rval) 不是 Object, throw a TypeError exception.
+5. 若 Type(rval) 不是 Object,抛出 TypeError 异常.
 6. 返回 ? HasProperty(rval, ToPropertyKey(lval)).
 
 ### 12.10.4 运行时语义：InstanceofOperator ( V, target ) <div id="sec-instanceofoperator"></div>
 
-抽象操作InstanceofOperator（V，target）实现了通用算法，可通过咨询目标的@@ hasinstance方法来确定ECMAScript值V是否是对象目标的实例，或者如果不存在，则确定V的目标属性是否存在目标原型属性原型链。此抽象操作执行以下步骤：
+抽象操作InstanceofOperator（V，target）实现了通用算法，可通过询问目标的@@ hasinstance方法来确定ECMAScript值V是否是对象目标的实例，或者如果不存在，则确定V的目标属性是否存在目标原型属性原型链。此抽象操作执行以下步骤：
 
-1. 若 Type(target) 不是 Object, throw a TypeError exception.
+1. 若 Type(target) 不是 Object,抛出 TypeError 异常.
 2. 令 instOfHandler 为 ? GetMethod(target, @@hasInstance).
 3. 若 instOfHandler 不是 undefined, 那么
-a. 返回 ToBoolean(? Call(instOfHandler, target, « V »)).
-4. 若 IsCallable(target) 是 false, throw a TypeError exception.
+1. 返回 ToBoolean(? Call(instOfHandler, target, « V »)).
+4. 若 IsCallable(target) 是 false,抛出 TypeError 异常.
 5. 返回 ? OrdinaryHasInstance(target, V).
 
 > 注意
@@ -2527,7 +2514,7 @@ a. 返回 ToBoolean(? Call(instOfHandler, target, « V »)).
 >
 > 计算相等运算符的结果始终是布尔类型，反映了该运算符命名的关系是否在其两个操作数之间成立。
 
-语法
+**语法**
 
 ```
 EqualityExpression[In, Yield, Await] :
@@ -2572,7 +2559,7 @@ EqualityExpression : EqualityExpression == RelationalExpression
 2. 令 lval 为 ? GetValue(lref).
 3. 令 rref 为RelationalExpression的运算结果
 4. 令 rval 为 ? GetValue(rref).
-5. 返回 the result of performing Abstract Equality Comparison rval == lval.
+5. 返回执行抽象相等比较 rval == lval 的结果。
 
 ```
 EqualityExpression : EqualityExpression != RelationalExpression
@@ -2582,8 +2569,8 @@ EqualityExpression : EqualityExpression != RelationalExpression
 2. 令 lval 为 ? GetValue(lref).
 3. 令 rref 为RelationalExpression的运算结果
 4. 令 rval 为 ? GetValue(rref).
-5. 令 r 为 the result of performing Abstract Equality Comparison rval == lval.
-6. 若 r 是 true, 返回 false. Otherwise, 返回 true.
+5. 令 r 为执行抽象相等比较 rval == lval 的结果。
+6. 若 r 是 true, 返回 false. 否则, 返回 true.
 
 ```
 EqualityExpression : EqualityExpression === RelationalExpression
@@ -2593,7 +2580,7 @@ EqualityExpression : EqualityExpression === RelationalExpression
 2. 令 lval 为 ? GetValue(lref).
 3. 令 rref 为RelationalExpression的运算结果
 4. 令 rval 为 ? GetValue(rref).
-5. 返回 the result of performing Strict Equality Comparison rval === lval.
+5. 返回执行严格相等比较 rval === lval 的结果。
 
 ```
 EqualityExpression : EqualityExpression !== RelationalExpression
@@ -2603,8 +2590,8 @@ EqualityExpression : EqualityExpression !== RelationalExpression
 2. 令 lval 为 ? GetValue(lref).
 3. 令 rref 为RelationalExpression的运算结果
 4. 令 rval 为 ? GetValue(rref).
-5. 令 r 为 the result of performing Strict Equality Comparison rval === lval.
-6. 若 r 是 true, 返回 false. Otherwise, 返回 true.
+5. 令 r 为执行严格相等比较 rval === lval 的结果。
+6. 若 r 是 true, 返回 false. 否则, 返回 true.
 
 > 注1：
 >
@@ -2620,17 +2607,17 @@ EqualityExpression : EqualityExpression !== RelationalExpression
 >
 > 相等运算符维护以下不变式：
 >
-> ​	A = B等于！（A == B）。
+> ​	A != B 等于 !(A == B)。
 >
-> ​	A == B等于B == A，除了按A和B的求值顺序
+> ​	A == B 等于 B == A，除了A和B的取值顺序。
 >
 > 注3：
 >
 > 相等运算符并不总是可传递的。例如，可能有两个不同的String对象，每个对象代表相同的String值；==运算符将认为每个String对象都等于String值，但是两个String对象将彼此不相等。例如：
 >
-> ​	new String（“ a”）==“ a”和“ a” == new String（“ a”）均为true。
+> ​	new String（"a"）=="a"和"a" == new String（"a"）均为true。
 >
-> ​	new String（“ a”）== new String（“ a”）为false。
+> ​	new String（"a"）== new String（"a"）为false。
 >
 > 注4：
 >
@@ -2638,7 +2625,7 @@ EqualityExpression : EqualityExpression !== RelationalExpression
 
 ## 12.12 二进制按位运算符 <div id="sec-binary-bitwise-operators"></div>
 
-语法
+**语法**
 
 ```
 BitwiseANDExpression[In, Yield, Await] :
@@ -2682,11 +2669,11 @@ BitwiseORExpression : BitwiseORExpression | BitwiseXORExpression
 4. 令 rval 为 ? GetValue(rref).
 5. 令 lnum 为 ? ToInt32(lval).
 6. 令 rnum 为 ? ToInt32(rval).
-7. 返回 the result of applying the bitwise operator @ to lnum and rnum. The result 是 a signed 32-bit integer.
+7. 返回将按位运算符@应用于lnum和rnum的结果。结果是一个有符号的32位整数。
 
 ## 12.13 二元逻辑运算符 <div id="sec-binary-logical-operators"></div>
 
-语法
+**语法**
 
 ```
 LogicalANDExpression[In, Yield, Await] :
@@ -2745,7 +2732,7 @@ LogicalORExpression : LogicalORExpression || LogicalANDExpression
 
 ## 12.14 条件运算符 <div id="sec-conditional-operator"></div>
 
-语法
+**语法**
 
 ```
 ConditionalExpression[In, Yield, Await] :
@@ -2783,10 +2770,10 @@ ConditionalExpression : LogicalORExpression ? AssignmentExpression : AssignmentE
 1. 令 lref 为LogicalORExpression的运算结果
 2. 令 lval 为 ToBoolean(? GetValue(lref)).
 3. 若 lval 是 true, 那么
-a. 令 trueRef 为 the result of evaluating the first AssignmentExpression.
+a. 令 trueRef 为运算第一个AssignmentExpression的结果。
 b. 返回 ? GetValue(trueRef).
 4. 否则,
-a. 令 falseRef 为 the result of evaluating the second AssignmentExpression.
+a. 令 falseRef 为运算第二个AssignmentExpression的结果。
 b. 返回 ? GetValue(falseRef).
 
 ## 12.15 赋值运算符 <div id="sec-assignment-operators"></div>
@@ -2814,19 +2801,19 @@ AssignmentOperator : one of
 AssignmentExpression : LeftHandSideExpression = AssignmentExpression
 ```
 
-如果LeftHandSideExpression是ObjectLiteral或ArrayLiteral，并且LeftHandSideExpression没有覆盖AssignmentPattern，则这是语法错误。
+- 如果LeftHandSideExpression是ObjectLiteral或ArrayLiteral，并且LeftHandSideExpression没有覆盖AssignmentPattern，则这是语法错误。
 
-如果LeftHandSideExpression既不是ObjectLiteral也不是ArrayLiteral且LeftHandSideExpression的AssignmentTargetType无效，则这是早期参考错误。
+- 如果LeftHandSideExpression既不是ObjectLiteral也不是ArrayLiteral且LeftHandSideExpression的AssignmentTargetType是invalid，则这是早期参考错误。
 
-如果LeftHandSideExpression既不是ObjectLiteral也不是ArrayLiteral且LeftHandSideExpression的AssignmentTargetType是严格的，则这是早期的语法错误。
+- 如果LeftHandSideExpression既不是ObjectLiteral也不是ArrayLiteral且LeftHandSideExpression的AssignmentTargetType是strict，则这是早期的语法错误。
 
 ```
 AssignmentExpression : LeftHandSideExpression AssignmentOperator AssignmentExpression
 ```
 
-如果LeftHandSideExpression的AssignmentTargetType无效，则是早期参考错误。
+- 如果LeftHandSideExpression的AssignmentTargetType是invalid，则是早期参考错误。
 
-如果LeftHandSideExpression的AssignmentTargetType严格，则这是早期的语法错误。
+- 如果LeftHandSideExpression的AssignmentTargetType是strict，则这是早期的语法错误。
 
 ### 12.15.2 静态语义：IsFunctionDefinition <div id="sec-assignment-operators-static-semantics-isfunctiondefinition"></div>
 
@@ -2866,22 +2853,20 @@ AssignmentExpression :
 AssignmentExpression : LeftHandSideExpression = AssignmentExpression
 ```
 
-1. 若 LeftHandSideExpression 是 neither an ObjectLiteral nor an ArrayLiteral, 那么
-a. 令 lref 为LeftHandSideExpression的运算结果
-b. ReturnIfAbrupt(lref).
-c. 若 IsAnonymousFunctionDefinition(AssignmentExpression) and IsIdentifierRef of LeftHandSideExpression are
-both true, 那么
-i. 令 rval 为 the result of performing NamedEvaluation for AssignmentExpression with argument
-GetReferencedName(lref).
-d. 否则,
-i. 令 rref 为AssignmentExpression的运算结果
-ii. 令 rval 为 ? GetValue(rref).
-e. 执行 ? PutValue(lref, rval).
-f. 返回 rval.
-2. 令 assignmentPattern 为 the AssignmentPattern that 是 covered by LeftHandSideExpression.
+1. 若 LeftHandSideExpression 不是 ObjectLiteral 或 ArrayLiteral, 那么
+1. 令 lref 为LeftHandSideExpression的运算结果
+2. ReturnIfAbrupt(lref).
+3. 若 IsAnonymousFunctionDefinition(AssignmentExpression) 和 LeftHandSideExpression 的 IsIdentifierRef 都为 true, 那么
+  1. 令 rval 为对带有参数GetReferencedName(lref) 的 AssignmentExpression  执行 NamedEvaluation 的结果
+4. 否则,
+  1. 令 rref 为AssignmentExpression的运算结果
+  2. 令 rval 为 ? GetValue(rref).
+5. 执行 ? PutValue(lref, rval).
+6. 返回 rval.
+2. 令 assignmentPattern 为被 LeftHandSideExpression 覆盖的  AssignmentPattern。
 3. 令 rref 为AssignmentExpression的运算结果
 4. 令 rval 为 ? GetValue(rref).
-5. 执行 ? DestructuringAssignmentEvaluation of assignmentPattern using rval as the argument.
+5. 执行 ? 使用rval作为参数的 assignmentPattern 的 DestructuringAssignmentEvaluation 
 6. 返回 rval.
 
 ```
@@ -2892,8 +2877,8 @@ AssignmentExpression : LeftHandSideExpression AssignmentOperator AssignmentExpre
 2. 令 lval 为 ? GetValue(lref).
 3. 令 rref 为AssignmentExpression的运算结果
 4. 令 rval 为 ? GetValue(rref).
-5. 令 op 为 the @ where AssignmentOperator 是 @=.
-6. 令 r 为 the result of applying op to lval and rval as 若 evaluating the expression lval op rval.
+5. 令 op 为 @ ，其中 AssignmentOperator 是 @=.
+6. 令 r 为将op应用于lval和Rval的结果，就像计算表达式lval OP rval一样。
 7. 执行 ? PutValue(lref, r).
 8. 返回 r.
 
@@ -2948,25 +2933,25 @@ DestructuringAssignmentTarget[Yield, Await] :
 AssignmentProperty : IdentifierReference Initializer
 ```
 
-如果IdentifierReference的AssignmentTargetType不简单，则是语法错误
+- 如果IdentifierReference的AssignmentTargetType不是simple，则是语法错误
 
 ```
 AssignmentRestProperty : ... DestructuringAssignmentTarget
 ```
 
-如果DestructuringAssignmentTarget是ArrayLiteral或ObjectLiteral，则为语法错误
+- 如果DestructuringAssignmentTarget是ArrayLiteral或ObjectLiteral，则为语法错误
 
 ```
 DestructuringAssignmentTarget : LeftHandSideExpression
 ```
 
-如果LeftHandSideExpression是ObjectLiteral或ArrayLiteral，并且LeftHandSideExpression没有覆盖AssignmentPattern，则它是语法错误。
+- 如果LeftHandSideExpression是ObjectLiteral或ArrayLiteral，并且LeftHandSideExpression没有覆盖AssignmentPattern，则它是语法错误。
 
-如果LeftHandSideExpression既不是ObjectLiteral也不是ArrayLiteral，并且AssignmentTargetType（LeftHandSideExpression）不简单，则会出现语法错误。
+- 如果LeftHandSideExpression既不是ObjectLiteral也不是ArrayLiteral，并且AssignmentTargetType（LeftHandSideExpression）不是simple，则会出现语法错误。
 
 #### 12.15.5.2 运行时语义：DestructuringAssignmentEvaluation <div id="sec-runtime-semantics-destructuringassignmentevaluation"></div>
 
-带参数值。
+带参数value。
 
 ```
 ObjectAssignmentPattern : { }
@@ -2983,7 +2968,7 @@ ObjectAssignmentPattern : { }
    ```
 
    1. 执行 ? RequireObjectCoercible(value).
-   2. 执行 ? PropertyDestructuringAssignmentEvaluation for AssignmentPropertyList using value as the argument.
+   2. 执行 ? 使用value作为参数的AssignmentPropertyList 的 PropertyDestructuringAssignmentEvaluation 
    3. 返回 NormalCompletion(empty).
 
 ```
@@ -2998,7 +2983,7 @@ ArrayAssignmentPattern : [ Elision ]
 ```
 
 1. 令 iteratorRecord 为 ? GetIterator(value).
-2. 令 result 为 the result of performing IteratorDestructuringAssignmentEvaluation of Elision with iteratorRecord as
+2. 令 result 为使用iteratorRecord 作为参数的 Elision 的 IteratorDestructuringAssignmentEvaluation of Elision with iteratorRecord as
    the argument.
 3. 若 iteratorRecord.[[Done]] 是 false, 返回 ? IteratorClose(iteratorRecord, result).
 4. 返回 result.
