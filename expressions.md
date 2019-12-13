@@ -2778,7 +2778,7 @@ b. 返回 ? GetValue(falseRef).
 
 ## 12.15 赋值运算符 <div id="sec-assignment-operators"></div>
 
-语法
+**语法**
 
 ```
 AssignmentExpression[In, Yield, Await] :
@@ -2854,15 +2854,15 @@ AssignmentExpression : LeftHandSideExpression = AssignmentExpression
 ```
 
 1. 若 LeftHandSideExpression 不是 ObjectLiteral 或 ArrayLiteral, 那么
-1. 令 lref 为LeftHandSideExpression的运算结果
-2. ReturnIfAbrupt(lref).
-3. 若 IsAnonymousFunctionDefinition(AssignmentExpression) 和 LeftHandSideExpression 的 IsIdentifierRef 都为 true, 那么
-  1. 令 rval 为对带有参数GetReferencedName(lref) 的 AssignmentExpression  执行 NamedEvaluation 的结果
-4. 否则,
-  1. 令 rref 为AssignmentExpression的运算结果
-  2. 令 rval 为 ? GetValue(rref).
-5. 执行 ? PutValue(lref, rval).
-6. 返回 rval.
+   1. 令 lref 为LeftHandSideExpression的运算结果
+   2. ReturnIfAbrupt(lref).
+   3. 若 IsAnonymousFunctionDefinition(AssignmentExpression) 和 LeftHandSideExpression 的 IsIdentifierRef 都为 true, 那么
+        1. 令 rval 为对带有参数GetReferencedName(lref) 的 AssignmentExpression  执行 NamedEvaluation 的结果
+   4. 否则,
+          1. 令 rref 为AssignmentExpression的运算结果
+          2. 令 rval 为 ? GetValue(rref).
+   5. 执行 ? PutValue(lref, rval).
+   6. 返回 rval.
 2. 令 assignmentPattern 为被 LeftHandSideExpression 覆盖的  AssignmentPattern。
 3. 令 rref 为AssignmentExpression的运算结果
 4. 令 rval 为 ? GetValue(rref).
@@ -2888,7 +2888,7 @@ AssignmentExpression : LeftHandSideExpression AssignmentOperator AssignmentExpre
 
 ### 12.15.5 解构赋值 <div id="sec-destructuring-assignment"></div>
 
-补充语法
+**补充语法**
 
 在某些情况下，当处理生产AssignmentExpression的实例时：LeftHandSideExpression = AssignmentExpression，以下语法用于完善LeftHandSideExpression的解释。
 
@@ -2983,8 +2983,7 @@ ArrayAssignmentPattern : [ Elision ]
 ```
 
 1. 令 iteratorRecord 为 ? GetIterator(value).
-2. 令 result 为使用iteratorRecord 作为参数的 Elision 的 IteratorDestructuringAssignmentEvaluation of Elision with iteratorRecord as
-   the argument.
+2. 令 result 为使用 iteratorRecord 作为参数执行 Elision 的 IteratorDestructuringAssignmentEvaluation结果。
 3. 若 iteratorRecord.[[Done]] 是 false, 返回 ? IteratorClose(iteratorRecord, result).
 4. 返回 result.
 
@@ -2993,14 +2992,13 @@ ArrayAssignmentPattern : [ Elision AssignmentRestElement ]
 ```
 
 1. 令 iteratorRecord 为 ? GetIterator(value).
-2. 若 Elision 是 present, 那么
-a. 令 status 为 the result of performing IteratorDestructuringAssignmentEvaluation of Elision with
-iteratorRecord as the argument.
-b. 若 status 是 an abrupt completion, 那么
-i. 断言: iteratorRecord.[[Done]] 是 true.
-ii. 返回 Completion(status).
-3. 令 result 为 the result of performing IteratorDestructuringAssignmentEvaluation of AssignmentRestElement with
-iteratorRecord as the argument.
+2. 若 Elision 存在, 那么
+     1. 令 status 为使用 iteratorRecord 作为参数执行 Elision 的 IteratorDestructuringAssignmentEvaluation结果。
+     2. 若 status 是 abrupt completion, 那么
+          1. 断言: iteratorRecord.[[Done]] 是 true.
+          2. 返回 Completion(status).
+
+3. 令 result 为使用 iteratorRecord 作为参数执行 AssignmentRestElement 的 IteratorDestructuringAssignmentEvaluation结果。
 4. 若 iteratorRecord.[[Done]] 是 false, 返回 ? IteratorClose(iteratorRecord, result).
 5. 返回 result.
 
@@ -3009,8 +3007,7 @@ ArrayAssignmentPattern : [ AssignmentElementList ]
 ```
 
 1. 令 iteratorRecord 为 ? GetIterator(value).
-2. 令 result 为 the result of performing IteratorDestructuringAssignmentEvaluation of AssignmentElementList using
-iteratorRecord as the argument.
+2. 令 result 为使用 iteratorRecord 作为参数执行 AssignmentRestElement 的 IteratorDestructuringAssignmentEvaluation结果。
 3. 若 iteratorRecord.[[Done]] 是 false, 返回 ? IteratorClose(iteratorRecord, result).
 4. 返回 result
 
@@ -3019,20 +3016,17 @@ ArrayAssignmentPattern : [ AssignmentElementList , Elision AssignmentRestElement
 ```
 
 1. 令 iteratorRecord 为 ? GetIterator(value).
-2. 令 status 为 the result of performing IteratorDestructuringAssignmentEvaluation of AssignmentElementList using
-iteratorRecord as the argument.
+2. 令 status 为使用 iteratorRecord 作为参数执行 AssignmentRestElement 的 IteratorDestructuringAssignmentEvaluation结果。
 3. 若 status 是 an abrupt completion, 那么
-a. 若 iteratorRecord.[[Done]] 是 false, 返回 ? IteratorClose(iteratorRecord, status).
-b. 返回 Completion(status).
-4. 若 Elision 是 present, 那么
-a. Set status to the result of performing IteratorDestructuringAssignmentEvaluation of Elision with
-iteratorRecord as the argument.
-b. 若 status 是 an abrupt completion, 那么
-i. 断言: iteratorRecord.[[Done]] 是 true.
-ii. 返回 Completion(status).
-5. 若 AssignmentRestElement 是 present, 那么
-a. Set status to the result of performing IteratorDestructuringAssignmentEvaluation of AssignmentRestElement
-with iteratorRecord as the argument.
+  1. 若 iteratorRecord.[[Done]] 是 false, 返回 ? IteratorClose(iteratorRecord, status).
+  2. 返回 Completion(status).
+4. 若 Elision 存在, 那么
+  1. 设置 status 为使用 iteratorRecord 作为参数执行 Elision 的 IteratorDestructuringAssignmentEvaluation结果。
+  2. 若 status 是 an abrupt completion, 那么
+        1. 断言: iteratorRecord.[[Done]] 是 true.
+            2. 返回 Completion(status).
+5. 若 AssignmentRestElement 存在, 那么
+  1. 设置 status 为使用 iteratorRecord 作为参数执行 AssignmentRestElement 的 IteratorDestructuringAssignmentEvaluation结果。
 6. 若 iteratorRecord.[[Done]] 是 false, 返回 ? IteratorClose(iteratorRecord, status).
 7. 返回 Completion(status).
 
@@ -3042,21 +3036,19 @@ ObjectAssignmentPattern : { AssignmentRestProperty }
 
 1. 执行 ? RequireObjectCoercible(value).
 2. 令 excludedNames 为一个新的空列表
-3.  返回 the result of performing RestDestructuringAssignmentEvaluation of AssignmentRestProperty with value and excludedNames as the arguments.
+3.  返回以value和excludeedNames为参数执行AssignmentRestProperty的RestDestructuringAssignmentEvaluation的结果。
 
 ```
 ObjectAssignmentPattern : { AssignmentPropertyList , AssignmentRestProperty }
 ```
 
 1. 执行 ? RequireObjectCoercible(value).
-2. 令 excludedNames 为 the result of performing ? PropertyDestructuringAssignmentEvaluation for
-AssignmentPropertyList using value as the argument.
-3. 返回 the result of performing RestDestructuringAssignmentEvaluation of AssignmentRestProperty with value and
-excludedNames as the arguments.
+2. 令 excludedNames 为执行 ? 使用value作为参数的AssignmentPropertyList的PropertyDestructuringAssignmentEvaluation的结果
+3. 返回以value和excludeedNames为参数执行AssignmentRestProperty的RestDestructuringAssignmentEvaluation的结果。
 
 #### 12.15.5.3 运行时语义：PropertyDestructuringAssignmentEvaluation <div id="sec-runtime-semantics-propertydestructuringassignmentevaluation"></div>
 
-带参数值
+带参数value
 
 >注意
 >
@@ -3066,11 +3058,9 @@ excludedNames as the arguments.
 AssignmentPropertyList : AssignmentPropertyList , AssignmentProperty
 ```
 
-1. 令 propertyNames 为 the result of performing ? PropertyDestructuringAssignmentEvaluation for
-AssignmentPropertyList using value as the argument.
-2. 令 nextNames 为 the result of performing ? PropertyDestructuringAssignmentEvaluation for AssignmentProperty
-using value as the argument.
-3. Append each item in nextNames to the end of propertyNames.
+1. 令 propertyNames 为执行 ? 使用value作为参数的AssignmentPropertyList的PropertyDestructuringAssignmentEvaluation的结果
+2. 令 nextNames 为 执行 ? 以value为参数执行AssignmentRestProperty的RestDestructuringAssignmentEvaluation的结果。
+3. 将nextNames中的每个项目追加到propertyNames的末尾。
 4. 返回 propertyNames.
 
 ```
@@ -3080,14 +3070,14 @@ AssignmentProperty : IdentifierReference Initializer
 1. 令 P 为IdentifierReference的StringValue
 2. 令 lref 为 ? ResolveBinding(P).
 3. 令 v 为 ? GetV(value, P).
-4. 若 Initializeropt 是 present and v 是 undefined, 那么
-a. 若 IsAnonymousFunctionDefinition(Initializer) 是 true, 那么
-i. Set v to the result of performing NamedEvaluation for Initializer with argument P.
-b. 否则,
-i. 令 defaultValue 为Initializer的运算结果
-ii. Set v to ? GetValue(defaultValue).
+4. 若 Initializeropt 存在，并且 v 是 undefined, 那么
+1. 若 IsAnonymousFunctionDefinition(Initializer) 是 true, 那么
+  1. 设置 v 为对带有参数 P 的 Intializer 执行 NamedEvaluation 的结果。
+2. 否则,
+  1. 令 defaultValue 为Initializer的运算结果
+  2. 设置 v to ? GetValue(defaultValue).
 5. 执行 ? PutValue(lref, v).
-6. 返回 a new List containing P.
+6. 返回包含P的新列表.
 
 ```
 AssignmentProperty : PropertyName : AssignmentElement
@@ -3095,8 +3085,8 @@ AssignmentProperty : PropertyName : AssignmentElement
 
 1. 令 name 为PropertyName的运算结果
 2. ReturnIfAbrupt(name).
-3. 执行 ? KeyedDestructuringAssignmentEvaluation of AssignmentElement with value and name as the arguments.
-4. 返回 a new List containing name.
+3. 执行 ? 以value和name为参数的AssignedElement的KeyedDestructuringAssignmentEvaluation。
+4. 返回包含name的新列表.
 
 #### 12.15.5.4 运行时语义：RestDestructuringAssignmentEvaluation <div id="sec-runtime-semantics-restdestructuringassignmentevaluation"></div>
 
@@ -3120,83 +3110,78 @@ AssignmentRestProperty : ... DestructuringAssignmentTarget
 AssignmentElementList : AssignmentElisionElement
 ```
 
-1. 返回 the result of performing IteratorDestructuringAssignmentEvaluation of AssignmentElisionElement using iteratorRecord as the argument
+1. 返回使用iteratorRecord作为参数执行AssignmentElisionElement的IteratorDestructuringAssignmentEvaluation的结果。
 
 ```
 AssignmentElementList : AssignmentElementList , AssignmentElisionElement
 ```
 
-1. 执行 ? IteratorDestructuringAssignmentEvaluation of AssignmentElementList using iteratorRecord as the argument.
-2. 返回 the result of performing IteratorDestructuringAssignmentEvaluation of AssignmentElisionElement using iteratorRecord as the argument.
+1. 执行 ? 使用iteratorRecord作为参数的AssignmentElementList的IteratorDestructuringAssignmentEvaluation。
+2. 返回使用iteratorRecord作为参数执行AssignmentElisionElement的IteratorDestructuringAssignmentEvaluation的结果。
 
 ```
 AssignmentElisionElement : AssignmentElement
 ```
 
-1. 返回 the result of performing IteratorDestructuringAssignmentEvaluation of AssignmentElement with
-iteratorRecord as the argument.
+1. 返回用 iteratorRecord 作为参数执行 AssignmentElement 的 IteratorDestructuringAssignmentEvaluation 的结果
 
 ```
 AssignmentElisionElement : Elision AssignmentElement
 ```
 
-1. 执行 ? IteratorDestructuringAssignmentEvaluation of Elision with iteratorRecord as the argument.
-2. 返回 the result of performing IteratorDestructuringAssignmentEvaluation of AssignmentElement with
-iteratorRecord as the argument.
+1. 执行 ? 以IteratorRecord作为参数的Elision的IteratorDestructuringAssignmentEvaluation。
+2. 返回用 iteratorRecord 作为参数执行 AssignmentElement 的 IteratorDestructuringAssignmentEvaluation 的结果
 
 ```
 Elision : ,
 ```
 
 1. 若 iteratorRecord.[[Done]] 是 false, 那么
-a. 令 next 为 IteratorStep(iteratorRecord).
-b. 若 next 是 an abrupt completion, set iteratorRecord.[[Done]] to true.
-c. ReturnIfAbrupt(next).
-d. 若 next 是 false, set iteratorRecord.[[Done]] to true.
+1. 令 next 为 IteratorStep(iteratorRecord).
+2. 若 next 是 abrupt completion, 设置 iteratorRecord.[[Done]] 为 true.
+3. ReturnIfAbrupt(next).
+4. 若 next 是 false, 设置 iteratorRecord.[[Done]] 为 true.
 2. 返回 NormalCompletion(empty).
 
 ```
 Elision : Elision ,
 ```
 
-1. 执行 ? IteratorDestructuringAssignmentEvaluation of Elision with iteratorRecord as the argument.
+1. 执行 ? 以IteratorRecord作为参数的Elision的IteratorDestructuringAssignmentEvaluation。
 2. 若 iteratorRecord.[[Done]] 是 false, 那么
     a. 令 next 为 IteratorStep(iteratorRecord).
-    b. 若 next 是 an abrupt completion, set iteratorRecord.[[Done]] to true.
+    b. 若 next 是 abrupt completion, 设置 iteratorRecord.[[Done]] 为 true.
     c. ReturnIfAbrupt(next).
-    d. 若 next 是 false, set iteratorRecord.[[Done]] to true.
+    d. 若 next 是 false, 设置 iteratorRecord.[[Done]] 为 true.
 3. 返回 NormalCompletion(empty)
 
 ```
 AssignmentElement : DestructuringAssignmentTarget Initializer
 ```
 
-1. 若 DestructuringAssignmentTarget 是 neither an ObjectLiteral nor an ArrayLiteral, 那么
-a. 令 lref 为DestructuringAssignmentTarget的运算结果
-b. ReturnIfAbrupt(lref).
+1. 若 DestructuringAssignmentTarget 不是 ObjectLiteral 或 ArrayLiteral, 那么
+1. 令 lref 为DestructuringAssignmentTarget的运算结果
+2. ReturnIfAbrupt(lref).
 2. 若 iteratorRecord.[[Done]] 是 false, 那么
-a. 令 next 为 IteratorStep(iteratorRecord).
-b. 若 next 是 an abrupt completion, set iteratorRecord.[[Done]] to true.
-c. ReturnIfAbrupt(next).
-d. 若 next 是 false, set iteratorRecord.[[Done]] to true.
-e. 否则,
-i. 令 value 为 IteratorValue(next).
-ii. 若 value 是 an abrupt completion, set iteratorRecord.[[Done]] to true.
-iii. ReturnIfAbrupt(value).
+  1. 令 next 为 IteratorStep(iteratorRecord).
+  2. 若 next 是 abrupt completion, 设置 iteratorRecord.[[Done]] 为 true.
+  3. ReturnIfAbrupt(next).
+  4. 若 next 是 false, 设置 iteratorRecord.[[Done]] 为 true.
+  5. 否则,
+        1. 令 value 为 IteratorValue(next).
+            2. 若 value 是 abrupt completion, 设置 iteratorRecord.[[Done]] 为 true.
+                3. ReturnIfAbrupt(value).
 3. 若 iteratorRecord.[[Done]] 是 true, 令 value 为 undefined.
-4. 若 Initializer 是 present and value 是 undefined, 那么
-a. 若 IsAnonymousFunctionDefinition(Initializer) and IsIdentifierRef of DestructuringAssignmentTarget are both
-true, 那么
-i. 令 v 为 the result of performing NamedEvaluation for Initializer with argument
-GetReferencedName(lref).
-b. 否则,
-i. 令 defaultValue 为Initializer的运算结果
-ii. 令 v 为 ? GetValue(defaultValue).
+4. 若 Initializer 存在，并且 value 是 undefined, 那么
+  1. 若 IsAnonymousFunctionDefinition(Initializer) 和 DestructuringAssignmentTarget 的 IsIdentifierRef 都是 true, 那么
+        1. 令 v 为使用GetReferencedName(lref)参数对Initializer执行NamedEvaluation的结果
+  2. 否则,
+        1. 令 defaultValue 为Initializer的运算结果
+            2. 令 v 为 ? GetValue(defaultValue).
 5. 否则, 令 v 为 value.
-6. 若 DestructuringAssignmentTarget 是 an ObjectLiteral or an ArrayLiteral, 那么
-a. 令 nestedAssignmentPattern 为 the AssignmentPattern that 是 covered by DestructuringAssignmentTarget.
-b. 返回 the result of performing DestructuringAssignmentEvaluation of nestedAssignmentPattern with v as the
-argument.
+6. 若 DestructuringAssignmentTarget 是 ObjectLiteral 或 ArrayLiteral, 那么
+  1. 令 nestedAssignmentPattern 为 AssignmentPattern，即是被 DestructuringAssignmentTarget 涵盖的。
+  2. 返回以v为参数执行nestedAssignmentPattern的DestructuringAssignmentEvaluation的结果。
 7. 返回 ? PutValue(lref, v).
 
 > 注意
@@ -3207,33 +3192,27 @@ argument.
 AssignmentRestElement : ... DestructuringAssignmentTarget
 ```
 
-1. 若 DestructuringAssignmentTarget 是 neither an ObjectLiteral nor an ArrayLiteral, 那么
-    a. 令 lref 为DestructuringAssignmentTarget的运算结果
-    b. ReturnIfAbrupt(lref).
-
+1. 若 DestructuringAssignmentTarget 不是 ObjectLiteral 或 ArrayLiteral, 那么
+    1. 令 lref 为DestructuringAssignmentTarget的运算结果
+    2. ReturnIfAbrupt(lref).
 2. 令 A 为 ! ArrayCreate(0).
-
 3. 令 n 为 0.
-
-4. 重复, while iteratorRecord.[[Done]] 是 false,
-    a. 令 next 为 IteratorStep(iteratorRecord).
-    b. 若 next 是 an abrupt completion, set iteratorRecord.[[Done]] to true.
-    c. ReturnIfAbrupt(next).
-    d. 若 next 是 false, set iteratorRecord.[[Done]] to true.
-    e. 否则,
-
-  i. 令 nextValue 为 IteratorValue(next).
-  ii. 若 nextValue 是 an abrupt completion, set iteratorRecord.[[Done]] to true.
-  iii. ReturnIfAbrupt(nextValue).
-  iv. 令 status 为 CreateDataProperty(A, ! ToString(n), nextValue).
-  v. 断言: status 是 true.
-  vi. Increment n by 1.
-
-5. 若 DestructuringAssignmentTarget 是 neither an ObjectLiteral nor an ArrayLiteral, 那么
-    a. 返回 ? PutValue(lref, A).
-6. 令 nestedAssignmentPattern 为 the AssignmentPattern that 是 covered by DestructuringAssignmentTarget.
-7. 返回 the result of performing DestructuringAssignmentEvaluation of nestedAssignmentPattern with A as the
-    argument.
+4. 重复, 当 iteratorRecord.[[Done]] 是 false,
+    1. 令 next 为 IteratorStep(iteratorRecord).
+    2. 若 next 是 abrupt completion, 设置 iteratorRecord.[[Done]] 为 true.
+    3. ReturnIfAbrupt(next).
+    4. 若 next 是 false, 设置 iteratorRecord.[[Done]] 为 true.
+    5. 否则,
+        1. 令 nextValue 为 IteratorValue(next).
+        2. 若 nextValue 是 abrupt completion, 设置 iteratorRecord.[[Done]] 为 true.
+        3. ReturnIfAbrupt(nextValue).
+        4. 令 status 为 CreateDataProperty(A, ! ToString(n), nextValue).
+        5. 断言: status 是 true.
+        6.  n 增加 1.
+5. 若 DestructuringAssignmentTarget 不是 ObjectLiteral 或 ArrayLiteral, 那么
+    1. 返回 ? PutValue(lref, A).
+6. 令 nestedAssignmentPattern 为 the AssignmentPattern，即是被 DestructuringAssignmentTarget 涵盖的
+7. 返回以A为参数执行nestedAssignmentPattern的DestructuringAssignmentEvaluation的结果。
 
 #### 12.15.5.6 运行时语义：KeyedDestructuringAssignmentEvaluation <div id="sec-runtime-semantics-keyeddestructuringassignmentevaluation"></div>
 
@@ -3243,23 +3222,20 @@ AssignmentRestElement : ... DestructuringAssignmentTarget
 AssignmentElement : DestructuringAssignmentTarget Initializer
 ```
 
-1. 若 DestructuringAssignmentTarget 是 neither an ObjectLiteral nor an ArrayLiteral, 那么
-a. 令 lref 为DestructuringAssignmentTarget的运算结果
-b. ReturnIfAbrupt(lref).
+1. 若 DestructuringAssignmentTarget 不是 ObjectLiteral 或 ArrayLiteral, 那么
+1. 令 lref 为DestructuringAssignmentTarget的运算结果
+2. ReturnIfAbrupt(lref).
 2. 令 v 为 ? GetV(value, propertyName).
-3. 若 Initializer 是 present and v 是 undefined, 那么
-a. 若 IsAnonymousFunctionDefinition(Initializer) and IsIdentifierRef of DestructuringAssignmentTarget are both
-true, 那么
-i. 令 rhsValue 为 the result of performing NamedEvaluation for Initializer with argument
-GetReferencedName(lref).
-b. 否则,
-i. 令 defaultValue 为Initializer的运算结果
-ii. 令 rhsValue 为 ? GetValue(defaultValue).
+3. 若 Initializer 存在，并且 v 是 undefined, 那么
+  1. 若 IsAnonymousFunctionDefinition(Initializer) 和 DestructuringAssignmentTarget 的 IsIdentifierRef 都为 true, 那么
+    1. 令 rhsValue 为使用GetReferencedName(lref)参数对Initializer执行NamedEvaluation的结果。
+  2. 否则,
+    1. 令 defaultValue 为Initializer的运算结果
+    2. 令 rhsValue 为 ? GetValue(defaultValue).
 4. 否则, 令 rhsValue 为 v.
-5. 若 DestructuringAssignmentTarget 是 an ObjectLiteral or an ArrayLiteral, 那么
-a. 令 assignmentPattern 为 the AssignmentPattern that 是 covered by DestructuringAssignmentTarget.
-b. 返回 the result of performing DestructuringAssignmentEvaluation of assignmentPattern with rhsValue as
-the argument.
+5. 若 DestructuringAssignmentTarget 是 ObjectLiteral 或 ArrayLiteral, 那么
+  1. 令 assignmentPattern 为 the AssignmentPattern，即是被 DestructuringAssignmentTarget 涵盖的
+  2. 返回使用rhsValue作为的执行DestructuringAssignmentEvaluation of AssignmentPattern的结果。
 6. 返回 ? PutValue(lref, rhsValue).
 
 ## 12.16 逗号运算符 <div id="sec-comma-operator"></div>
