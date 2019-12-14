@@ -34,7 +34,7 @@ BreakableStatement[Yield, Await, Return] :
 
 ## 13.1 语句和声明 <div id="sec-statement-semantics"></div>
 
-### 13.1.1 SS: ContainsDuplicateLabels <div id="sec-statement-semantics-static-semantics-containsduplicatelabels"></div>
+### 13.1.1 静态语义：ContainsDuplicateLabels <div id="sec-statement-semantics-static-semantics-containsduplicatelabels"></div>
 
 带有参数labelSet。
 
@@ -50,9 +50,9 @@ Statement :
     DebuggerStatement
 ```
 
-1. Return false.
+1. 返回 false.
 
-### 13.1.2 SS: ContainsUndefinedBreakTarget <div id="sec-statement-semantics-static-semantics-containsundefinedbreaktarget"></div>
+### 13.1.2 静态语义：ContainsUndefinedBreakTarget <div id="sec-statement-semantics-static-semantics-containsundefinedbreaktarget"></div>
 
 带有参数labelSet。
 
@@ -67,9 +67,9 @@ Statement:
     DebuggerStatement
 ```
 
-1. Return false.
+1. 返回 false.
 
-### 13.1.3 SS: ContainsUndefinedContinueTarget <div id="sec-statement-semantics-static-semantics-containsundefinedcontinuetarget"></div>
+### 13.1.3 静态语义：ContainsUndefinedContinueTarget <div id="sec-statement-semantics-static-semantics-containsundefinedcontinuetarget"></div>
 
 使用参数iterationSet和labelSet。
 
@@ -84,69 +84,54 @@ Statement:
     DebuggerStatement
 ```
 
-1. Return false.
+1. 返回 false.
 
 ```
 BreakableStatement:IterationStatement
 ```
 
-1. Let newIterationSet be a copy of iterationSet with all the elements of labelSet appended.
-2. Return ContainsUndefinedContinueTarget of IterationStatement with arguments newIterationSet and « ».
+1. 令 newIterationSet 为附加了labelSet的所有元素的迭代集的副本。
+2. 返回包含带有参数newIterationSet和«»的IterationStatement的UndefinedContinueTarget。
 
-### 13.1.4 SS: DeclarationPart <div id="sec-static-semantics-declarationpart"></div>
+### 13.1.4 静态语义：DeclarationPart <div id="sec-static-semantics-declarationpart"></div>
 
 ```
 HoistableDeclaration : FunctionDeclaration
 ```
 
-1. Return FunctionDeclaration.
+1. 返回 FunctionDeclaration.
 
 ```
 HoistableDeclaration : GeneratorDeclaration
 ```
 
-1. Return GeneratorDeclaration.
+1. 返回 GeneratorDeclaration.
 
 ```
 HoistableDeclaration : AsyncFunctionDeclaration
 ```
 
-1. Return AsyncFunctionDeclaration.
+1. 返回 AsyncFunctionDeclaration.
 
 ```
 HoistableDeclaration : AsyncGeneratorDeclaration
 ```
 
-1. Return AsyncGeneratorDeclaration.
+1. 返回 AsyncGeneratorDeclaration.
 
 ```
 Declaration : ClassDeclaration
 ```
 
-1. Return ClassDeclaration.
+1. 返回 ClassDeclaration.
 
 ```
 Declaration : LexicalDeclaration
 ```
 
-1. Return LexicalDeclaration.
+1. 返回 LexicalDeclaration.
 
-### 13.1.5 SS: VarDeclaredNames <div id="sec-statement-semantics-static-semantics-vardeclarednames"></div>
-
-```
-Statement :
-EmptyStatement
-ExpressionStatement
-ContinueStatement
-BreakStatement
-ReturnStatement
-ThrowStatement
-DebuggerStatement
-```
-
-1. Return a new empty List.
-
-### 13.1.6 SS: VarScopedDeclarations <div id="sec-statement-semantics-static-semantics-varscopeddeclarations"></div>
+### 13.1.5 静态语义：VarDeclaredNames <div id="sec-statement-semantics-static-semantics-vardeclarednames"></div>
 
 ```
 Statement :
@@ -159,37 +144,52 @@ ThrowStatement
 DebuggerStatement
 ```
 
-1. Return a new empty List.
+1. 返回一个新的空列表.
 
-### 13.1.7 RS: LabelledEvaluation <div id="sec-statement-semantics-runtime-semantics-labelledevaluation"></div>
+### 13.1.6 静态语义：VarScopedDeclarations <div id="sec-statement-semantics-static-semantics-varscopeddeclarations"></div>
 
-With parameter labelSet.
+```
+Statement :
+EmptyStatement
+ExpressionStatement
+ContinueStatement
+BreakStatement
+ReturnStatement
+ThrowStatement
+DebuggerStatement
+```
+
+1. 返回一个新的空列表.
+
+### 13.1.7 运行时语义：LabelledEvaluation <div id="sec-statement-semantics-runtime-semantics-labelledevaluation"></div>
+
+使用参数 labelSet
 
 ```
 BreakableStatement:IterationStatement
 ```
 
-1. Let stmtResult be the result of performing LabelledEvaluation of IterationStatement with argument labelSet.
-2. If stmtResult.[[Type]] is break, then
-a. If stmtResult.[[Target]] is empty, then
-i. If stmtResult.[[Value]] is empty, set stmtResult to NormalCompletion(undefined).
-ii. Else, set stmtResult to NormalCompletion(stmtResult.[[Value]]).
-3. Return Completion(stmtResult).
+1. 令 stmtResult 为使用参数labelSet执行IterationStatement的LabelledEvaluation的结果
+2. 若 stmtResult.[[Type]] 是 break，那么
+   1. 若 stmtResult.[[Target]] 是 empty，那么
+        1. 若 stmtResult.[[Value]] 是 empty, 设置 stmtResult 为 NormalCompletion(undefined).
+        2. 否则，设置 stmtResult 为 NormalCompletion(stmtResult.[[Value]]).
+3. 返回 Completion(stmtResult).
 
 ```
 BreakableStatement:SwitchStatement
 ```
 
-1. Let stmtResult be the result of evaluating SwitchStatement.
-2. If stmtResult.[[Type]] is break, then
-a. If stmtResult.[[Target]] is empty, then
-i. If stmtResult.[[Value]] is empty, set stmtResult to NormalCompletion(undefined).
-ii. Else, set stmtResult to NormalCompletion(stmtResult.[[Value]]).
-3. Return Completion(stmtResult).
+1. 令 stmtResult 为 SwitchStatement 的运算结果
+2. 若 stmtResult.[[Type]] 是 break，那么
+   1. 若 stmtResult.[[Target]] 是 empty，那么
+        1. 若 stmtResult.[[Value]] 是 empty, 设置 stmtResult 为 NormalCompletion(undefined).
+        2. 否则，设置 stmtResult 为 NormalCompletion(stmtResult.[[Value]]).
+3. 返回 Completion(stmtResult).
 
-> NOTE A BreakableStatement is one that can be exited via an unlabelled BreakStatement.
+> 注：BreakableStatement 是可以通过未标记的BreakStatement退出
 
-### 13.1.8 RS: Evaluation <div id="sec-statement-semantics-runtime-semantics-evaluation"></div>
+### 13.1.8 运行时语义：Evaluation <div id="sec-statement-semantics-runtime-semantics-evaluation"></div>
 
 ```
 HoistableDeclaration :
@@ -198,13 +198,13 @@ AsyncFunctionDeclaration
 AsyncGeneratorDeclaration
 ```
 
-1. Return NormalCompletion(empty).
+1. 返回 NormalCompletion(empty).
 
 ```
 HoistableDeclaration : FunctionDeclaration
 ```
 
-1. Return the result of evaluating FunctionDeclaration.
+1. 返回 FunctionDeclaration 的运算结果
 
 ```
 BreakableStatement:
@@ -212,12 +212,12 @@ BreakableStatement:
     SwitchStatement
 ```
 
-1. Let newLabelSet be a new empty List.
-2. Return the result of performing LabelledEvaluation of this BreakableStatement with argument newLabelSet.
+1. 令 newLabelSet 为一个新的空列表.
+2. 返回使用参数newLabelSet执行此BreakableStatement的LabelledEvaluation的结果
 
 ## 13.2 块 <div id="sec-block"></div>
 
-Syntax
+**语法**
 
 ```
 BlockStatement[Yield, Await, Return] :
@@ -232,373 +232,370 @@ StatementListItem[Yield, Await, Return] :
     Declaration[?Yield, ?Await]
 ```
 
-### 13.2.1 SS: Early Errors <div id="sec-block-static-semantics-early-errors"></div>
+### 13.2.1 静态语义：Early Errors <div id="sec-block-static-semantics-early-errors"></div>
 
 ```
 Block : { StatementList }
 ```
 
-It is a Syntax Error if the LexicallyDeclaredNames of StatementList contains any duplicate entries.
-It is a Syntax Error if any element of the LexicallyDeclaredNames of StatementList also occurs in the
-VarDeclaredNames of StatementList.
+- 如果StatementList的LexicallyDeclaredNames包含任何重复的条目，则是语法错误。
+- 如果StatementList的LexicallyDeclaredNames中的任何元素也出现在StatementList的VarDeclaredNames中，则是语法错误。
 
-### 13.2.2 SS: ContainsDuplicateLabels <div id="sec-block-static-semantics-containsduplicatelabels"></div>
+### 13.2.2 静态语义：ContainsDuplicateLabels <div id="sec-block-static-semantics-containsduplicatelabels"></div>
 
-With parameter labelSet.
+使用参数 labelSet
 
 ```
 Block : { }
 ```
 
-1. Return false.
+1. 返回 false.
 
 ```
 StatementList : StatementList StatementListItem
 ```
 
-1. Let hasDuplicates be ContainsDuplicateLabels of StatementList with argument labelSet.
-2. If hasDuplicates is true, return true.
-3. Return ContainsDuplicateLabels of StatementListItem with argument labelSet.
+1. 令 hasDuplicates 为带有参数labelSet的StatementList的ContainsDuplicateLabels。
+2. 若 hasDuplicates 是 true，返回 true.
+3. 返回带有参数labelSet的 StatementListItem 的ContainsDuplicateLabels。
 
 ```
 StatementListItem : Declaration
 ```
 
-1. Return false.
+1. 返回 false.
 
-### 13.2.3 SS: ContainsUndefinedBreakTarget <div id="sec-block-static-semantics-containsundefinedbreaktarget"></div>
+### 13.2.3 静态语义：ContainsUndefinedBreakTarget <div id="sec-block-static-semantics-containsundefinedbreaktarget"></div>
 
-With parameter labelSet.
+使用参数 labelSet
 
 ```
 Block : { }
 ```
 
-1. Return false.
+1. 返回 false.
 
 ```
 StatementList : StatementList StatementListItem
 ```
 
-1. Let hasUndefinedLabels be ContainsUndefinedBreakTarget of StatementList with argument labelSet.
-2. If hasUndefinedLabels is true, return true.
-3. Return ContainsUndefinedBreakTarget of StatementListItem with argument labelSet.
+1. 令 hasUndefinedLabels 为带有参数labelSet的StatementList的ContainsUndefinedBreakTarget。
+2. 若 hasUndefinedLabels 是 true，返回 true.
+3. 返回带有参数 labelSet 的 StatementListItem 的 ContainsUndefinedBreakTarget
 
 ```
 StatementListItem : Declaration
 ```
 
-1. Return false.
+1. 返回 false.
 
-### 13.2.4 SS: ContainsUndefinedContinueTarget <div id="sec-block-static-semantics-containsundefinedcontinuetarget"></div>
+### 13.2.4 静态语义：ContainsUndefinedContinueTarget <div id="sec-block-static-semantics-containsundefinedcontinuetarget"></div>
 
-With parameters iterationSet and labelSet.
+使用参数iterationSet和labelSet
 
 ```
 Block : { }
 ```
 
-1. Return false.
+1. 返回 false.
 
 ```
 StatementList : StatementList StatementListItem
 ```
 
-1. Let hasUndefinedLabels be ContainsUndefinedContinueTarget of StatementList with arguments iterationSet and «
-».
-2. If hasUndefinedLabels is true, return true.
-3. Return ContainsUndefinedContinueTarget of StatementListItem with arguments iterationSet and « ».
+1. 令 hasUndefinedLabels 为带有参数 iterationSet 和 « » 的 StatementList 的 ContainsUndefinedContinueTarget
+2. 若 hasUndefinedLabels 是 true，返回 true.
+3. 返回带有参数 iterationSet 和 « » 的 StatementListItem 的 ContainsUndefinedContinueTarget
 
 ```
 StatementListItem : Declaration
 ```
 
-1. Return false.
+1. 返回 false.
 
-### 13.2.5 SS: LexicallyDeclaredNames <div id="sec-block-static-semantics-lexicallydeclarednames"></div>
+### 13.2.5 静态语义：LexicallyDeclaredNames <div id="sec-block-static-semantics-lexicallydeclarednames"></div>
 
 ```
 Block : { }
 ```
 
-1. Return a new empty List.
+1. 返回一个新的空列表.
 
 ```
 StatementList : StatementList StatementListItem
 ```
 
-1. Let names be LexicallyDeclaredNames of StatementList.
-2. Append to names the elements of the LexicallyDeclaredNames of StatementListItem.
-3. Return names.
+1. 令 names 为 StatementList 的 LexicallyDeclaredNames
+2. 在 names 后追加 StatementListItem 的 LexicallyDeclaredNames 的元素
+3. 返回 names.
 
 ```
 StatementListItem : Statement
 ```
 
-1. If Statement is Statement : LabelledStatement , return LexicallyDeclaredNames of LabelledStatement.
-2. Return a new empty List.
+1. 若 Statement 是 Statement : LabelledStatement ，返回 LabelledStatement 的 LexicallyDeclaredNames
+2. 返回一个新的空列表.
 
 ```
 StatementListItem : Declaration
 ```
 
-1. Return the BoundNames of Declaration.
+1. 返回  Declaration 的 BoundNames
 
-### 13.2.6 SS: LexicallyScopedDeclarations <div id="sec-block-static-semantics-lexicallyscopeddeclarations"></div>
+### 13.2.6 静态语义：LexicallyScopedDeclarations <div id="sec-block-static-semantics-lexicallyscopeddeclarations"></div>
 
 ```
 StatementList : StatementList StatementListItem
 ```
 
-1. Let declarations be LexicallyScopedDeclarations of StatementList.
-2. Append to declarations the elements of the LexicallyScopedDeclarations of StatementListItem.
-3. Return declarations.
+1. 令 declarations 为 StatementList 的 LexicallyScopedDeclarations
+2. 在 declarations 后追加 StatementListItem 的 LexicallyScopedDeclarations 元素 
+3. 返回 declarations.
 
 ```
 StatementListItem : Statement
 ```
 
-1. If Statement is Statement : LabelledStatement , return LexicallyScopedDeclarations of LabelledStatement.
-2. Return a new empty List.
+1. 若 Statement 是 Statement : LabelledStatement ，返回 LabelledStatement 的 LexicallyScopedDeclarations
+2. 返回一个新的空列表.
 
 ```
 StatementListItem : Declaration
 ```
 
-1. Return a new List containing DeclarationPart of Declaration.
+1. 返回包含 Declaration 的 DeclarationPart 的新列表
 
-### 13.2.7 SS: TopLevelLexicallyDeclaredNames <div id="sec-block-static-semantics-toplevellexicallydeclarednames"></div>
+### 13.2.7 静态语义：TopLevelLexicallyDeclaredNames <div id="sec-block-static-semantics-toplevellexicallydeclarednames"></div>
 
 ```
 StatementList : StatementList StatementListItem
 ```
 
-1. Let names be TopLevelLexicallyDeclaredNames of StatementList.
-2. Append to names the elements of the TopLevelLexicallyDeclaredNames of StatementListItem.
-3. Return names.
+1. 令 names 为 StatementList 的 TopLevelLexicallyDeclaredNames
+2. 在 names 后追加 StatementListItem 的 TopLevelLexicallyDeclaredNames 元素 
+3. 返回 names.
 
 ```
 StatementListItem : Statement
 ```
 
-1. Return a new empty List.
+1. 返回一个新的空列表.
 
 ```
 StatementListItem : Declaration
 ```
 
-1. If Declaration is Declaration : HoistableDeclaration , then
-a. Return « ».
-2. Return the BoundNames of Declaration.
+1. 若 Declaration 是 Declaration : HoistableDeclaration ，那么
+1.  返回 « ».
+2. 返回  Declaration 的 BoundNames
 
-> NOTE At the top level of a function, or script, function declarations are treated like var declarations rather than like lexical declarations.
+> 注：在函数或脚本的顶层，函数声明被视为var声明，而不是词法声明。
 
-### 13.2.8 SS: TopLevelLexicallyScopedDeclarations <div id="sec-block-static-semantics-toplevellexicallyscopeddeclarations"></div>
+### 13.2.8 静态语义：TopLevelLexicallyScopedDeclarations <div id="sec-block-static-semantics-toplevellexicallyscopeddeclarations"></div>
 
 ```
 Block : { }
 ```
 
-1. Return a new empty List.
+1. 返回一个新的空列表.
 
 ```
 StatementList : StatementList StatementListItem
 ```
 
-1. Let declarations be TopLevelLexicallyScopedDeclarations of StatementList.
-2. Append to declarations the elements of the TopLevelLexicallyScopedDeclarations of StatementListItem.
-3. Return declarations.
+1. 令 declarations 为 StatementList 的 TopLevelLexicallyScopedDeclarations
+2. 在 declarations 后追加 StatementListItem 的 TopLevelLexicallyScopedDeclarations 元素 
+3. 返回 declarations.
 
 ```
 StatementListItem : Statement
 ```
 
-1. Return a new empty List.
+1. 返回一个新的空列表.
 
 ```
 StatementListItem : Declaration
 ```
 
-1. If Declaration is Declaration : HoistableDeclaration , then
-a. Return « ».
-2. Return a new List containing Declaration.
+1. 若 Declaration 是 Declaration : HoistableDeclaration ，那么
+1. 返回 « ».
+2. 返回包含 Declaration 的新列表
 
-### 13.2.9 SS: TopLevelVarDeclaredNames <div id="sec-block-static-semantics-toplevelvardeclarednames"></div>
+### 13.2.9 静态语义：TopLevelVarDeclaredNames <div id="sec-block-static-semantics-toplevelvardeclarednames"></div>
 
 ```
 Block : { }
 ```
 
-1. Return a new empty List.
+1. 返回一个新的空列表.
 
 ```
 StatementList : StatementList StatementListItem
 ```
 
-1. Let names be TopLevelVarDeclaredNames of StatementList.
-2. Append to names the elements of the TopLevelVarDeclaredNames of StatementListItem.
-3. Return names.
+1. 令 names 为 StatementList 的 TopLevelVarDeclaredNames
+2. 在 names 后追加 StatementListItem 的 TopLevelVarDeclaredNames 元素 
+3. 返回 names.
 
 ```
 StatementListItem : Declaration
 ```
 
-1. If Declaration is Declaration : HoistableDeclaration , then
-a. Return the BoundNames of HoistableDeclaration.
-2. Return a new empty List.
+1. 若 Declaration 是 Declaration : HoistableDeclaration ，那么
+1. 返回  HoistableDeclaration 的 BoundNames
+2. 返回一个新的空列表.
 
 ```
 StatementListItem : Statement
 ```
 
-1. If Statement is Statement : LabelledStatement , return TopLevelVarDeclaredNames of Statement.
-2. Return VarDeclaredNames of Statement.
+1. 若 Statement 是 Statement : LabelledStatement ，返回 Statement 的 TopLevelVarDeclaredNames
+2. 返回 Statement 的 VarDeclaredNames
 
-> NOTE At the top level of a function or script, inner function declarations are treated like var declarations.
+> 注：在函数或脚本的顶层，内部函数声明被视为var声明。
 
-### 13.2.10 SS: TopLevelVarScopedDeclarations <div id="sec-block-static-semantics-toplevelvarscopeddeclarations"></div>
+### 13.2.10 静态语义：TopLevelVarScopedDeclarations <div id="sec-block-static-semantics-toplevelvarscopeddeclarations"></div>
 
 ```
 Block : { }
 ```
 
-1. Return a new empty List
+1. 返回一个新的空列表
 
 ```
 StatementList : StatementList StatementListItem
 ```
 
-1. Let declarations be TopLevelVarScopedDeclarations of StatementList.
-2. Append to declarations the elements of the TopLevelVarScopedDeclarations of StatementListItem.
-3. Return declarations.
+1. 令 declarations 为 StatementList 的 TopLevelVarScopedDeclarations
+2. 在 declarations 后追加 StatementListItem 的 TopLevelVarScopedDeclarations 元素 
+3. 返回 declarations.
 
 ```
 StatementListItem : Statement
 ```
 
-1. If Statement is Statement : LabelledStatement , return TopLevelVarScopedDeclarations of Statement.
-2. Return VarScopedDeclarations of Statement.
+1. 若 Statement 是 Statement : LabelledStatement ，返回 Statement 的 TopLevelVarScopedDeclarations
+2. 返回 Statement 的 VarScopedDeclarations
 
 ```
 StatementListItem : Declaration
 ```
 
-1. If Declaration is Declaration : HoistableDeclaration , then
-a. Let declaration be DeclarationPart of HoistableDeclaration.
-b. Return « declaration ».
-2. Return a new empty List.
+1. 若 Declaration 是 Declaration : HoistableDeclaration ，那么
+1. 令 declaration 为 HoistableDeclaration 的 DeclarationPart
+2. 返回 « declaration ».
+2. 返回一个新的空列表.
 
-### 13.2.11 SS: VarDeclaredNames <div id="sec-block-static-semantics-vardeclarednames"></div>
+### 13.2.11 静态语义：VarDeclaredNames <div id="sec-block-static-semantics-vardeclarednames"></div>
 
 ```
 Block : { }
 ```
 
-1. Return a new empty List.
+1. 返回一个新的空列表.
 
 ```
 StatementList : StatementList StatementListItem
 ```
 
-1. Let names be VarDeclaredNames of StatementList.
-2. Append to names the elements of the VarDeclaredNames of StatementListItem.
-3. Return names.
+1. 令 names 为 StatementList 的 VarDeclaredNames
+2. 在 names 后追加 StatementListItem 的 VarDeclaredNames 元素 
+3. 返回 names.
 
 ```
 StatementListItem : Declaration
 ```
 
-1. Return a new empty List.
+1. 返回一个新的空列表.
 
-### 13.2.12 SS: VarScopedDeclarations <div id="sec-block-static-semantics-varscopeddeclarations"></div>
+### 13.2.12 静态语义：VarScopedDeclarations <div id="sec-block-static-semantics-varscopeddeclarations"></div>
 
 ```
 Block : { }
 ```
 
-1. Return a new empty List.
+1. 返回一个新的空列表.
 
 ```
 StatementList : StatementList StatementListItem
 ```
 
-1. Let declarations be VarScopedDeclarations of StatementList.
-2. Append to declarations the elements of the VarScopedDeclarations of StatementListItem.
-3. Return declarations.
+1. 令 declarations 为 StatementList 的 VarScopedDeclarations
+2. 在 declarations 后追加 StatementListItem 的 VarScopedDeclarations 元素 
+3. 返回 declarations.
 
 ```
 StatementListItem : Declaration
 ```
 
-1. Return a new empty List.
+1. 返回一个新的空列表.
 
-### 13.2.13 RS: Evaluation <div id="sec-block-runtime-semantics-evaluation"></div>
+### 13.2.13 运行时语义：Evaluation <div id="sec-block-runtime-semantics-evaluation"></div>
 
 ```
 Block : { }
 ```
 
-1. Return NormalCompletion(empty)
+1. 返回 NormalCompletion(empty)
 
 ```
 Block : { StatementList }
 ```
 
-1. Let oldEnv be the running execution context's LexicalEnvironment.
-2. Let blockEnv be NewDeclarativeEnvironment(oldEnv).
-3. Perform BlockDeclarationInstantiation(StatementList, blockEnv).
-4. Set the running execution context's LexicalEnvironment to blockEnv.
-5. Let blockValue be the result of evaluating StatementList.
-6. Set the running execution context's LexicalEnvironment to oldEnv.
-7. Return blockValue.
+1. 令 oldEnv 为运行时执行上下文的词法环境.
+2. 令 blockEnv 为 NewDeclarativeEnvironment(oldEnv).
+3. 执行 BlockDeclarationInstantiation(StatementList, blockEnv).
+4. 设置运行时执行上下文的词法环境 为 blockEnv.
+5. 令 blockValue 为 StatementList 的运算结果
+6. 设置运行时执行上下文的词法环境 为 oldEnv.
+7. 返回 blockValue.
 
-> note1 No matter how control leaves the Block the LexicalEnvironment is always restored to its former state.
+> 注1：无论控制如何离开Block，词法环境总是恢复到原来的状态。
 
 ```
 StatementList : StatementList StatementListItem
 ```
 
-1. Let sl be the result of evaluating StatementList.
+1. 令 sl 为 StatementList 的运算结果
 2. ReturnIfAbrupt(sl).
-3. Let s be the result of evaluating StatementListItem.
-4. Return Completion(UpdateEmpty(s, sl)).
+3. 令 s 为 StatementListItem 的运算结果
+4. 返回 Completion(UpdateEmpty(s, sl)).
 
-> NOTE 2 The value of a StatementList is the value of the last value-producing item in the StatementList. For example, the following calls to the eval function all return the value 1:
+> 注2： StatementList的值是StatementList中最后一个值生成项的值。例如，对val函数的以下调用都返回值1：
 >
 > eval("1;;;;;")
 > eval("1;{}")
 > eval("1;var a;")
 
-### 13.2.14 RS: BlockDeclarationInstantiation ( code, env ) <div id="sec-blockdeclarationinstantiation"></div>
+### 13.2.14 运行时语义：BlockDeclarationInstantiation ( code, env ) <div id="sec-blockdeclarationinstantiation"></div>
 
-> NOTE When a Block or CaseBlock is evaluated a new declarative Environment Record is created and bindings for each block scoped variable, constant, function, or class declared in the block are instantiated in the Environment Record.
+> 注：在计算块Block或CaseBlock时，将创建新的声明式环境记录，并在环境记录中实例化块中声明的每个块作用域变量、常量、函数或类的绑定。
 
-BlockDeclarationInstantiation is performed as follows using arguments code and env. code is the Parse Node corresponding to the body of the block. env is the Lexical Environment in which bindings are to be created.
+BlockDeclarationInstantiation使用参数code和env执行如下。code是与块的主体相对应的Parse节点。Env是创建绑定的词汇环境。
 
-1. Let envRec be env's EnvironmentRecord.
-2. Assert: envRec is a declarative Environment Record.
-3. Let declarations be the LexicallyScopedDeclarations of code.
-4. For each element d in declarations, do
-a. For each element dn of the BoundNames of d, do
-i. If IsConstantDeclaration of d is true, then
-1. Perform ! envRec.CreateImmutableBinding(dn, true).
-ii. Else,
-1. Perform ! envRec.CreateMutableBinding(dn, false).
-b. If d is a FunctionDeclaration, a GeneratorDeclaration, an AsyncFunctionDeclaration, or an
-AsyncGeneratorDeclaration, then
-i. Let fn be the sole element of the BoundNames of d.
-ii. Let fo be the result of performing InstantiateFunctionObject for d with argument env.
-iii. Perform envRec.InitializeBinding(fn, fo).
+1. 令 envRec 为 env 的环境记录项.
+2. 断言: envRec 是声明环境记录项.
+3. 令 declarations 为  code 的 LexicallyScopedDeclarations
+4. 对于declarations中的元素d，执行
+  1. 对于d的绑定名称中的元素d，执行
+        1. 若 d 的 IsConstantDeclaration 是 true，那么
+      1. 执行 ! envRec.CreateImmutableBinding(dn, true).
+        2. 否则，
+      1. 执行 ! envRec.CreateMutableBinding(dn, false).
+  2.  若 d 是 FunctionDeclaration, GeneratorDeclaration, AsyncFunctionDeclaration, 或 
+
+    AsyncGeneratorDeclaration，那么
+    1. 令 fn 为 d 的绑定名称的唯一元素
+    2. 令 fo 为使用参数env为d执行InstantiateFunctionObject的结果
+    3. 执行 envRec.InitializeBinding(fn, fo).
 
 ## 13.3 声明和变量语句 <div id="sec-declarations-and-the-variable-statement"></div>
 
 ### 13.3.1 Let 和 Const 声明 <div id="sec-let-and-const-declarations"></div>
 
-> NOTE let and const declarations define variables that are scoped to the running execution context's LexicalEnvironment.
->
-> The variables are created when their containing Lexical Environment is instantiated but may not be accessed in any way until the variable's LexicalBinding is evaluated. A variable defined by a LexicalBinding with an Initializer is assigned the value of its Initializer's AssignmentExpression when the LexicalBinding is evaluated, not when the variable is created. If a LexicalBinding in a let declaration does not have an Initializer the variable is assigned the value undefined when the LexicalBinding is evaluated.
+> 注：let 和 const 声明定义范围为运行时的执行上下文的词法环境的变量。实例化其包含的词法环境时创建了变量，但可能无法以任何方式对其进行访问直到运算变量的LexicalBinding。由带有初始化程序的LexicalBinding定义的变量被分配给在评估LexicalBinding时而不是在创建变量时，其初始化程序的AssignmentExpression的值。如果let声明中的LexicalBinding没有初始化程序，则在运算LexicalBinding时会为变量分配undefined的值。
 
-Syntax
+**语法**
 
 ```
 LexicalDeclaration[In, Yield, Await] :
@@ -614,124 +611,124 @@ LexicalBinding[In, Yield, Await] :
     BindingPattern[?Yield, ?Await] Initializer[?In, ?Yield, ?Await]
 ```
 
-#### 13.3.1.1 SS: Early Errors <div id="sec-let-and-const-declarations-static-semantics-early-errors"></div>
+#### 13.3.1.1 静态语义：Early Errors <div id="sec-let-and-const-declarations-static-semantics-early-errors"></div>
 
 ```
 LexicalDeclaration : LetOrConst BindingList ;
 ```
 
-It is a Syntax Error if the BoundNames of BindingList contains "let".
-It is a Syntax Error if the BoundNames of BindingList contains any duplicate entries.
+- 如果BindingList的BoundNames包含“ let”，则是语法错误。
+- 如果BindingList的BoundNames包含任何重复的条目，则是语法错误。
 
 ```
 LexicalBinding : BindingIdentifier Initializer
 ```
 
-It is a Syntax Error if Initializer is not present and IsConstantDeclaration of the LexicalDeclaration containing this LexicalBinding is true.
+- 如果没有初始化程序，并且包含此LexicalBinding的LexicalDeclaration的IsConstantDeclaration为true，则为语法错误。
 
-#### 13.3.1.2 SS: BoundNames <div id="sec-let-and-const-declarations-static-semantics-boundnames"></div>
+#### 13.3.1.2 静态语义：BoundNames <div id="sec-let-and-const-declarations-static-semantics-boundnames"></div>
 
 ```
 LexicalDeclaration : LetOrConst BindingList ;
 ```
 
-1. Return the BoundNames of BindingList.
+1. 返回  BindingList 的 BoundNames
 
 ```
 BindingList : BindingList , LexicalBinding
 ```
 
-1. Let names be the BoundNames of BindingList.
-2. Append to names the elements of the BoundNames of LexicalBinding.
-3. Return names
+1. 令 names 为  BindingList 的 BoundNames
+2. 在 names 后追加 LexicalBinding 的 BoundNames 元素 
+3. 返回 names
 
 ```
 LexicalBinding : BindingIdentifier Initializer
 ```
 
-1. Return the BoundNames of BindingIdentifier.
+1. 返回  BindingIdentifier 的 BoundNames
 
 ```
 LexicalBinding : BindingPattern Initializer
 ```
 
-1. Return the BoundNames of BindingPattern.
+1. 返回  BindingPattern 的 BoundNames
 
-#### 13.3.1.3 SS: IsConstantDeclaration <div id="sec-let-and-const-declarations-static-semantics-isconstantdeclaration"></div>
+#### 13.3.1.3 静态语义：IsConstantDeclaration <div id="sec-let-and-const-declarations-static-semantics-isconstantdeclaration"></div>
 
 ```
 LexicalDeclaration : LetOrConst BindingList ;
 ```
 
-1. Return IsConstantDeclaration of LetOrConst.
+1. 返回 LetOrConst 的 IsConstantDeclaration
 
 ```
 LetOrConst : let
 ```
 
-1. Return false
+1. 返回 false
 
 ```
 LetOrConst : const
 ```
 
-1. Return true.
+1. 返回 true.
 
-#### 13.3.1.4 RS: Evaluation <div id="sec-let-and-const-declarations-runtime-semantics-evaluation"></div>
+#### 13.3.1.4 运行时语义：Evaluation <div id="sec-let-and-const-declarations-runtime-semantics-evaluation"></div>
 
 ```
 LexicalDeclaration : LetOrConst BindingList ;
 ```
 
-1. Let next be the result of evaluating BindingList.
+1. 令 next 为 BindingList 的运算结果
 2. ReturnIfAbrupt(next).
-3. Return NormalCompletion(empty).
+3. 返回 NormalCompletion(empty).
 
 ```
 BindingList : BindingList , LexicalBinding
 ```
 
-1. Let next be the result of evaluating BindingList.
+1. 令 next 为 BindingList 的运算结果
 2. ReturnIfAbrupt(next).
-3. Return the result of evaluating LexicalBinding.
+3. 返回 LexicalBinding 的运算结果
 
 ```
 LexicalBinding : BindingIdentifier
 ```
 
-1. Let lhs be ResolveBinding(StringValue of BindingIdentifier).
-2. Return InitializeReferencedBinding(lhs, undefined).
+1. 令 lhs 为 ResolveBinding(StringValue of BindingIdentifier).
+2. 返回 InitializeReferencedBinding(lhs, undefined).
 
-> NOTE A static semantics rule ensures that this form of LexicalBinding never occurs in a const declaration.
+> 注：静态语义规则确保LexicalBinding的这种形式永远不会在const声明中发生。
 
 ```
 LexicalBinding : BindingIdentifier Initializer
 ```
 
-1. Let bindingId be StringValue of BindingIdentifier.
-2. Let lhs be ResolveBinding(bindingId).
-3. If IsAnonymousFunctionDefinition(Initializer) is true, then
-a. Let value be the result of performing NamedEvaluation for Initializer with argument bindingId.
-4. Else,
-a. Let rhs be the result of evaluating Initializer.
-b. Let value be ? GetValue(rhs).
-5. Return InitializeReferencedBinding(lhs, value).
+1. 令 bindingId 为 BindingIdentifier 的 StringValue
+2. 令 lhs 为 ResolveBinding(bindingId).
+3. 若 IsAnonymousFunctionDefinition(Initializer) 是 true，那么
+1. 令 value 为使用参数bindingId为Initializer执行NamedEvaluation的结果
+4. 否则，
+  1. 令 rhs 为 Initializer 的运算结果
+  2. 令 value 为 ? GetValue(rhs).
+5. 返回 InitializeReferencedBinding(lhs, value).
 
 ```
 LexicalBinding : BindingPattern Initializer
 ```
 
-1. Let rhs be the result of evaluating Initializer.
-2. Let value be ? GetValue(rhs).
-3. Let env be the running execution context's LexicalEnvironment.
+1. 令 rhs 为 Initializer 的运算结果
+2. 令 value 为 ? GetValue(rhs).
+3. 令 env 为运行时执行上下文的词法环境.
 
-4. Return the result of performing BindingInitialization for BindingPattern using value and env as the arguments.
+4. 返回使用value和env作为参数对BindingPattern执行BindingInitialization的结果
 
 ### 13.3.2 变量语句 <div id="sec-variable-statement"></div>
 
-> NOTE A var statement declares variables that are scoped to the running execution context's VariableEnvironment. Var variables are created when their containing Lexical Environment is instantiated and are initialized to undefined when created. Within the scope of any VariableEnvironment a common BindingIdentifier may appear in more than one VariableDeclaration but those declarations collectively define only one variable. A variable defined by a VariableDeclaration with an Initializer is assigned the value of its Initializer's AssignmentExpression when the VariableDeclaration is executed, not when the variable is created.
+> 注：var语句声明范围为运行时的执行上下文的VariableEnvironment的变量。 Var变量在实例化其包含的词法环境时创建，并在创建时初始化为undefined。在任何VariableEnvironment的范围内，一个公共的BindingIdentifier可能会出现在多个VariableDeclaration中，但是这些声明仅共同定义了一个变量。由VariableDeclaration与Initializer定义的变量在执行VariableDeclaration时（而不是在创建变量时）被分配其Initializer的AssignmentExpression的值。
 
-Syntax
+**语法**
 
 ```
 VariableStatement[Yield, Await] :
@@ -744,102 +741,102 @@ VariableDeclaration[In, Yield, Await] :
     BindingPattern[?Yield, ?Await] Initializer[?In, ?Yield, ?Await]
 ```
 
-#### 13.3.2.1 SS: BoundNames <div id="sec-variable-statement-static-semantics-boundnames"></div>
+#### 13.3.2.1 静态语义：BoundNames <div id="sec-variable-statement-static-semantics-boundnames"></div>
 
 ```
 VariableDeclarationList : VariableDeclarationList , VariableDeclaration
 ```
 
-1. Let names be BoundNames of VariableDeclarationList.
-2. Append to names the elements of BoundNames of VariableDeclaration.
-3. Return names.
+1. 令 names 为 VariableDeclarationList 的 BoundNames
+2. 在 names 后追加 VariableDeclaration 的 BoundNames 元素
+3. 返回 names.
 
 ```
 VariableDeclaration : BindingIdentifier Initializer
 ```
 
-1. Return the BoundNames of BindingIdentifier.
+1. 返回  BindingIdentifier 的 BoundNames
 
 ```
 VariableDeclaration : BindingPattern Initializer
 ```
 
-1. Return the BoundNames of BindingPattern.
+1. 返回  BindingPattern 的 BoundNames
 
-#### 13.3.2.2 SS: VarDeclaredNames <div id="sec-variable-statement-static-semantics-vardeclarednames"></div>
+#### 13.3.2.2 静态语义：VarDeclaredNames <div id="sec-variable-statement-static-semantics-vardeclarednames"></div>
 
 ```
 VariableStatement : var VariableDeclarationList ;
 ```
 
-1. Return BoundNames of VariableDeclarationList.
+1. 返回 VariableDeclarationList 的 BoundNames
 
-#### 13.3.2.3 SS: VarScopedDeclarations <div id="sec-variable-statement-static-semantics-varscopeddeclarations"></div>
+#### 13.3.2.3 静态语义：VarScopedDeclarations <div id="sec-variable-statement-static-semantics-varscopeddeclarations"></div>
 
 ```
 VariableDeclarationList : VariableDeclaration
 ```
 
-1. Return a new List containing VariableDeclaration.
+1. 返回包含 VariableDeclaration. 的新列表
 
 ```
 VariableDeclarationList : VariableDeclarationList , VariableDeclaration
 ```
 
-1. Let declarations be VarScopedDeclarations of VariableDeclarationList.
-2. Append VariableDeclaration to declarations.
-3. Return declarations.
+1. 令 declarations 为 VariableDeclarationList 的 VarScopedDeclarations
+2. 将VariableDeclaration追加到declarations.
+3. 返回 declarations.
 
-#### 13.3.2.4 RS: Evaluation <div id="sec-variable-statement-runtime-semantics-evaluation"></div>
+#### 13.3.2.4 运行时语义：Evaluation <div id="sec-variable-statement-runtime-semantics-evaluation"></div>
 
 ```
 VariableStatement : var VariableDeclarationList ;
 ```
 
-1. Let next be the result of evaluating VariableDeclarationList.
+1. 令 next 为 VariableDeclarationList 的运算结果
 2. ReturnIfAbrupt(next).
-3. Return NormalCompletion(empty)
+3. 返回 NormalCompletion(empty)
 
 ```
 VariableDeclarationList : VariableDeclarationList , VariableDeclaration
 ```
 
-1. Let next be the result of evaluating VariableDeclarationList.
+1. 令 next 为 VariableDeclarationList 的运算结果
 2. ReturnIfAbrupt(next).
-3. Return the result of evaluating VariableDeclaration
+3. 返回 evaluating VariableDeclaration 的结果
 
 ```
 VariableDeclaration : BindingIdentifier
 ```
 
-1. Return NormalCompletion(empty).
+1. 返回 NormalCompletion(empty).
 
 ```
 VariableDeclaration : BindingIdentifier Initializer
 ```
 
-1. Let bindingId be StringValue of BindingIdentifier.
-2. Let lhs be ? ResolveBinding(bindingId).
-3. If IsAnonymousFunctionDefinition(Initializer) is true, then
-a. Let value be the result of performing NamedEvaluation for Initializer with argument bindingId.
-4. Else,
-a. Let rhs be the result of evaluating Initializer.
-b. Let value be ? GetValue(rhs).
-5. Return ? PutValue(lhs, value).
+1. 令 bindingId 为 BindingIdentifier 的 StringValue
+2. 令 lhs 为 ? ResolveBinding(bindingId).
+3. 若 IsAnonymousFunctionDefinition(Initializer) 是 true，那么
+a. 令 value 为使用参数bindingId为Initializer执行NamedEvaluation的结果
+4. 否则，
+a. 令 rhs 为 Initializer 的运算结果
+b. 令 value 为 ? GetValue(rhs).
+5. 返回 ? PutValue(lhs, value).
 
-> NOTE If a VariableDeclaration is nested within a with statement and the BindingIdentifier in the VariableDeclaration is the same as a property name of the binding object of the with statement's object Environment Record, then step 6 will assign value to the property instead of assigning to the VariableEnvironment binding of the Identifier.
+> 注：如果VariableDeclaration嵌套在with语句中，并且VariableDeclaration中的BindingIdentifier与with语句的对象Environment Record的绑定对象的属性名称相同，则第6步将为该属性分配值，而不是分配给VariableEnvironment绑定标识符的
 
 ```
 VariableDeclaration : BindingPattern Initializer
 ```
 
-1. Let rhs be the result of evaluating Initializer.
-2. Let rval be ? GetValue(rhs).
-3. Return the result of performing BindingInitialization for BindingPattern passing rval and undefined as arguments.
+1. 令 rhs 为 Initializer 的运算结果
+2. 令 rval 为 ? GetValue(rhs).
+3. 返回为传递rval和undefined为参数的BindingPattern执行BindingInitialization的结果
 
 ### 13.3.3 绑定模式解构 <div id="sec-destructuring-binding-patterns"></div>
 
-Syntax
+**语法**
 
 ```
 BindingPattern[Yield, Await] :
@@ -877,255 +874,254 @@ BindingRestElement[Yield, Await] :
     ... BindingPattern[?Yield, ?Await]
 ```
 
-#### 13.3.3.1 SS: BoundNames <div id="sec-destructuring-binding-patterns-static-semantics-boundnames"></div>
+#### 13.3.3.1 静态语义：BoundNames <div id="sec-destructuring-binding-patterns-static-semantics-boundnames"></div>
 
 ```
 ObjectBindingPattern : { }
 ```
 
-1. Return a new empty List.
+1. 返回一个新的空列表.
 
 ```
 ArrayBindingPattern : [ Elision ]
 ```
 
-1. Return a new empty List.
+1. 返回一个新的空列表.
 
 ```
 ArrayBindingPattern : [ Elision BindingRestElement ]
 ```
 
-1. Return the BoundNames of BindingRestElement.
+1. 返回  BindingRestElement 的 BoundNames
 
 ```
 ArrayBindingPattern : [ BindingElementList , Elision ]
 ```
 
-1. Return the BoundNames of BindingElementList.
+1. 返回  BindingElementList 的 BoundNames
 
 ```
 ArrayBindingPattern : [ BindingElementList , Elision BindingRestElement ]
 ```
 
-1. Let names be BoundNames of BindingElementList.
-2. Append to names the elements of BoundNames of BindingRestElement.
-3. Return names.
+1. 令 names 为 BindingElementList 的 BoundNames
+2. 在 names 后追加 BindingRestElement 的 BoundNames 元素
+3. 返回 names.
 
 ```
 BindingPropertyList : BindingPropertyList , BindingProperty
 ```
 
-1. Let names be BoundNames of BindingPropertyList.
-2. Append to names the elements of BoundNames of BindingProperty.
-3. Return names.
+1. 令 names 为 BindingPropertyList 的 BoundNames
+2. 在 names 后追加 BindingProperty 的 BoundNames 元素
+3. 返回 names.
 
 ```
 BindingElementList : BindingElementList , BindingElisionElement
 ```
 
-1. Let names be BoundNames of BindingElementList.
-2. Append to names the elements of BoundNames of BindingElisionElement.
-3. Return names.
+1. 令 names 为 BindingElementList 的 BoundNames
+2. 在 names 后追加 BindingElisionElement 的 BoundNames 元素
+3. 返回 names.
 
 ```
 BindingElisionElement : Elision BindingElement
 ```
 
-1. Return BoundNames of BindingElement.
+1. 返回 BindingElement 的 BoundNames
 
 ```
 BindingProperty : PropertyName : BindingElement
 ```
 
-1. Return the BoundNames of BindingElement.
+1. 返回  BindingElement 的 BoundNames
 
 ```
 SingleNameBinding : BindingIdentifier Initializer
 ```
 
-1. Return the BoundNames of BindingIdentifier.
+1. 返回  BindingIdentifier 的 BoundNames
 
 ```
 BindingElement : BindingPattern Initializer
 ```
 
-1. Return the BoundNames of BindingPattern.
+1. 返回  BindingPattern 的 BoundNames
 
-#### 13.3.3.2 SS: ContainsExpression <div id="sec-destructuring-binding-patterns-static-semantics-containsexpression"></div>
+#### 13.3.3.2 静态语义：ContainsExpression <div id="sec-destructuring-binding-patterns-static-semantics-containsexpression"></div>
 
 ```
 ObjectBindingPattern : { }
 ```
 
-1. Return false.
+1. 返回 false.
 
 ```
 ArrayBindingPattern : [ Elision ]
 ```
 
-1. Return false.
+1. 返回 false.
 
 ```
 ArrayBindingPattern : [ Elision BindingRestElement ]
 ```
 
-1. Return ContainsExpression of BindingRestElement.
+1. 返回 BindingRestElement 的 ContainsExpression
 
 ```
 ArrayBindingPattern : [ BindingElementList , Elision ]
 ```
 
-1. Return ContainsExpression of BindingElementList.
+1. 返回 BindingElementList 的 ContainsExpression
 
 ```
 ArrayBindingPattern : [ BindingElementList , Elision BindingRestElement ]
 ```
 
-1. Let has be ContainsExpression of BindingElementList.
-2. If has is true, return true.
-3. Return ContainsExpression of BindingRestElement.
+1. 令 has 为 BindingElementList 的 ContainsExpression
+2. 若 has 是 true，返回 true.
+3. 返回 BindingRestElement 的 ContainsExpression
 
 ```
 BindingPropertyList : BindingPropertyList , BindingProperty
 ```
 
-1. Let has be ContainsExpression of BindingPropertyList.
-2. If has is true, return true.
-3. Return ContainsExpression of BindingProperty.
+1. 令 has 为 BindingPropertyList 的 ContainsExpression
+2. 若 has 是 true，返回 true.
+3. 返回 BindingProperty 的 ContainsExpression
 
 ```
 BindingElementList : BindingElementList , BindingElisionElement
 ```
 
-1. Let has be ContainsExpression of BindingElementList.
-2. If has is true, return true.
-3. Return ContainsExpression of BindingElisionElement.
+1. 令 has 为 BindingElementList 的 ContainsExpression
+2. 若 has 是 true，返回 true.
+3. 返回 BindingElisionElement 的 ContainsExpression
 
 ```
 BindingElisionElement : Elision BindingElement
 ```
 
-1. Return ContainsExpression of BindingElement.
+1. 返回 BindingElement 的 ContainsExpression
 
 ```
 BindingProperty : PropertyName : BindingElement
 ```
 
-1. Let has be IsComputedPropertyKey of PropertyName.
-2. If has is true, return true.
-3. Return ContainsExpression of BindingElement.
+1. 令 has 为 PropertyName 的 IsComputedPropertyKey
+2. 若 has 是 true，返回 true.
+3. 返回 BindingElement 的 ContainsExpression
 
 ```
 BindingElement : BindingPattern Initializer
 ```
 
-1. Return true.
+1. 返回 true.
 
 ```
 SingleNameBinding : BindingIdentifier
 ```
 
-1. Return false.
+1. 返回 false.
 
 ```
 SingleNameBinding : BindingIdentifier Initializer
 ```
 
-1. Return true.
+1. 返回 true.
 
 ```
 BindingRestElement : ... BindingIdentifier
 ```
 
-1. Return false.
+1. 返回 false.
 
 ```
 BindingRestElement : ... BindingPattern
 ```
 
-1. Return ContainsExpression of BindingPattern
+1. 返回 BindingPattern 的 ContainsExpression 
 
-#### 13.3.3.3 SS: HasInitializer <div id="sec-destructuring-binding-patterns-static-semantics-hasinitializer"></div>
-
-```
-BindingElement : BindingPattern
-```
-
-1. Return false
-
-```
-BindingElement : BindingPattern Initializer
-```
-
-1. Return true.
-
-```
-SingleNameBinding : BindingIdentifier
-```
-
-1. Return false.
-
-```
-SingleNameBinding : BindingIdentifier Initializer
-```
-
-1. Return true.
-
-#### 13.3.3.4 SS: IsSimpleParameterList <div id="sec-destructuring-binding-patterns-static-semantics-issimpleparameterlist"></div>
+#### 13.3.3.3 静态语义：HasInitializer <div id="sec-destructuring-binding-patterns-static-semantics-hasinitializer"></div>
 
 ```
 BindingElement : BindingPattern
 ```
 
-1. Return false.
+1. 返回 false
 
 ```
 BindingElement : BindingPattern Initializer
 ```
 
-1. Return false.
+1. 返回 true.
 
 ```
 SingleNameBinding : BindingIdentifier
 ```
 
-1. Return true
+1. 返回 false.
 
 ```
 SingleNameBinding : BindingIdentifier Initializer
 ```
 
-1. Return false.
+1. 返回 true.
 
-#### 13.3.3.5 RS: BindingInitialization <div id="sec-destructuring-binding-patterns-runtime-semantics-bindinginitialization"></div>
+#### 13.3.3.4 静态语义：IsSimpleParameterList <div id="sec-destructuring-binding-patterns-static-semantics-issimpleparameterlist"></div>
 
-With parameters value and environment.
+```
+BindingElement : BindingPattern
+```
 
-> NOTE When undefined is passed for environment it indicates that a PutValue operation should be used to assign the initialization value. This is the case for formal parameter lists of non-strict functions. In that case the formal parameter bindings are preinitialized in order to deal with the possibility of multiple parameters with the same name.
+1. 返回 false.
+
+```
+BindingElement : BindingPattern Initializer
+```
+
+1. 返回 false.
+
+```
+SingleNameBinding : BindingIdentifier
+```
+
+1. 返回 true
+
+```
+SingleNameBinding : BindingIdentifier Initializer
+```
+
+1. 返回 false.
+
+#### 13.3.3.5 运行时语义：BindingInitialization <div id="sec-destructuring-binding-patterns-runtime-semantics-bindinginitialization"></div>
+
+使用参数value和environment
+
+> 注：当为环境传递undefined时，表明应该使用PutValue操作来分配初始化值。非严格函数的形式参数列表就是这种情况。在那种情况下，形式参数绑定是预先初始化的，以便处理多个具有相同名称的参数的可能性。
 
 ```
 BindingPattern : ObjectBindingPattern
 ```
 
-1. Perform ? RequireObjectCoercible(value).
-2. Return the result of performing BindingInitialization for ObjectBindingPattern using value and environment as arguments.
+1. 执行 ? RequireObjectCoercible(value).
+2. 返回使用value和environment作为参数对ObjectBindingPattern执行BindingInitialization的结果
 
 ```
 BindingPattern : ArrayBindingPattern
 ```
 
-1. Let iteratorRecord be ? GetIterator(value).
-2. Let result be IteratorBindingInitialization for ArrayBindingPattern using iteratorRecord and environment as
-arguments.
-3. If iteratorRecord.[[Done]] is false, return ? IteratorClose(iteratorRecord, result).
+1. 令 iteratorRecord 为 ? GetIterator(value).
+2. 令 result 为使用iteratorRecord和环境作为参数的ArrayBindingPattern的IteratorBindingInitialization。
+3. 若 iteratorRecord.[[Done]] 是 false，返回 ? IteratorClose(iteratorRecord, result).
 
-4. Return result.
+4. 返回 result.
 
 ```
 ObjectBindingPattern : { }
 ```
 
-1. Return NormalCompletion(empty)
+1. 返回 NormalCompletion(empty)
 
    ```
    ObjectBindingPattern :
@@ -1133,307 +1129,297 @@ ObjectBindingPattern : { }
        { BindingPropertyList , }
    ```
 
-   1. Perform ? PropertyBindingInitialization for BindingPropertyList using value and environment as the arguments.
-   2. Return NormalCompletion(empty).
+   1. 执行 ? 使用value和environment作为参数的BindingPropertyList的PropertyBindingInitialization。
+   2. 返回 NormalCompletion(empty).
 
 ```
 ObjectBindingPattern : { BindingRestProperty }
 ```
 
-1. Let excludedNames be a new empty List.
-2. Return the result of performing RestBindingInitialization of BindingRestProperty with value, environment, and excludedNames as the arguments.
+1. 令 excludedNames 为一个新的空列表.
+2. 返回使用value，environment和excludeedNames作为参数执行BindingRestProperty的RestBindingInitialization的结果
 
 ```
 ObjectBindingPattern : { BindingPropertyList , BindingRestProperty }
 ```
 
-1. Let excludedNames be the result of performing ? PropertyBindingInitialization of BindingPropertyList using value and environment as arguments.
-2. Return the result of performing RestBindingInitialization of BindingRestProperty with value, environment, and excludedNames as the arguments.
+1. 令 excludedNames 为 执行 ? 使用value和environment作为参数的BindingPropertyList的PropertyBindingInitialization的结果
+2. 返回以value，environment和excludeedNames作为参数执行BindingRestProperty的初始化的结果
 
-#### 13.3.3.6 RS: PropertyBindingInitialization <div id="sec-destructuring-binding-patterns-runtime-semantics-propertybindinginitialization"></div>
+#### 13.3.3.6 运行时语义：PropertyBindingInitialization <div id="sec-destructuring-binding-patterns-runtime-semantics-propertybindinginitialization"></div>
 
-With parameters value and environment.
+使用参数value和environment
 
->NOTE These collect a list of all bound property names rather than just empty completion.
+>注：它们收集所有绑定属性名称的列表，而不仅仅是空完成。
 
 ```
 BindingPropertyList : BindingPropertyList , BindingProperty
 ```
 
-1. Let boundNames be the result of performing ? PropertyBindingInitialization for BindingPropertyList using value
-and environment as arguments.
-2. Let nextNames be the result of performing ? PropertyBindingInitialization for BindingProperty using value and
-environment as arguments.
-3. Append each item in nextNames to the end of boundNames.
-4. Return boundNames.
+1. 令 boundNames 为 执行 ? 使用value和environment作为参数的BindingPropertyList的PropertyBindingInitialization。
+2. 令 nextNames 为 执行 ? 使用value和environment作为参数的BindingProperty的PropertyBindingInitialization。
+3. 将nextNames中的每一个项目追加到 boundNames 的末尾
+4. 返回 boundNames.
 
 ```
 BindingProperty : SingleNameBinding
 ```
 
-1. Let name be the string that is the only element of BoundNames of SingleNameBinding.
-2. Perform ? KeyedBindingInitialization for SingleNameBinding using value, environment, and name as the
-arguments.
-3. Return a new List containing name.
+1. 令 name 为 string，即是SingleNameBinding 的 BoundNames的唯一元素
+2. 执行 ? 使用value和environment和name作为参数的SingleNameBinding的KeyedBindingInitialization。
+3. 返回包含 name 的新列表
 
 ```
 BindingProperty : PropertyName : BindingElement
 ```
 
-1. Let P be the result of evaluating PropertyName.
+1. 令 P 为 PropertyName 的运算结果
 2. ReturnIfAbrupt(P).
 
-3. Perform ? KeyedBindingInitialization of BindingElement with value, environment, and P as the arguments.
-4. Return a new List containing P.
+3. 执行 ? 以value、environment和P作为参数的BindingElement的KeyedBindingInitialization。
+4. 返回包含 P 的新列表
 
-#### 13.3.3.7 RS: RestBindingInitialization <div id="sec-destructuring-binding-patterns-runtime-semantics-restbindinginitialization"></div>
+#### 13.3.3.7 运行时语义：RestBindingInitialization <div id="sec-destructuring-binding-patterns-runtime-semantics-restbindinginitialization"></div>
 
-With parameters value, environment, and excludedNames.
+使用参数value, environment和excludedNames
 
 ```
 BindingRestProperty : ... BindingIdentifier
 ```
 
-1. Let lhs be ? ResolveBinding(StringValue of BindingIdentifier, environment).
-2. Let restObj be ObjectCreate(%ObjectPrototype%).
-3. Perform ? CopyDataProperties(restObj, value, excludedNames).
-4. If environment is undefined, return PutValue(lhs, restObj).
-5. Return InitializeReferencedBinding(lhs, restObj).
+1. 令 lhs 为 ? ResolveBinding(StringValue of BindingIdentifier, environment).
+2. 令 restObj 为 ObjectCreate(%ObjectPrototype%).
+3. 执行 ? CopyDataProperties(restObj, value, excludedNames).
+4. 若 environment 是 undefined，返回 PutValue(lhs, restObj).
+5. 返回 InitializeReferencedBinding(lhs, restObj).
 
-#### 13.3.3.8 RS: IteratorBindingInitialization <div id="sec-destructuring-binding-patterns-runtime-semantics-iteratorbindinginitialization"></div>
+#### 13.3.3.8 运行时语义：IteratorBindingInitialization <div id="sec-destructuring-binding-patterns-runtime-semantics-iteratorbindinginitialization"></div>
 
-With parameters iteratorRecord and environment.
+使用参数iteratorRecord和environment
 
->NOTE When undefined is passed for environment it indicates that a PutValue operation should be used to assign the initialization value. This is the case for formal parameter lists of non-strict functions. In that case the formal parameter bindings are preinitialized in order to deal with the possibility of multiple parameters with the same name.
+>注：当为环境传递undefined时，表明应该使用PutValue操作来分配初始化值。非严格函数的形式参数列表就是这种情况。在那种情况下，形式参数绑定是预先初始化的，以便处理多个具有相同名称的参数的可能性。
 
 ```
 ArrayBindingPattern : [ ]
 ```
 
-1. Return NormalCompletion(empty).
+1. 返回 NormalCompletion(empty).
 
 ```
 ArrayBindingPattern : [ Elision ]
 ```
 
-1. Return the result of performing IteratorDestructuringAssignmentEvaluation of Elision with iteratorRecord as the argument.
+1. 返回以iteratorRecord作为参数执行Elision的IteratorDestructuringAssignmentEvaluation的结果
 
 ```
 ArrayBindingPattern : [ Elision BindingRestElement ]
 ```
 
-1. If Elision is present, then
-a. Perform ? IteratorDestructuringAssignmentEvaluation of Elision with iteratorRecord as the argument.
-2. Return the result of performing IteratorBindingInitialization for BindingRestElement with iteratorRecord and environment as arguments.
+1. 若 Elision 存在，那么
+1. 执行 ? 以iteratorRecord作为参数的Elision的IteratorDestructuringAssignmentEvaluation
+2. 返回使用iteratorRecord和environment作为参数对BindingRestElement执行IteratorBindingInitialization的结果
 
 ```
 ArrayBindingPattern : [ BindingElementList ]
 ```
 
-1. Return the result of performing IteratorBindingInitialization for BindingElementList with iteratorRecord and
-environment as arguments.
+1. 返回使用iteratorRecord和environment作为参数对BindingElementList执行IteratorBindingInitialization的结果。
 
 ```
 ArrayBindingPattern : [ BindingElementList , ]
 ```
 
-1. Return the result of performing IteratorBindingInitialization for BindingElementList with iteratorRecord and environment as arguments.
+1. 返回使用iteratorRecord和environment作为参数对BindingElementList执行IteratorBindingInitialization的结果
 
 ```
 ArrayBindingPattern : [ BindingElementList , Elision ]
 ```
 
-1. Perform ? IteratorBindingInitialization for BindingElementList with iteratorRecord and environment as arguments.
+1. 执行 ? 带有IteratorRecord和environment作为参数的BindingElementList的IteratorBindingInitialization。
 
-2. Return the result of performing IteratorDestructuringAssignmentEvaluation of Elision with iteratorRecord as the argument.
+2. 返回以iteratorRecord作为参数执行Elision的IteratorDestructuringAssignmentEvaluation的结果
 
 ```
 ArrayBindingPattern : [ BindingElementList , Elision BindingRestElement ]
 ```
 
-1. Perform ? IteratorBindingInitialization for BindingElementList with iteratorRecord and environment as arguments.
-2. If Elision is present, then
-a. Perform ? IteratorDestructuringAssignmentEvaluation of Elision with iteratorRecord as the argument.
-3. Return the result of performing IteratorBindingInitialization for BindingRestElement with iteratorRecord and environment as arguments.
+1. 执行 ? 带有IteratorRecord和environment作为参数的BindingElementList的IteratorBindingInitialization。
+2. 若 Elision 存在，那么
+1. 执行 ? 以iteratorRecord作为参数的Elision的IteratorDestructuringAssignmentEvaluation
+3. 返回使用iteratorRecord和environment环境作为参数对BindingRestElement执行IteratorBindingInitialization的结果
 
 ```
 BindingElementList : BindingElisionElement
 ```
 
-1. Return the result of performing IteratorBindingInitialization for BindingElisionElement with iteratorRecord and environment as arguments.
+1. 返回使用iteratorRecord和environment环境作为参数对BindingElisionElement执行IteratorBindingInitialization的结果
 
 ```
 BindingElementList : BindingElementList , BindingElisionElement
 ```
 
-1. Perform ? IteratorBindingInitialization for BindingElementList with iteratorRecord and environment as arguments.
-2. Return the result of performing IteratorBindingInitialization for BindingElisionElement using iteratorRecord and environment as arguments.
+1. 执行 ? IteratorBindingInitialization for BindingElementList with iteratorRecord and environment as arguments.
+2. 返回使用iteratorRecord和environment作为参数对BindingElisionElement执行IteratorBindingInitialization的结果
 
 ```
 BindingElisionElement : BindingElement
 ```
 
-1. Return the result of performing IteratorBindingInitialization of BindingElement with iteratorRecord and
-environment as the arguments.
+1. 返回使用iteratorRecord和environment作为参数执行BindingElement的IteratorBindingInitialization。
 
 ```
 BindingElisionElement : Elision BindingElement
 ```
 
-1. Perform ? IteratorDestructuringAssignmentEvaluation of Elision with iteratorRecord as the argument.
-2. Return the result of performing IteratorBindingInitialization of BindingElement with iteratorRecord and
-environment as the arguments.
+1. 执行 ? 以iteratorRecord作为参数的Elision的IteratorDestructuringAssignmentEvaluation
+2. 返回使用iteratorRecord和environment作为参数执行BindingElement的IteratorBindingInitialization的结果
 
 ```
 BindingElement : SingleNameBinding
 ```
 
-1. Return the result of performing IteratorBindingInitialization for SingleNameBinding with iteratorRecord and environment as the arguments.
+1. 返回使用iteratorRecord和环境作为参数对SingleNameBinding执行IteratorBindingInitialization的结果
 
 ```
 SingleNameBinding : BindingIdentifier Initializer
 ```
 
-1. Let bindingId be StringValue of BindingIdentifier.
-2. Let lhs be ? ResolveBinding(bindingId, environment).
-3. If iteratorRecord.[[Done]] is false, then
-a. Let next be IteratorStep(iteratorRecord).
-b. If next is an abrupt completion, set iteratorRecord.[[Done]] to true.
-c. ReturnIfAbrupt(next).
-d. If next is false, set iteratorRecord.[[Done]] to true.
-e. Else,
-i. Let v be IteratorValue(next).
-ii. If v is an abrupt completion, set iteratorRecord.[[Done]] to true.
-iii. ReturnIfAbrupt(v).
-4. If iteratorRecord.[[Done]] is true, let v be undefined.
-5. If Initializer is present and v is undefined, then
-
-   a. If IsAnonymousFunctionDefinition(Initializer) is true, then
-   i. Set v to the result of performing NamedEvaluation for Initializer with argument bindingId.
-   b. Else,
-   i. Let defaultValue be the result of evaluating Initializer.
-   ii. Set v to ? GetValue(defaultValue).
-
-6. If environment is undefined, return ? PutValue(lhs, v).
-7. Return InitializeReferencedBinding(lhs, v).
+1. 令 bindingId 为 BindingIdentifier 的 StringValue
+2. 令 lhs 为 ? ResolveBinding(bindingId, environment).
+3. 若 iteratorRecord.[[Done]] 是 false，那么
+  1. 令 next 为 IteratorStep(iteratorRecord).
+  2. 若 next 是 abrupt completion, 设置 iteratorRecord.[[Done]] 为 true.
+  3. ReturnIfAbrupt(next).
+  4. 若 next 是 false, 设置 iteratorRecord.[[Done]] 为 true.
+  5. 否则，
+        1. 令 v 为 IteratorValue(next).
+            2. 若 v 是 abrupt completion, 设置 iteratorRecord.[[Done]] 为 true.
+                3. ReturnIfAbrupt(v).
+4. 若 iteratorRecord.[[Done]] 是 true, 令 v 为 undefined.
+5. 若 Initializer 存在 并且 v 是 undefined，那么
+   1. 若 IsAnonymousFunctionDefinition(Initializer) 是 true，那么
+      1. 设置 v 为使用参数bindingId为Initializer执行NamedEvaluation的结果
+   2. 否则，
+      1. 令 defaultValue 为 Initializer 的运算结果
+      2. 设置 v 为 ? GetValue(defaultValue).
+6. 若 environment 是 undefined，返回 ? PutValue(lhs, v).
+7. 返回 InitializeReferencedBinding(lhs, v).
 
 ```
 BindingElement : BindingPattern Initializer
 ```
 
-1. If iteratorRecord.[[Done]] is false, then
-a. Let next be IteratorStep(iteratorRecord).
-b. If next is an abrupt completion, set iteratorRecord.[[Done]] to true.
-c. ReturnIfAbrupt(next).
-d. If next is false, set iteratorRecord.[[Done]] to true.
-e. Else,
-i. Let v be IteratorValue(next).
-ii. If v is an abrupt completion, set iteratorRecord.[[Done]] to true.
-iii. ReturnIfAbrupt(v).
-2. If iteratorRecord.[[Done]] is true, let v be undefined.
-3. If Initializer is present and v is undefined, then
-a. Let defaultValue be the result of evaluating Initializer.
-b. Set v to ? GetValue(defaultValue).
-4. Return the result of performing BindingInitialization of BindingPattern with v and environment as the arguments.
+1. 若 iteratorRecord.[[Done]] 是 false，那么
+   1. 令 next 为 IteratorStep(iteratorRecord).
+   2. 若 next 是 abrupt completion, 设置 iteratorRecord.[[Done]] 为 true.
+   3. ReturnIfAbrupt(next).
+   4. 若 next 是 false, 设置 iteratorRecord.[[Done]] 为 true.
+   5. 否则，
+        1. 令 v 为 IteratorValue(next).
+        2. 若 v 是 abrupt completion, 设置 iteratorRecord.[[Done]] 为 true.
+        3. ReturnIfAbrupt(v).
+2. 若 iteratorRecord.[[Done]] 是 true, 令 v 为 undefined.
+3. 若 Initializer 存在 并且 v 是 undefined，那么
+     1. 令 defaultValue 为 Initializer 的运算结果
+     2. 设置 v 为 ? GetValue(defaultValue).
+4. 返回使用v和environment作为参数执行BindingPattern的BindingInitialization的结果
 
 ```
 BindingRestElement : ... BindingIdentifier
 ```
 
-1. Let lhs be ? ResolveBinding(StringValue of BindingIdentifier, environment).
-2. Let A be ! ArrayCreate(0).
-3. Let n be 0.
-4. Repeat,
-a. If iteratorRecord.[[Done]] is false, then
-i. Let next be IteratorStep(iteratorRecord).
-ii. If next is an abrupt completion, set iteratorRecord.[[Done]] to true.
-iii. ReturnIfAbrupt(next).
-iv. If next is false, set iteratorRecord.[[Done]] to true.
-b. If iteratorRecord.[[Done]] is true, then
-i. If environment is undefined, return ? PutValue(lhs, A).
-ii. Return InitializeReferencedBinding(lhs, A).
-c. Let nextValue be IteratorValue(next).
-d. If nextValue is an abrupt completion, set iteratorRecord.[[Done]] to true.
-e. ReturnIfAbrupt(nextValue).
-f. Let status be CreateDataProperty(A, ! ToString(n), nextValue).
-g. Assert: status is true.
-h. Increment n by 1.
+1. 令 lhs 为 ? ResolveBinding(StringValue of BindingIdentifier, environment).
+2. 令 A 为 ! ArrayCreate(0).
+3. 令 n 为 0.
+4. 重复，
+   1. 若 iteratorRecord.[[Done]] 是 false，那么
+        1. 令 next 为 IteratorStep(iteratorRecord).
+        2. 若 next 是 abrupt completion, 设置 iteratorRecord.[[Done]] 为 true.
+        3. ReturnIfAbrupt(next).
+        4. 若 next 是 false, 设置 iteratorRecord.[[Done]] 为 true.
+   2. 若 iteratorRecord.[[Done]] 是 true，那么
+        1. 若 environment 是 undefined，返回 ? PutValue(lhs, A).
+        2. 返回 InitializeReferencedBinding(lhs, A).
+   3. 令 nextValue 为 IteratorValue(next).
+   4. 若 nextValue 是 abrupt completion, 设置 iteratorRecord.[[Done]] 为 true.
+   5. ReturnIfAbrupt(nextValue).
+   6. 令 status 为 CreateDataProperty(A, ! ToString(n), nextValue).
+   7. 断言: status 是 true.
+   8. n增加1.
 
 ```
 BindingRestElement : ... BindingPattern
 ```
 
-1. Let A be ! ArrayCreate(0).
-2. Let n be 0.
+1. 令 A 为 ! ArrayCreate(0).
+2. 令 n 为 0.
+3. 重复，
+  1. 若 iteratorRecord.[[Done]] 是 false，那么
+        1. 令 next 为 IteratorStep(iteratorRecord).
+            2. 若 next 是 abrupt completion, 设置 iteratorRecord.[[Done]] 为 true.
+                3. ReturnIfAbrupt(next).
+                    4. 若 next 是 false, 设置 iteratorRecord.[[Done]] 为 true.
+  2. 若 iteratorRecord.[[Done]] 是 true，那么
+        1. 使用A和environment作为参数执行BindingPattern的BindingInitialization的结果。
+  3. 令 nextValue 为 IteratorValue(next).
+  4. 若 nextValue 是 abrupt completion, 设置 iteratorRecord.[[Done]] 为 true.
+  5. ReturnIfAbrupt(nextValue).
+  6. 令 status 为 CreateDataProperty(A, ! ToString(n), nextValue).
+  7. 断言: status 是 true.
+  8. n增加1.
 
-3. Repeat,
-a. If iteratorRecord.[[Done]] is false, then
-i. Let next be IteratorStep(iteratorRecord).
-ii. If next is an abrupt completion, set iteratorRecord.[[Done]] to true.
-iii. ReturnIfAbrupt(next).
-iv. If next is false, set iteratorRecord.[[Done]] to true.
-b. If iteratorRecord.[[Done]] is true, then
-i. Return the result of performing BindingInitialization of BindingPattern with A and environment as the
-arguments.
-c. Let nextValue be IteratorValue(next).
-d. If nextValue is an abrupt completion, set iteratorRecord.[[Done]] to true.
-e. ReturnIfAbrupt(nextValue).
-f. Let status be CreateDataProperty(A, ! ToString(n), nextValue).
-g. Assert: status is true.
-h. Increment n by 1.
+#### 13.3.3.9 运行时语义：KeyedBindingInitialization <div id="sec-runtime-semantics-keyedbindinginitialization"></div>
 
-#### 13.3.3.9 RS: KeyedBindingInitialization <div id="sec-runtime-semantics-keyedbindinginitialization"></div>
+使用参数value, environment,和propertyName
 
-With parameters value, environment, and propertyName.
-
-> NOTE When undefined is passed for environment it indicates that a PutValue operation should be used to assign the initialization value. This is the case for formal parameter lists of non-strict functions. In that case the formal parameter bindings are preinitialized in order to deal with the possibility of multiple parameters with the same name.
+> 注：当为环境传递undefined时，表明应该使用PutValue操作来分配初始化值。非严格函数的形式参数列表就是这种情况。在那种情况下，形式参数绑定是预先初始化的，以便处理多个具有相同名称的参数的可能性。
 
 ```
 BindingElement : BindingPattern Initializer
 ```
 
-1. Let v be ? GetV(value, propertyName).
-2. If Initializer is present and v is undefined, then
-a. Let defaultValue be the result of evaluating Initializer.
-b. Set v to ? GetValue(defaultValue).
-3. Return the result of performing BindingInitialization for BindingPattern passing v and environment as arguments.
+1. 令 v 为 ? GetV(value, propertyName).
+2. 若 Initializer 存在，并且 v 是 undefined，那么
+1. 令 defaultValue 为 Initializer 的运算结果
+2. 设置 v 为 ? GetValue(defaultValue).
+3. 返回通过将v和environment作为参数对BindingPattern执行BindingInitialization的结果
 
 ```
 SingleNameBinding : BindingIdentifier Initializer
 ```
 
-1. Let bindingId be StringValue of BindingIdentifier.
-2. Let lhs be ? ResolveBinding(bindingId, environment).
-3. Let v be ? GetV(value, propertyName).
-4. If Initializer is present and v is undefined, then
-a. If IsAnonymousFunctionDefinition(Initializer) is true, then
-i. Set v to the result of performing NamedEvaluation for Initializer with argument bindingId.
-b. Else,
-i. Let defaultValue be the result of evaluating Initializer.
-ii. Set v to ? GetValue(defaultValue).
-5. If environment is undefined, return ? PutValue(lhs, v).
-6. Return InitializeReferencedBinding(lhs, v).
+1. 令 bindingId 为 BindingIdentifier 的 StringValue
+2. 令 lhs 为 ? ResolveBinding(bindingId, environment).
+3. 令 v 为 ? GetV(value, propertyName).
+4. 若 Initializer 存在，并且 v 是 undefined，那么
+1. 若 IsAnonymousFunctionDefinition(Initializer) 是 true，那么
+  1. 设置 v 为使用参数bindingId为Initializer执行NamedEvaluation的结果
+2. 否则，
+  1. 令 defaultValue 为 Initializer 的运算结果
+  2. 设置 v 为 ? GetValue(defaultValue).
+5. 若 environment 是 undefined，返回 ? PutValue(lhs, v).
+6. 返回 InitializeReferencedBinding(lhs, v).
 
 ## 13.4 空语句 <div id="sec-empty-statement"></div>
 
-Syntax
+**语法**
 
 ```
 EmptyStatement :
 ;
 ```
 
-### 13.4.1 RS: Evaluation <div id="sec-empty-statement-runtime-semantics-evaluation"></div>
+### 13.4.1 运行时语义：Evaluation <div id="sec-empty-statement-runtime-semantics-evaluation"></div>
 
 ```
 EmptyStatement : ;
 ```
 
-1. Return NormalCompletion(empty).
+1. 返回 NormalCompletion(empty).
 
 ## 13.5 表达式语句 <div id="sec-expression-statement"></div>
 
-Syntax
+**语法**
 
 ```
 ExpressionStatement[Yield, Await] :
@@ -1441,21 +1427,20 @@ ExpressionStatement[Yield, Await] :
         Expression[+In, ?Yield, ?Await] ;
 ```
 
->NOTE
->An ExpressionStatement cannot start with a U+007B (LEFT CURLY BRACKET) because that might make it ambiguous with a Block. An ExpressionStatement cannot start with the function or class keywords because that would make it ambiguous with a FunctionDeclaration, a GeneratorDeclaration, or a ClassDeclaration. An ExpressionStatement cannot start with async function because that would make it ambiguous with an AsyncFunctionDeclaration or a AsyncGeneratorDeclaration. An ExpressionStatement cannot start with the two token sequence let [ because that would make it ambiguous with a let LexicalDeclaration whose first LexicalBinding was an ArrayBindingPattern.
+>注：ExpressionStatement不能以U+007B（{）开头，因为这可能会使它与Block产生歧义。 ExpressionStatement不能以function或class关键字开头，因为这会使它与FunctionDeclaration，GeneratorDeclaration或ClassDeclaration产生歧义。 ExpressionStatement不能以异步函数开头，因为这会使它与AsyncFunctionDeclaration或AsyncGeneratorDeclaration产生歧义。 ExpressionStatement不能以两个令牌序列let [开头，因为这会使它与let LexicalDeclaration产生歧义，后者的第一个LexicalBinding是ArrayBindingPattern。
 
-### 13.5.1 RS: Evaluation <div id="sec-expression-statement-runtime-semantics-evaluation"></div>
+### 13.5.1 运行时语义：Evaluation <div id="sec-expression-statement-runtime-semantics-evaluation"></div>
 
 ```
 ExpressionStatement : Expression ;
 ```
 
-1. Let exprRef be the result of evaluating Expression.
-2. Return ? GetValue(exprRef).
+1. 令 exprRef 为 Expression 的运算结果
+2. 返回 ? GetValue(exprRef).
 
 ## 13.6 if 语句 <div id="sec-if-statement"></div>
 
-Syntax
+**语法**
 
 ```
 IfStatement[Yield, Await, Return] :
@@ -1464,9 +1449,9 @@ IfStatement[Yield, Await, Return] :
     if ( Expression[+In, ?Yield, ?Await] ) Statement[?Yield, ?Await, ?Return]
 ```
 
-Each else for which the choice of associated if is ambiguous shall be associated with the nearest possible if that would otherwise have no corresponding else.
+Each else for which the choice of associated if 是 ambiguous shall be associated with the nearest possible if that would otherwise have no corresponding else.
 
-### 13.6.1 SS: Early Errors <div id="sec-if-statement-static-semantics-early-errors"></div>
+### 13.6.1 静态语义：Early Errors <div id="sec-if-statement-static-semantics-early-errors"></div>
 
 ```
 IfStatement :
@@ -1474,126 +1459,126 @@ IfStatement :
     if ( Expression ) Statement
 ```
 
-It is a Syntax Error if IsLabelledFunction(Statement) is true.
+It 是 a Syntax Error if IsLabelledFunction(Statement) 是 true.
 
-> NOTE It is only necessary to apply this rule if the extension specified in B.3.2 is implemented.
+> 注：It 是 only necessary to apply this rule if the extension specified in B.3.2 是 implemented.
 
-### 13.6.2 SS: ContainsDuplicateLabels <div id="sec-if-statement-static-semantics-containsduplicatelabels"></div>
+### 13.6.2 静态语义：ContainsDuplicateLabels <div id="sec-if-statement-static-semantics-containsduplicatelabels"></div>
 
-With parameter labelSet.
+使用参数 labelSet
 
 ```
 IfStatement : if ( Expression ) Statement else Statement
 ```
 
-1. Let hasDuplicate be ContainsDuplicateLabels of the first Statement with argument labelSet.
-2. If hasDuplicate is true, return true.
-3. Return ContainsDuplicateLabels of the second Statement with argument labelSet.
+1. 令 hasDuplicate 为 ContainsDuplicateLabels of the first Statement with argument labelSet.
+2. 若 hasDuplicate 是 true，返回 true.
+3. 返回 ContainsDuplicateLabels of the second Statement with argument labelSet.
 
 ```
 IfStatement : if ( Expression ) Statement
 ```
 
-1. Return ContainsDuplicateLabels of Statement with argument labelSet.
+1. 返回带有参数 labelSet 的 Statement 的 ContainsDuplicateLabels
 
-### 13.6.3 SS: ContainsUndefinedBreakTarget <div id="sec-if-statement-static-semantics-containsundefinedbreaktarget"></div>
+### 13.6.3 静态语义：ContainsUndefinedBreakTarget <div id="sec-if-statement-static-semantics-containsundefinedbreaktarget"></div>
 
-With parameter labelSet.
+使用参数 labelSet
 
 ```
 IfStatement : if ( Expression ) Statement else Statement
 ```
 
-1. Let hasUndefinedLabels be ContainsUndefinedBreakTarget of the first Statement with argument labelSet.
-2. If hasUndefinedLabels is true, return true.
-3. Return ContainsUndefinedBreakTarget of the second Statement with argument labelSet.
+1. 令 hasUndefinedLabels 为 ContainsUndefinedBreakTarget of the first Statement with argument labelSet.
+2. 若 hasUndefinedLabels 是 true，返回 true.
+3. 返回 ContainsUndefinedBreakTarget of the second Statement with argument labelSet.
 
 ```
 IfStatement : if ( Expression ) Statement
 ```
 
-1. Return ContainsUndefinedBreakTarget of Statement with argument labelSet.
+1. 返回带有参数 labelSet 的 Statement 的 ContainsUndefinedBreakTarget
 
-### 13.6.4 SS: ContainsUndefinedContinueTarget <div id="sec-if-statement-static-semantics-containsundefinedcontinuetarget"></div>
+### 13.6.4 静态语义：ContainsUndefinedContinueTarget <div id="sec-if-statement-static-semantics-containsundefinedcontinuetarget"></div>
 
-With parameters iterationSet and labelSet.
+使用参数iterationSet和labelSet
 
 ```
 IfStatement : if ( Expression ) Statement else Statement
 ```
 
-1. Let hasUndefinedLabels be ContainsUndefinedContinueTarget of the first Statement with arguments iterationSet
+1. 令 hasUndefinedLabels 为 ContainsUndefinedContinueTarget of the first Statement with arguments iterationSet
 and « ».
-2. If hasUndefinedLabels is true, return true.
-3. Return ContainsUndefinedContinueTarget of the second Statement with arguments iterationSet and « ».
+2. 若 hasUndefinedLabels 是 true，返回 true.
+3. 返回 ContainsUndefinedContinueTarget of the second Statement with arguments iterationSet and « ».
 
 ```
 IfStatement : if ( Expression ) Statement
 ```
 
-1. Return ContainsUndefinedContinueTarget of Statement with arguments iterationSet and « ».
+1. 返回带有参数 iterationSet 和 « » 的 Statement 的 ContainsUndefinedContinueTarget
 
-### 13.6.5 SS: VarDeclaredNames <div id="sec-if-statement-static-semantics-vardeclarednames"></div>
+### 13.6.5 静态语义：VarDeclaredNames <div id="sec-if-statement-static-semantics-vardeclarednames"></div>
 
 ```
 IfStatement : if ( Expression ) Statement else Statement
 ```
 
-1. Let names be VarDeclaredNames of the first Statement.
-2. Append to names the elements of the VarDeclaredNames of the second Statement.
-3. Return names.
+1. 令 names 为 VarDeclaredNames of the first Statement.
+2. 在 names 后追加 the VarDeclaredNames of the second Statement. 元素
+3. 返回 names.
 
 ```
 IfStatement : if ( Expression ) Statement
 ```
 
-1. Return the VarDeclaredNames of Statement.
+1. 返回  Statement 的 VarDeclaredNames
 
-### 13.6.6 SS: VarScopedDeclarations <div id="sec-if-statement-static-semantics-varscopeddeclarations"></div>
+### 13.6.6 静态语义：VarScopedDeclarations <div id="sec-if-statement-static-semantics-varscopeddeclarations"></div>
 
 ```
 IfStatement : if ( Expression ) Statement else Statement
 ```
 
-1. Let declarations be VarScopedDeclarations of the first Statement.
-2. Append to declarations the elements of the VarScopedDeclarations of the second Statement.
-3. Return declarations.
+1. 令 declarations 为 VarScopedDeclarations of the first Statement.
+2. 在 declarations 后追加 the VarScopedDeclarations of the second Statement. 元素
+3. 返回 declarations.
 
 ```
 IfStatement : if ( Expression ) Statement
 ```
 
-1. Return the VarScopedDeclarations of Statement.
+1. 返回  Statement 的 VarScopedDeclarations
 
-### 13.6.7 RS: Evaluation <div id="sec-if-statement-runtime-semantics-evaluation"></div>
+### 13.6.7 运行时语义：Evaluation <div id="sec-if-statement-runtime-semantics-evaluation"></div>
 
 ```
 IfStatement : if ( Expression ) Statement else Statement
 ```
 
-1. Let exprRef be the result of evaluating Expression.
-2. Let exprValue be ToBoolean(? GetValue(exprRef)).
-3. If exprValue is true, then
-a. Let stmtCompletion be the result of evaluating the first Statement.
-4. Else,
-a. Let stmtCompletion be the result of evaluating the second Statement.
-5. Return Completion(UpdateEmpty(stmtCompletion, undefined))
+1. 令 exprRef 为 Expression 的运算结果
+2. 令 exprValue 为 ToBoolean(? GetValue(exprRef)).
+3. 若 exprValue 是 true，那么
+a. 令 stmtCompletion 为 the first Statement 的运算结果
+4. 否则，
+a. 令 stmtCompletion 为 the second Statement 的运算结果
+5. 返回 Completion(UpdateEmpty(stmtCompletion, undefined))
 
 ```
 IfStatement : if ( Expression ) Statement
 ```
 
-1. Let exprRef be the result of evaluating Expression.
-2. Let exprValue be ToBoolean(? GetValue(exprRef)).
-3. If exprValue is false, then
-a. Return NormalCompletion(undefined).
-4. Else,
-a. Let stmtCompletion be the result of evaluating Statement.
-b. Return Completion(UpdateEmpty(stmtCompletion, undefined)).
+1. 令 exprRef 为 Expression 的运算结果
+2. 令 exprValue 为 ToBoolean(? GetValue(exprRef)).
+3. 若 exprValue 是 false，那么
+a. 返回 NormalCompletion(undefined).
+4. 否则，
+a. 令 stmtCompletion 为 Statement 的运算结果
+b. 返回 Completion(UpdateEmpty(stmtCompletion, undefined)).
 
 ## 13.7 迭代语句 <div id="sec-iteration-statements"></div>
 
-Syntax
+**语法**
 
 ```
 IterationStatement[Yield, Await, Return] :
@@ -1633,10 +1618,10 @@ ForBinding[Yield, Await] :
 
 ```
 
-> NOTE This section is extended by Annex B.3.6
+> 注：This section 是 extended by Annex B.3.6
 
 ### 13.7.1 语义 <div id="sec-iteration-statements-semantics"></div>
-#### 13.7.1.1 SS: Early Errors <div id="sec-semantics-static-semantics-early-errors"></div>
+#### 13.7.1.1 静态语义：Early Errors <div id="sec-semantics-static-semantics-early-errors"></div>
 
 ```
 IterationStatement :
@@ -1656,163 +1641,163 @@ IterationStatement :
     for await ( ForDeclaration of AssignmentExpression ) Statement
 ```
 
-It is a Syntax Error if IsLabelledFunction(Statement) is true.
+It 是 a Syntax Error if IsLabelledFunction(Statement) 是 true.
 
-> NOTE It is only necessary to apply this rule if the extension specified in B.3.2 is implemented.
+> 注：It 是 only necessary to apply this rule if the extension specified in B.3.2 是 implemented.
 
-#### 13.7.1.2 RS: LoopContinues ( completion, labelSet ) <div id="sec-loopcontinues"></div>
+#### 13.7.1.2 运行时语义：LoopContinues ( completion, labelSet ) <div id="sec-loopcontinues"></div>
 
-The abstract operation LoopContinues with arguments completion and labelSet is defined by the following steps:
+The abstract operation LoopContinues with arguments completion and labelSet 是 defined by the following steps:
 
-1. If completion.[[Type]] is normal, return true.
-2. If completion.[[Type]] is not continue, return false.
-3. If completion.[[Target]] is empty, return true.
-4. If completion.[[Target]] is an element of labelSet, return true.
-5. Return false.
+1. 若 completion.[[Type]] 是 normal，返回 true.
+2. 若 completion.[[Type]] 是 not continue，返回 false.
+3. 若 completion.[[Target]] 是 empty，返回 true.
+4. 若 completion.[[Target]] 是 an element of labelSet，返回 true.
+5. 返回 false.
 
-> NOTE Within the Statement part of an IterationStatement a ContinueStatement may be used to begin a new iteration.
+> 注：Within the Statement part of an IterationStatement a ContinueStatement may be used to begin a new iteration.
 
 ### 13.7.2 do-while 语句 <div id="sec-do-while-statement"></div>
 
-#### 13.7.2.1 SS: ContainsDuplicateLabels <div id="sec-do-while-statement-static-semantics-containsduplicatelabels"></div>
+#### 13.7.2.1 静态语义：ContainsDuplicateLabels <div id="sec-do-while-statement-static-semantics-containsduplicatelabels"></div>
 
-With parameter labelSet.
-
-```
-IterationStatement : do Statement while ( Expression ) ;
-```
-
-1. Return ContainsDuplicateLabels of Statement with argument labelSet.
-
-#### 13.7.2.2 SS: ContainsUndefinedBreakTarget <div id="sec-do-while-statement-static-semantics-containsundefinedbreaktarget"></div>
-
-With parameter labelSet.
+使用参数 labelSet
 
 ```
 IterationStatement : do Statement while ( Expression ) ;
 ```
 
-1. Return ContainsUndefinedBreakTarget of Statement with argument labelSet.
+1. 返回带有参数 labelSet 的 Statement 的 ContainsDuplicateLabels
 
-#### 13.7.2.3 SS: ContainsUndefinedContinueTarget <div id="sec-do-while-statement-static-semantics-containsundefinedcontinuetarget"></div>
+#### 13.7.2.2 静态语义：ContainsUndefinedBreakTarget <div id="sec-do-while-statement-static-semantics-containsundefinedbreaktarget"></div>
 
-With parameters iterationSet and labelSet.
-
-```
-IterationStatement : do Statement while ( Expression ) ;
-```
-
-1. Return ContainsUndefinedContinueTarget of Statement with arguments iterationSet and « ».
-
-#### 13.7.2.4 SS: VarDeclaredNames <div id="sec-do-while-statement-static-semantics-vardeclarednames"></div>
+使用参数 labelSet
 
 ```
 IterationStatement : do Statement while ( Expression ) ;
 ```
 
-1. Return the VarDeclaredNames of Statement.
+1. 返回带有参数 labelSet 的 Statement 的 ContainsUndefinedBreakTarget
 
-#### 13.7.2.5 SS: VarScopedDeclarations <div id="sec-do-while-statement-static-semantics-varscopeddeclarations"></div>
+#### 13.7.2.3 静态语义：ContainsUndefinedContinueTarget <div id="sec-do-while-statement-static-semantics-containsundefinedcontinuetarget"></div>
 
-```
-IterationStatement : do Statement while ( Expression ) ;
-```
-
-1. Return the VarScopedDeclarations of Statement.
-
-#### 13.7.2.6 RS: LabelledEvaluation <div id="sec-do-while-statement-runtime-semantics-labelledevaluation"></div>
-
-With parameter labelSet.
+使用参数iterationSet和labelSet
 
 ```
 IterationStatement : do Statement while ( Expression ) ;
 ```
 
-1. Let V be undefined.
-2. Repeat,
-a. Let stmtResult be the result of evaluating Statement.
-b. If LoopContinues(stmtResult, labelSet) is false, return Completion(UpdateEmpty(stmtResult, V)).
-c. If stmtResult.[[Value]] is not empty, set V to stmtResult.[[Value]].
-d. Let exprRef be the result of evaluating Expression.
-e. Let exprValue be ? GetValue(exprRef).
-f. If ToBoolean(exprValue) is false, return NormalCompletion(V).
+1. 返回带有参数 iterationSet 和 « » 的 Statement 的 ContainsUndefinedContinueTarget
+
+#### 13.7.2.4 静态语义：VarDeclaredNames <div id="sec-do-while-statement-static-semantics-vardeclarednames"></div>
+
+```
+IterationStatement : do Statement while ( Expression ) ;
+```
+
+1. 返回  Statement 的 VarDeclaredNames
+
+#### 13.7.2.5 静态语义：VarScopedDeclarations <div id="sec-do-while-statement-static-semantics-varscopeddeclarations"></div>
+
+```
+IterationStatement : do Statement while ( Expression ) ;
+```
+
+1. 返回  Statement 的 VarScopedDeclarations
+
+#### 13.7.2.6 运行时语义：LabelledEvaluation <div id="sec-do-while-statement-runtime-semantics-labelledevaluation"></div>
+
+使用参数 labelSet
+
+```
+IterationStatement : do Statement while ( Expression ) ;
+```
+
+1. 令 V 为 undefined.
+2. 重复，
+a. 令 stmtResult 为 Statement 的运算结果
+b. 若 LoopContinues(stmtResult, labelSet) 是 false，返回 Completion(UpdateEmpty(stmtResult, V)).
+c. 若 stmtResult.[[Value]] 是 not empty, 设置 V 为 stmtResult.[[Value]].
+d. 令 exprRef 为 Expression 的运算结果
+e. 令 exprValue 为 ? GetValue(exprRef).
+f. 若 ToBoolean(exprValue) 是 false，返回 NormalCompletion(V).
 
 ### 13.7.3 while 语句 <div id="sec-while-statement"></div>
-#### 13.7.3.1 SS: ContainsDuplicateLabels <div id="sec-while-statement-static-semantics-containsduplicatelabels"></div>
+#### 13.7.3.1 静态语义：ContainsDuplicateLabels <div id="sec-while-statement-static-semantics-containsduplicatelabels"></div>
 
-With parameter labelSet.
-
-```
-IterationStatement : while ( Expression ) Statement
-```
-
-1. Return ContainsDuplicateLabels of Statement with argument labelSet.
-
-#### 13.7.3.2 SS: ContainsUndefinedBreakTarget <div id="sec-while-statement-static-semantics-containsundefinedbreaktarget"></div>
-
-With parameter labelSet.
+使用参数 labelSet
 
 ```
 IterationStatement : while ( Expression ) Statement
 ```
 
-1. Return ContainsUndefinedBreakTarget of Statement with argument labelSet.
+1. 返回带有参数 labelSet 的 Statement 的 ContainsDuplicateLabels
 
-#### 13.7.3.3 SS: ContainsUndefinedContinueTarget <div id="sec-while-statement-static-semantics-containsundefinedcontinuetarget"></div>
+#### 13.7.3.2 静态语义：ContainsUndefinedBreakTarget <div id="sec-while-statement-static-semantics-containsundefinedbreaktarget"></div>
 
-With parameters iterationSet and labelSet.
-
-```
-IterationStatement : while ( Expression ) Statement
-```
-
-1. Return ContainsUndefinedContinueTarget of Statement with arguments iterationSet and « ».
-
-#### 13.7.3.4 SS: VarDeclaredNames <div id="sec-while-statement-static-semantics-vardeclarednames"></div>
+使用参数 labelSet
 
 ```
 IterationStatement : while ( Expression ) Statement
 ```
 
-1. Return the VarDeclaredNames of Statement.
+1. 返回带有参数 labelSet 的 Statement 的 ContainsUndefinedBreakTarget
 
-#### 13.7.3.5 SS: VarScopedDeclarations <div id="sec-while-statement-static-semantics-varscopeddeclarations"></div>
+#### 13.7.3.3 静态语义：ContainsUndefinedContinueTarget <div id="sec-while-statement-static-semantics-containsundefinedcontinuetarget"></div>
 
-```
-IterationStatement : while ( Expression ) Statement
-```
-
-1. Return the VarScopedDeclarations of Statement.
-
-#### 13.7.3.6 RS: LabelledEvaluation <div id="sec-while-statement-runtime-semantics-labelledevaluation"></div>
-
-With parameter labelSet.
+使用参数iterationSet和labelSet
 
 ```
 IterationStatement : while ( Expression ) Statement
 ```
 
-1. Let V be undefined.
-2. Repeat,
-a. Let exprRef be the result of evaluating Expression.
-b. Let exprValue be ? GetValue(exprRef).
-c. If ToBoolean(exprValue) is false, return NormalCompletion(V).
-d. Let stmtResult be the result of evaluating Statement.
-e. If LoopContinues(stmtResult, labelSet) is false, return Completion(UpdateEmpty(stmtResult, V)).
-f. If stmtResult.[[Value]] is not empty, set V to stmtResult.[[Value]].
+1. 返回带有参数 iterationSet 和 « » 的 Statement 的 ContainsUndefinedContinueTarget
+
+#### 13.7.3.4 静态语义：VarDeclaredNames <div id="sec-while-statement-static-semantics-vardeclarednames"></div>
+
+```
+IterationStatement : while ( Expression ) Statement
+```
+
+1. 返回  Statement 的 VarDeclaredNames
+
+#### 13.7.3.5 静态语义：VarScopedDeclarations <div id="sec-while-statement-static-semantics-varscopeddeclarations"></div>
+
+```
+IterationStatement : while ( Expression ) Statement
+```
+
+1. 返回  Statement 的 VarScopedDeclarations
+
+#### 13.7.3.6 运行时语义：LabelledEvaluation <div id="sec-while-statement-runtime-semantics-labelledevaluation"></div>
+
+使用参数 labelSet
+
+```
+IterationStatement : while ( Expression ) Statement
+```
+
+1. 令 V 为 undefined.
+2. 重复，
+a. 令 exprRef 为 Expression 的运算结果
+b. 令 exprValue 为 ? GetValue(exprRef).
+c. 若 ToBoolean(exprValue) 是 false，返回 NormalCompletion(V).
+d. 令 stmtResult 为 Statement 的运算结果
+e. 若 LoopContinues(stmtResult, labelSet) 是 false，返回 Completion(UpdateEmpty(stmtResult, V)).
+f. 若 stmtResult.[[Value]] 是 not empty, 设置 V 为 stmtResult.[[Value]].
 
 ### 13.7.4 for 语句 <div id="sec-for-statement"></div>
-#### 13.7.4.1 SS: Early Errors <div id="sec-for-statement-static-semantics-early-errors"></div>
+#### 13.7.4.1 静态语义：Early Errors <div id="sec-for-statement-static-semantics-early-errors"></div>
 
 ```
 IterationStatement : for ( LexicalDeclaration Expression ; Expression ) Statement
 ```
 
-It is a Syntax Error if any element of the BoundNames of LexicalDeclaration also occurs in the VarDeclaredNames of Statement.
+It 是 a Syntax Error if any element of the BoundNames of LexicalDeclaration also occurs in  Statement 的 VarDeclaredNames
 
-#### 13.7.4.2 SS: ContainsDuplicateLabels <div id="sec-for-statement-static-semantics-containsduplicatelabels"></div>
+#### 13.7.4.2 静态语义：ContainsDuplicateLabels <div id="sec-for-statement-static-semantics-containsduplicatelabels"></div>
 
-With parameter labelSet.
+使用参数 labelSet
 
 ```
 IterationStatement :
@@ -1821,24 +1806,11 @@ IterationStatement :
     for ( LexicalDeclaration Expressionopt ; Expressionopt ) Statement
 ```
 
-1. Return ContainsDuplicateLabels of Statement with argument labelSet.
+1. 返回带有参数 labelSet 的 Statement 的 ContainsDuplicateLabels
 
-#### 13.7.4.3 SS: ContainsUndefinedBreakTarget <div id="sec-for-statement-static-semantics-containsundefinedbreaktarget"></div>
+#### 13.7.4.3 静态语义：ContainsUndefinedBreakTarget <div id="sec-for-statement-static-semantics-containsundefinedbreaktarget"></div>
 
-With parameter labelSet.
-
-```
-IterationStatement :
-    for ( Expressionopt ; Expressionopt ; Expressionopt ) Statement
-    for ( var VariableDeclarationList ; Expressionopt ; Expressionopt ) Statement
-    for ( LexicalDeclaration Expressionopt ; Expressionopt ) Statement
-```
-
-1. Return ContainsUndefinedBreakTarget of Statement with argument labelSet
-
-#### 13.7.4.4 SS: ContainsUndefinedContinueTarget <div id="sec-for-statement-static-semantics-containsundefinedcontinuetarget"></div>
-
-With parameters iterationSet and labelSet.
+使用参数 labelSet
 
 ```
 IterationStatement :
@@ -1847,138 +1819,151 @@ IterationStatement :
     for ( LexicalDeclaration Expressionopt ; Expressionopt ) Statement
 ```
 
-1. Return ContainsUndefinedContinueTarget of Statement with arguments iterationSet and « ».
+1. 返回 ContainsUndefinedBreakTarget of Statement with argument labelSet
 
-#### 13.7.4.5 SS: VarDeclaredNames <div id="sec-for-statement-static-semantics-vardeclarednames"></div>
+#### 13.7.4.4 静态语义：ContainsUndefinedContinueTarget <div id="sec-for-statement-static-semantics-containsundefinedcontinuetarget"></div>
+
+使用参数iterationSet和labelSet
+
+```
+IterationStatement :
+    for ( Expressionopt ; Expressionopt ; Expressionopt ) Statement
+    for ( var VariableDeclarationList ; Expressionopt ; Expressionopt ) Statement
+    for ( LexicalDeclaration Expressionopt ; Expressionopt ) Statement
+```
+
+1. 返回带有参数 iterationSet 和 « » 的 Statement 的 ContainsUndefinedContinueTarget
+
+#### 13.7.4.5 静态语义：VarDeclaredNames <div id="sec-for-statement-static-semantics-vardeclarednames"></div>
 
 ```
 IterationStatement : for ( Expression ; Expression ; Expression ) Statement
 ```
 
-1. Return the VarDeclaredNames of Statement.
+1. 返回  Statement 的 VarDeclaredNames
 
 ```
 IterationStatement : for ( var VariableDeclarationList ; Expression ; Expression ) Statement
 ```
 
-1. Let names be BoundNames of VariableDeclarationList.
-2. Append to names the elements of the VarDeclaredNames of Statement.
-3. Return names.
+1. 令 names 为 VariableDeclarationList 的 BoundNames
+2. 在 names 后追加 Statement 的 VarDeclaredNames 元素 
+3. 返回 names.
 
 ```
 IterationStatement : for ( LexicalDeclaration Expression ; Expression ) Statement
 ```
 
-1. Return the VarDeclaredNames of Statement.
+1. 返回  Statement 的 VarDeclaredNames
 
-#### 13.7.4.6 SS: VarScopedDeclarations <div id="sec-for-statement-static-semantics-varscopeddeclarations"></div>
+#### 13.7.4.6 静态语义：VarScopedDeclarations <div id="sec-for-statement-static-semantics-varscopeddeclarations"></div>
 
 ```
 IterationStatement : for ( Expression ; Expression ; Expression ) Statement
 ```
 
-1. Return the VarScopedDeclarations of Statement.
+1. 返回  Statement 的 VarScopedDeclarations
 
 ```
 IterationStatement : for ( var VariableDeclarationList ; Expression ; Expression ) Statement
 ```
 
-1. Let declarations be VarScopedDeclarations of VariableDeclarationList.
+1. 令 declarations 为 VariableDeclarationList 的 VarScopedDeclarations
 
-2. Append to declarations the elements of the VarScopedDeclarations of Statement.
-3. Return declarations.
+2. 在 declarations 后追加 Statement 的 VarScopedDeclarations 元素 
+3. 返回 declarations.
 
 ```
 IterationStatement : for ( LexicalDeclaration Expression ; Expression ) Statement
 ```
 
-1. Return the VarScopedDeclarations of Statement.
+1. 返回  Statement 的 VarScopedDeclarations
 
-#### 13.7.4.7 RS: LabelledEvaluation <div id="sec-for-statement-runtime-semantics-labelledevaluation"></div>
+#### 13.7.4.7 运行时语义：LabelledEvaluation <div id="sec-for-statement-runtime-semantics-labelledevaluation"></div>
 
-With parameter labelSet.
+使用参数 labelSet
 
 ```
 IterationStatement : for ( Expression ; Expression ; Expression ) Statement
 ```
 
-1. If the first Expression is present, then
-a. Let exprRef be the result of evaluating the first Expression.
-b. Perform ? GetValue(exprRef).
-2. Return ? ForBodyEvaluation(the second Expression, the third Expression, Statement, « », labelSet).
+1. 若 the first Expression 存在，那么
+a. 令 exprRef 为 the first Expression 的运算结果
+b. 执行 ? GetValue(exprRef).
+2. 返回 ? ForBodyEvaluation(the second Expression, the third Expression, Statement, « », labelSet).
 
 ```
 IterationStatement : for ( var VariableDeclarationList ; Expression ; Expression ) Statement
 ```
 
-1. Let varDcl be the result of evaluating VariableDeclarationList.
+1. 令 varDcl 为 VariableDeclarationList 的运算结果
 2. ReturnIfAbrupt(varDcl).
-3. Return ? ForBodyEvaluation(the first Expression, the second Expression, Statement, « », labelSet).
+3. 返回 ? ForBodyEvaluation(the first Expression, the second Expression, Statement, « », labelSet).
 
 ```
 IterationStatement : for ( LexicalDeclaration Expression ; Expression ) Statement
 ```
 
-1. Let oldEnv be the running execution context's LexicalEnvironment.
-2. Let loopEnv be NewDeclarativeEnvironment(oldEnv).
-3. Let loopEnvRec be loopEnv's EnvironmentRecord.
-4. Let isConst be the result of performing IsConstantDeclaration of LexicalDeclaration.
-5. Let boundNames be the BoundNames of LexicalDeclaration.
+1. 令 oldEnv 为运行时执行上下文的词法环境.
+2. 令 loopEnv 为 NewDeclarativeEnvironment(oldEnv).
+3. 令 loopEnvRec 为 loopEnv's EnvironmentRecord.
+4. 令 isConst 为 performing LexicalDeclaration 的 IsConstantDeclaration 的结果
+5. 令 boundNames 为  LexicalDeclaration 的 BoundNames
 6. For each element dn of boundNames, do
-a. If isConst is true, then
-i. Perform ! loopEnvRec.CreateImmutableBinding(dn, true).
-b. Else,
-i. Perform ! loopEnvRec.CreateMutableBinding(dn, false).
-7. Set the running execution context's LexicalEnvironment to loopEnv.
-8. Let forDcl be the result of evaluating LexicalDeclaration.
-9. If forDcl is an abrupt completion, then
-a. Set the running execution context's LexicalEnvironment to oldEnv.
-b. Return Completion(forDcl).
-10. If isConst is false, let perIterationLets be boundNames; otherwise let perIterationLets be « ».
-11. Let bodyResult be ForBodyEvaluation(the first Expression, the second Expression, Statement, perIterationLets,
+a. 若 isConst 是 true，那么
+i. 执行 ! loopEnvRec.CreateImmutableBinding(dn, true).
+b. 否则，
+i. 执行 ! loopEnvRec.CreateMutableBinding(dn, false).
+7. 设置运行时执行上下文的词法环境 为 loopEnv.
+8. 令 forDcl 为 LexicalDeclaration 的运算结果
+9. 若 forDcl 是 abrupt completion，那么
+a. 设置运行时执行上下文的词法环境 为 oldEnv.
+b. 返回 Completion(forDcl).
+10. 若 isConst 是 false, let perIterationLets be boundNames; otherwise let perIterationLets be « ».
+11. 令 bodyResult 为 ForBodyEvaluation(the first Expression, the second Expression, Statement, perIterationLets,
 labelSet).
-12. Set the running execution context's LexicalEnvironment to oldEnv.
-13. Return Completion(bodyResult)
+12. 设置运行时执行上下文的词法环境 为 oldEnv.
+13. 返回 Completion(bodyResult)
 
-#### 13.7.4.8 RS: ForBodyEvaluation ( test, increment, stmt, perIterationBindings, labelSet ) <div id="sec-forbodyevaluation"></div>
+#### 13.7.4.8 运行时语义：ForBodyEvaluation ( test, increment, stmt, perIterationBindings, labelSet ) <div id="sec-forbodyevaluation"></div>
 
-The abstract operation ForBodyEvaluation with arguments test, increment, stmt, perIterationBindings, and labelSet is performed as follows:
+The abstract operation ForBodyEvaluation with arguments test, increment, stmt, perIterationBindings, and labelSet 是 performed as follows:
 
-1. Let V be undefined.
-2. Perform ? CreatePerIterationEnvironment(perIterationBindings).
-3. Repeat,
-a. If test is not [empty], then
-i. Let testRef be the result of evaluating test.
-ii. Let testValue be ? GetValue(testRef).
-iii. If ToBoolean(testValue) is false, return NormalCompletion(V).
-b. Let result be the result of evaluating stmt.
-c. If LoopContinues(result, labelSet) is false, return Completion(UpdateEmpty(result, V)).
-d. If result.[[Value]] is not empty, set V to result.[[Value]].
-e. Perform ? CreatePerIterationEnvironment(perIterationBindings).
-f. If increment is not [empty], then
-i. Let incRef be the result of evaluating increment.
-ii. Perform ? GetValue(incRef).
+1. 令 V 为 undefined.
+2. 执行 ? CreatePerIterationEnvironment(perIterationBindings).
+3. 重复，
+a. 若 test 是 not [empty]，那么
+i. 令 testRef 为 test 的运算结果
+ii. 令 testValue 为 ? GetValue(testRef).
+iii. 若 ToBoolean(testValue) 是 false，返回 NormalCompletion(V).
+b. 令 result 为 stmt 的运算结果
+c. 若 LoopContinues(result, labelSet) 是 false，返回 Completion(UpdateEmpty(result, V)).
+d. 若 result.[[Value]] 是 not empty, 设置 V 为 result.[[Value]].
+e. 执行 ? CreatePerIterationEnvironment(perIterationBindings).
+f. 若 increment 是 not [empty]，那么
+i. 令 incRef 为 increment 的运算结果
+ii. 执行 ? GetValue(incRef).
 
-#### 13.7.4.9 RS: CreatePerIterationEnvironment ( perIterationBindings ) <div id="sec-createperiterationenvironment"></div>
+#### 13.7.4.9 运行时语义：CreatePerIterationEnvironment ( perIterationBindings ) <div id="sec-createperiterationenvironment"></div>
 
-The abstract operation CreatePerIterationEnvironment with argument perIterationBindings is performed as follows:
+The abstract operation CreatePerIterationEnvironment with argument perIterationBindings 是 performed as follows:
 
-1. If perIterationBindings has any elements, then
-a. Let lastIterationEnv be the running execution context's LexicalEnvironment.
-b. Let lastIterationEnvRec be lastIterationEnv's EnvironmentRecord.
-c. Let outer be lastIterationEnv's outer environment reference.
-d. Assert: outer is not null.
-e. Let thisIterationEnv be NewDeclarativeEnvironment(outer).
-f. Let thisIterationEnvRec be thisIterationEnv's EnvironmentRecord.
+1. 若 perIterationBindings has any elements，那么
+a. 令 lastIterationEnv 为运行时执行上下文的词法环境.
+b. 令 lastIterationEnvRec 为 lastIterationEnv's EnvironmentRecord.
+c. 令 outer 为 lastIterationEnv's outer environment reference.
+d. 断言: outer 是 not null.
+e. 令 thisIterationEnv 为 NewDeclarativeEnvironment(outer).
+f. 令 thisIterationEnvRec 为 thisIterationEnv's EnvironmentRecord.
 g. For each element bn of perIterationBindings, do
-i. Perform ! thisIterationEnvRec.CreateMutableBinding(bn, false).
-ii. Let lastValue be ? lastIterationEnvRec.GetBindingValue(bn, true).
-iii. Perform thisIterationEnvRec.InitializeBinding(bn, lastValue).
-h. Set the running execution context's LexicalEnvironment to thisIterationEnv.
-2. Return undefined.
+i. 执行 ! thisIterationEnvRec.CreateMutableBinding(bn, false).
+ii. 令 lastValue 为 ? lastIterationEnvRec.GetBindingValue(bn, true).
+iii. 执行 thisIterationEnvRec.InitializeBinding(bn, lastValue).
+h. 设置运行时执行上下文的词法环境 为 thisIterationEnv.
+2. 返回 undefined.
 
 ### 13.7.5 for-in, for-of, 和for-await-of 语句 <div id="sec-for-in-and-for-of-statements"></div>
-#### 13.7.5.1 SS: Early Errors <div id="sec-for-in-and-for-of-statements-static-semantics-early-errors"></div>
+#### 13.7.5.1 静态语义：Early Errors <div id="sec-for-in-and-for-of-statements-static-semantics-early-errors"></div>
 
 ```
 IterationStatement :
@@ -1987,15 +1972,15 @@ IterationStatement :
     for await ( LeftHandSideExpression of AssignmentExpression ) Statement
 ```
 
-- It is a Syntax Error if LeftHandSideExpression is either an ObjectLiteral or an ArrayLiteral and if
-  LeftHandSideExpression is not covering an AssignmentPattern.
+- It 是 a Syntax Error if LeftHandSideExpression 是 either an ObjectLiteral or an ArrayLiteral and if
+  LeftHandSideExpression 是 not covering an AssignmentPattern.
 
-If LeftHandSideExpression is either an ObjectLiteral or an ArrayLiteral and if LeftHandSideExpression is covering an AssignmentPattern then the following rules are not applied. Instead, the Early Error rules for AssignmentPattern are used.
+If LeftHandSideExpression 是 either an ObjectLiteral or an ArrayLiteral and if LeftHandSideExpression 是 covering an AssignmentPattern then the following rules are not applied. Instead, the Early Error rules for AssignmentPattern are used.
 
-- It is a Syntax Error if AssignmentTargetType of LeftHandSideExpression is not simple.
-- It is a Syntax Error if the LeftHandSideExpression is CoverParenthesizedExpressionAndArrowParameterList : (Expression ) and Expression derives a phrase that would produce a Syntax Error according to these rules if that phrase were substituted for LeftHandSideExpression. This rule is recursively applied
+- It 是 a Syntax Error if AssignmentTargetType of LeftHandSideExpression 是 not simple.
+- It 是 a Syntax Error if the LeftHandSideExpression 是 CoverParenthesizedExpressionAndArrowParameterList : (Expression ) and Expression derives a phrase that would produce a Syntax Error according to these rules if that phrase were substituted for LeftHandSideExpression. This rule 是 recursively applied
 
-> NOTE The last rule means that the other rules are applied even if parentheses surround Expression.
+> 注：The last rule means that the other rules are applied even if parentheses surround Expression.
 
 ```
 IterationStatement :
@@ -2004,42 +1989,21 @@ IterationStatement :
     for await ( ForDeclaration of AssignmentExpression ) Statement
 ```
 
-- It is a Syntax Error if the BoundNames of ForDeclaration contains "let".
-- It is a Syntax Error if any element of the BoundNames of ForDeclaration also occurs in the VarDeclaredNames of Statement.
-- It is a Syntax Error if the BoundNames of ForDeclaration contains any duplicate entries.
+- It 是 a Syntax Error if the BoundNames of ForDeclaration contains "let".
+- It 是 a Syntax Error if any element of the BoundNames of ForDeclaration also occurs in  Statement 的 VarDeclaredNames
+- It 是 a Syntax Error if the BoundNames of ForDeclaration contains any duplicate entries.
 
-#### 13.7.5.2 SS: BoundNames <div id="sec-for-in-and-for-of-statements-static-semantics-boundnames"></div>
+#### 13.7.5.2 静态语义：BoundNames <div id="sec-for-in-and-for-of-statements-static-semantics-boundnames"></div>
 
 ```
 ForDeclaration : LetOrConst ForBinding
 ```
 
-1. Return the BoundNames of ForBinding.
+1. 返回  ForBinding 的 BoundNames
 
-#### 13.7.5.3 SS: ContainsDuplicateLabels <div id="sec-for-in-and-for-of-statements-static-semantics-containsduplicatelabels"></div>
+#### 13.7.5.3 静态语义：ContainsDuplicateLabels <div id="sec-for-in-and-for-of-statements-static-semantics-containsduplicatelabels"></div>
 
-With parameter labelSet.
-
-```
-IterationStatement :
-    for ( LeftHandSideExpression in Expression ) Statement
-    for ( var ForBinding in Expression ) Statement
-    for ( ForDeclaration in Expression ) Statement
-    for ( LeftHandSideExpression of AssignmentExpression ) Statement
-    for ( var ForBinding of AssignmentExpression ) Statement
-    for ( ForDeclaration of AssignmentExpression ) Statement
-    for await ( LeftHandSideExpression of AssignmentExpression ) Statement
-    for await ( var ForBinding of AssignmentExpression ) Statement
-    for await ( ForDeclaration of AssignmentExpression ) Statement
-```
-
-1. Return ContainsDuplicateLabels of Statement with argument labelSet.
-
-> NOTE This section is extended by Annex B.3.6.
-
-#### 13.7.5.4 SS: ContainsUndefinedBreakTarget <div id="sec-for-in-and-for-of-statements-static-semantics-containsundefinedbreaktarget"></div>
-
-With parameter labelSet.
+使用参数 labelSet
 
 ```
 IterationStatement :
@@ -2054,11 +2018,13 @@ IterationStatement :
     for await ( ForDeclaration of AssignmentExpression ) Statement
 ```
 
-> NOTE This section is extended by Annex B.3.6.
+1. 返回带有参数 labelSet 的 Statement 的 ContainsDuplicateLabels
 
-#### 13.7.5.5 SS: ContainsUndefinedContinueTarget <div id="sec-for-in-and-for-of-statements-static-semantics-containsundefinedcontinuetarget"></div>
+> 注：This section 是 extended by Annex B.3.6.
 
-With parameters iterationSet and labelSet.
+#### 13.7.5.4 静态语义：ContainsUndefinedBreakTarget <div id="sec-for-in-and-for-of-statements-static-semantics-containsundefinedbreaktarget"></div>
+
+使用参数 labelSet
 
 ```
 IterationStatement :
@@ -2073,53 +2039,72 @@ IterationStatement :
     for await ( ForDeclaration of AssignmentExpression ) Statement
 ```
 
-1. Return ContainsUndefinedContinueTarget of Statement with arguments iterationSet and « ».
+> 注：This section 是 extended by Annex B.3.6.
 
-> NOTE This section is extended by Annex B.3.6.
+#### 13.7.5.5 静态语义：ContainsUndefinedContinueTarget <div id="sec-for-in-and-for-of-statements-static-semantics-containsundefinedcontinuetarget"></div>
 
-#### 13.7.5.6 SS: IsDestructuring <div id="sec-for-in-and-for-of-statements-static-semantics-isdestructuring"></div>
+使用参数iterationSet和labelSet
+
+```
+IterationStatement :
+    for ( LeftHandSideExpression in Expression ) Statement
+    for ( var ForBinding in Expression ) Statement
+    for ( ForDeclaration in Expression ) Statement
+    for ( LeftHandSideExpression of AssignmentExpression ) Statement
+    for ( var ForBinding of AssignmentExpression ) Statement
+    for ( ForDeclaration of AssignmentExpression ) Statement
+    for await ( LeftHandSideExpression of AssignmentExpression ) Statement
+    for await ( var ForBinding of AssignmentExpression ) Statement
+    for await ( ForDeclaration of AssignmentExpression ) Statement
+```
+
+1. 返回带有参数 iterationSet 和 « » 的 Statement 的 ContainsUndefinedContinueTarget
+
+> 注：This section 是 extended by Annex B.3.6.
+
+#### 13.7.5.6 静态语义：IsDestructuring <div id="sec-for-in-and-for-of-statements-static-semantics-isdestructuring"></div>
 
 ```
 ForDeclaration : LetOrConst ForBinding
 ```
 
-1. Return IsDestructuring of ForBinding.
+1. 返回 ForBinding 的 IsDestructuring
 
 ```
 ForBinding : BindingIdentifier
 ```
 
-1. Return false
+1. 返回 false
 
 ```
 ForBinding : BindingPattern
 ```
 
-1. Return true.
+1. 返回 true.
 
-> NOTE This section is extended by Annex B.3.6.
+> 注：This section 是 extended by Annex B.3.6.
 
-#### 13.7.5.7 SS: VarDeclaredNames <div id="sec-for-in-and-for-of-statements-static-semantics-vardeclarednames"></div>
+#### 13.7.5.7 静态语义：VarDeclaredNames <div id="sec-for-in-and-for-of-statements-static-semantics-vardeclarednames"></div>
 
 ```
 IterationStatement : for ( LeftHandSideExpression in Expression ) Statement
 ```
 
-1. Return the VarDeclaredNames of Statement.
+1. 返回  Statement 的 VarDeclaredNames
 
 ```
 IterationStatement : for ( var ForBinding in Expression ) Statement
 ```
 
-1. Let names be the BoundNames of ForBinding.
-2. Append to names the elements of the VarDeclaredNames of Statement.
-3. Return names.
+1. 令 names 为  ForBinding 的 BoundNames
+2. 在 names 后追加 Statement 的 VarDeclaredNames 元素 
+3. 返回 names.
 
 ```
 IterationStatement : for ( ForDeclaration in Expression ) Statement
 ```
 
-1. Return the VarDeclaredNames of Statement.
+1. 返回  Statement 的 VarDeclaredNames
 
    ```
    IterationStatement :
@@ -2127,7 +2112,7 @@ IterationStatement : for ( ForDeclaration in Expression ) Statement
        for await ( LeftHandSideExpression of AssignmentExpression ) Statement
    ```
 
-   1. Return the VarDeclaredNames of Statement.
+   1. 返回  Statement 的 VarDeclaredNames
 
    ```
    IterationStatement :
@@ -2135,9 +2120,9 @@ IterationStatement : for ( ForDeclaration in Expression ) Statement
        for await ( var ForBinding of AssignmentExpression ) Statement
    ```
 
-   1. Let names be the BoundNames of ForBinding.
-   2. Append to names the elements of the VarDeclaredNames of Statement.
-   3. Return names.
+   1. 令 names 为  ForBinding 的 BoundNames
+   2. 在 names 后追加 Statement 的 VarDeclaredNames 元素 
+   3. 返回 names.
 
    ```
    IterationStatement :
@@ -2145,27 +2130,27 @@ IterationStatement : for ( ForDeclaration in Expression ) Statement
        for await ( ForDeclaration of AssignmentExpression ) Statement
    ```
 
-   1. Return the VarDeclaredNames of Statement.
+   1. 返回  Statement 的 VarDeclaredNames
 
-> NOTE This section is extended by Annex B.3.6.
+> 注：This section 是 extended by Annex B.3.6.
 
-#### 13.7.5.8 SS: VarScopedDeclarations <div id="sec-for-in-and-for-of-statements-static-semantics-varscopeddeclarations"></div>
+#### 13.7.5.8 静态语义：VarScopedDeclarations <div id="sec-for-in-and-for-of-statements-static-semantics-varscopeddeclarations"></div>
 
 ```
 IterationStatement : for ( LeftHandSideExpression in Expression ) Statement
 ```
 
-1. Return the VarScopedDeclarations of Statement.
+1. 返回  Statement 的 VarScopedDeclarations
 
 ```
 IterationStatement : for ( var ForBinding in Expression ) Statement
 ```
 
-1. Let declarations be a List containing ForBinding.
+1. 令 declarations 为 a List containing ForBinding.
 
-2. Append to declarations the elements of the VarScopedDeclarations of Statement.
+2. 在 declarations 后追加 Statement 的 VarScopedDeclarations 元素 
 
-3. Return declarations.
+3. 返回 declarations.
 
    ```
    IterationStatement :
@@ -2173,7 +2158,7 @@ IterationStatement : for ( var ForBinding in Expression ) Statement
        for await ( LeftHandSideExpression of AssignmentExpression ) Statement
    ```
 
-   1. Return the VarScopedDeclarations of Statement.
+   1. 返回  Statement 的 VarScopedDeclarations
 
    ```
    IterationStatement :
@@ -2181,7 +2166,7 @@ IterationStatement : for ( var ForBinding in Expression ) Statement
        for await ( var ForBinding of AssignmentExpression ) Statement
    ```
 
-   1. Return the VarScopedDeclarations of Statement.
+   1. 返回  Statement 的 VarScopedDeclarations
 
    ```
    IterationStatement :
@@ -2189,9 +2174,9 @@ IterationStatement : for ( var ForBinding in Expression ) Statement
        for await ( var ForBinding of AssignmentExpression ) Statement
    ```
 
-   1. Let declarations be a List containing ForBinding.
-   2. Append to declarations the elements of the VarScopedDeclarations of Statement.
-   3. Return declarations.
+   1. 令 declarations 为 a List containing ForBinding.
+   2. 在 declarations 后追加 Statement 的 VarScopedDeclarations 元素 
+   3. 返回 declarations.
 
    ```
    IterationStatement :
@@ -2199,237 +2184,237 @@ IterationStatement : for ( var ForBinding in Expression ) Statement
        for await ( ForDeclaration of AssignmentExpression ) Statement
    ```
 
-   1. Return the VarScopedDeclarations of Statement.
+   1. 返回  Statement 的 VarScopedDeclarations
 
-> NOTE This section is extended by Annex B.3.6.
+> 注：This section 是 extended by Annex B.3.6.
 
-#### 13.7.5.9 RS: BindingInitialization <div id="sec-for-in-and-for-of-statements-runtime-semantics-bindinginitialization"></div>
+#### 13.7.5.9 运行时语义：BindingInitialization <div id="sec-for-in-and-for-of-statements-runtime-semantics-bindinginitialization"></div>
 
-With parameters value and environment.
+使用参数value和environment
 
-> NOTE undefined is passed for environment to indicate that a PutValue operation should be used to assign the initialization value. This is the case for var statements and the formal parameter lists of some non-strict functions (see 9.2.15). In those cases a lexical binding is hoisted and preinitialized prior to evaluation of its initializer.
-
-```
-ForDeclaration : LetOrConst ForBinding
-```
-
-1. Return the result of performing BindingInitialization for ForBinding passing value and environment as the arguments
-
-#### 13.7.5.10 RS: BindingInstantiation <div id="sec-runtime-semantics-bindinginstantiation"></div>
-
-With parameter environment.
+> 注：undefined 是 passed for environment to indicate that a PutValue operation should be used to assign the initialization value. This 是 the case for var statements and the formal parameter lists of some non-strict functions (see 9.2.15). In those cases a lexical binding 是 hoisted and preinitialized prior to evaluation of its initializer.
 
 ```
 ForDeclaration : LetOrConst ForBinding
 ```
 
-1. Let envRec be environment's EnvironmentRecord.
-2. Assert: envRec is a declarative Environment Record.
+1. 返回 performing BindingInitialization for ForBinding passing value and environment as the arguments 的结果
+
+#### 13.7.5.10 运行时语义：BindingInstantiation <div id="sec-runtime-semantics-bindinginstantiation"></div>
+
+使用参数 environment
+
+```
+ForDeclaration : LetOrConst ForBinding
+```
+
+1. 令 envRec 为 environment's EnvironmentRecord.
+2. 断言: envRec 是声明环境记录项.
 3. For each element name of the BoundNames of ForBinding, do
-   a. If IsConstantDeclaration of LetOrConst is true, then
-   i. Perform ! envRec.CreateImmutableBinding(name, true).
-   b. Else,
-   i. Perform ! envRec.CreateMutableBinding(name, false).
+   a. 若 IsConstantDeclaration of LetOrConst 是 true，那么
+   i. 执行 ! envRec.CreateImmutableBinding(name, true).
+   b. 否则，
+   i. 执行 ! envRec.CreateMutableBinding(name, false).
 
-#### 13.7.5.11 RS: LabelledEvaluation <div id="sec-for-in-and-for-of-statements-runtime-semantics-labelledevaluation"></div>
+#### 13.7.5.11 运行时语义：LabelledEvaluation <div id="sec-for-in-and-for-of-statements-runtime-semantics-labelledevaluation"></div>
 
-With parameter labelSet.
+使用参数 labelSet
 
 ```
 IterationStatement : for ( LeftHandSideExpression in Expression ) Statement
 ```
 
-1. Let keyResult be ? ForIn/OfHeadEvaluation(« », Expression, enumerate).
-2. Return ? ForIn/OfBodyEvaluation(LeftHandSideExpression, Statement, keyResult, enumerate, assignment, labelSet).
+1. 令 keyResult 为 ? ForIn/OfHeadEvaluation(« », Expression, enumerate).
+2. 返回 ? ForIn/OfBodyEvaluation(LeftHandSideExpression, Statement, keyResult, enumerate, assignment, labelSet).
 
 ```
 IterationStatement : for ( var ForBinding in Expression ) Statement
 ```
 
-1. Let keyResult be ? ForIn/OfHeadEvaluation(« », Expression, enumerate).
-2. Return ? ForIn/OfBodyEvaluation(ForBinding, Statement, keyResult, enumerate, varBinding, labelSet).
+1. 令 keyResult 为 ? ForIn/OfHeadEvaluation(« », Expression, enumerate).
+2. 返回 ? ForIn/OfBodyEvaluation(ForBinding, Statement, keyResult, enumerate, varBinding, labelSet).
 
 ```
 IterationStatement : for ( ForDeclaration in Expression ) Statement
 ```
 
-1. Let keyResult be ? ForIn/OfHeadEvaluation(BoundNames of ForDeclaration, Expression, enumerate).
-2. Return ? ForIn/OfBodyEvaluation(ForDeclaration, Statement, keyResult, enumerate, lexicalBinding, labelSet).
+1. 令 keyResult 为 ? ForIn/OfHeadEvaluation(BoundNames of ForDeclaration, Expression, enumerate).
+2. 返回 ? ForIn/OfBodyEvaluation(ForDeclaration, Statement, keyResult, enumerate, lexicalBinding, labelSet).
 
 ```
 IterationStatement : for ( LeftHandSideExpression of AssignmentExpression ) Statement
 ```
 
-1. Let keyResult be ? ForIn/OfHeadEvaluation(« », AssignmentExpression, iterate).
-2. Return ? ForIn/OfBodyEvaluation(LeftHandSideExpression, Statement, keyResult, iterate, assignment, labelSet).
+1. 令 keyResult 为 ? ForIn/OfHeadEvaluation(« », AssignmentExpression, iterate).
+2. 返回 ? ForIn/OfBodyEvaluation(LeftHandSideExpression, Statement, keyResult, iterate, assignment, labelSet).
 
 ```
 IterationStatement : for ( var ForBinding of AssignmentExpression ) Statement
 ```
 
-1. Let keyResult be ? ForIn/OfHeadEvaluation(« », AssignmentExpression, iterate).
-2. Return ? ForIn/OfBodyEvaluation(ForBinding, Statement, keyResult, iterate, varBinding, labelSet).
+1. 令 keyResult 为 ? ForIn/OfHeadEvaluation(« », AssignmentExpression, iterate).
+2. 返回 ? ForIn/OfBodyEvaluation(ForBinding, Statement, keyResult, iterate, varBinding, labelSet).
 
 ```
 IterationStatement : for ( ForDeclaration of AssignmentExpression ) Statement
 ```
 
-1. Let keyResult be ? ForIn/OfHeadEvaluation(BoundNames of ForDeclaration, AssignmentExpression, iterate).
-2. Return ? ForIn/OfBodyEvaluation(ForDeclaration, Statement, keyResult, iterate, lexicalBinding, labelSet).
+1. 令 keyResult 为 ? ForIn/OfHeadEvaluation(BoundNames of ForDeclaration, AssignmentExpression, iterate).
+2. 返回 ? ForIn/OfBodyEvaluation(ForDeclaration, Statement, keyResult, iterate, lexicalBinding, labelSet).
 
 ```
 IterationStatement : for await ( LeftHandSideExpression of AssignmentExpression ) Statement
 ```
 
-1. Let keyResult be ? ForIn/OfHeadEvaluation(« », AssignmentExpression, async-iterate).
-2. Return ? ForIn/OfBodyEvaluation(LeftHandSideExpression, Statement, keyResult, iterate, assignment, labelSet, async).
+1. 令 keyResult 为 ? ForIn/OfHeadEvaluation(« », AssignmentExpression, async-iterate).
+2. 返回 ? ForIn/OfBodyEvaluation(LeftHandSideExpression, Statement, keyResult, iterate, assignment, labelSet, async).
 
 ```
 IterationStatement : for await ( var ForBinding of AssignmentExpression ) Statement
 ```
 
-1. Let keyResult be ? ForIn/OfHeadEvaluation(« », AssignmentExpression, async-iterate).
-2. Return ? ForIn/OfBodyEvaluation(ForBinding, Statement, keyResult, iterate, varBinding, labelSet, async).
+1. 令 keyResult 为 ? ForIn/OfHeadEvaluation(« », AssignmentExpression, async-iterate).
+2. 返回 ? ForIn/OfBodyEvaluation(ForBinding, Statement, keyResult, iterate, varBinding, labelSet, async).
 
 ```
 IterationStatement : for await ( ForDeclaration of AssignmentExpression ) Statement
 ```
 
-1. Let keyResult be ? ForIn/OfHeadEvaluation(BoundNames of ForDeclaration, AssignmentExpression, asynciterate).
-2. Return ? ForIn/OfBodyEvaluation(ForDeclaration, Statement, keyResult, iterate, lexicalBinding, labelSet, async).
+1. 令 keyResult 为 ? ForIn/OfHeadEvaluation(BoundNames of ForDeclaration, AssignmentExpression, asynciterate).
+2. 返回 ? ForIn/OfBodyEvaluation(ForDeclaration, Statement, keyResult, iterate, lexicalBinding, labelSet, async).
 
-> NOTE This section is extended by Annex B.3.6.
+> 注：This section 是 extended by Annex B.3.6.
 
-#### 13.7.5.12 RS: ForIn/OfHeadEvaluation ( TDZnames, expr, iterationKind ) <div id="sec-runtime-semantics-forin-div-ofheadevaluation-tdznames-expr-iterationkind"></div>
+#### 13.7.5.12 运行时语义：ForIn/OfHeadEvaluation ( TDZnames, expr, iterationKind ) <div id="sec-runtime-semantics-forin-div-ofheadevaluation-tdznames-expr-iterationkind"></div>
 
-The abstract operation ForIn/OfHeadEvaluation is called with arguments TDZnames, expr, and iterationKind. The value of iterationKind is either enumerate, iterate, or async-iterate.
+The abstract operation ForIn/OfHeadEvaluation 是 called with arguments TDZnames, expr, and iterationKind. The value of iterationKind 是 either enumerate, iterate, or async-iterate.
 
-1. Let oldEnv be the running execution context's LexicalEnvironment.
-2. If TDZnames is not an empty List, then
-a. Assert: TDZnames has no duplicate entries.
-b. Let TDZ be NewDeclarativeEnvironment(oldEnv).
-c. Let TDZEnvRec be TDZ's EnvironmentRecord.
-d. For each string name in TDZnames, do
-i. Perform ! TDZEnvRec.CreateMutableBinding(name, false).
-e. Set the running execution context's LexicalEnvironment to TDZ.
-3. Let exprRef be the result of evaluating expr.
-4. Set the running execution context's LexicalEnvironment to oldEnv.
-5. Let exprValue be ? GetValue(exprRef).
-6. If iterationKind is enumerate, then
-a. If exprValue is undefined or null, then
-i. Return Completion { [[Type]]: break, [[Value]]: empty, [[Target]]: empty }.
-b. Let obj be ! ToObject(exprValue).
-c. Return ? EnumerateObjectProperties(obj).
-7. Else,
-a. Assert: iterationKind is iterate.
-b. If iterationKind is async-iterate, let iteratorHint be async.
-c. Else, let iteratorHint be sync.
-d. Return ? GetIterator(exprValue, iteratorHint).
+1. 令 oldEnv 为运行时执行上下文的词法环境.
+2. 若 TDZnames 是 not an empty List，那么
+a. 断言: TDZnames has no duplicate entries.
+b. 令 TDZ 为 NewDeclarativeEnvironment(oldEnv).
+c. 令 TDZEnvRec 为 TDZ's EnvironmentRecord.
+d. 对于TDZnames中的string name，执行
+i. 执行 ! TDZEnvRec.CreateMutableBinding(name, false).
+e. 设置运行时执行上下文的词法环境 为 TDZ.
+3. 令 exprRef 为 expr 的运算结果
+4. 设置运行时执行上下文的词法环境 为 oldEnv.
+5. 令 exprValue 为 ? GetValue(exprRef).
+6. 若 iterationKind 是 enumerate，那么
+a. 若 exprValue 是 undefined or null，那么
+i. 返回 Completion { [[Type]]: break, [[Value]]: empty, [[Target]]: empty }.
+b. 令 obj 为 ! ToObject(exprValue).
+c. 返回 ? EnumerateObjectProperties(obj).
+7. 否则，
+a. 断言: iterationKind 是 iterate.
+b. 若 iterationKind 是 async-iterate, let iteratorHint be async.
+c. 否则， let iteratorHint be sync.
+d. 返回 ? GetIterator(exprValue, iteratorHint).
 
-#### 13.7.5.13 RS: ForIn/OfBodyEvaluation ( lhs, stmt, iteratorRecord, iterationKind, lhsKind, labelSet [ , iteratorKind ] ) <div id="sec-runtime-semantics-forin-div-ofbodyevaluation-lhs-stmt-iterator-lhskind-labelset"></div>
+#### 13.7.5.13 运行时语义：ForIn/OfBodyEvaluation ( lhs, stmt, iteratorRecord, iterationKind, lhsKind, labelSet [ , iteratorKind ] ) <div id="sec-runtime-semantics-forin-div-ofbodyevaluation-lhs-stmt-iterator-lhskind-labelset"></div>
 
-The abstract operation ForIn/OfBodyEvaluation is called with arguments lhs, stmt, iteratorRecord, iterationKind, lhsKind, labelSet, and optional argument iteratorKind. The value of lhsKind is either assignment, varBinding or lexicalBinding. The value of iteratorKind is either sync or async.
+The abstract operation ForIn/OfBodyEvaluation 是 called with arguments lhs, stmt, iteratorRecord, iterationKind, lhsKind, labelSet, and optional argument iteratorKind. The value of lhsKind 是 either assignment, varBinding or lexicalBinding. The value of iteratorKind 是 either sync or async.
 
-1. If iteratorKind is not present, set iteratorKind to sync.
+1. 若 iteratorKind 不存在, 设置 iteratorKind 为 sync.
 
-2. Let oldEnv be the running execution context's LexicalEnvironment.
+2. 令 oldEnv 为运行时执行上下文的词法环境.
 
-3. Let V be undefined.
+3. 令 V 为 undefined.
 
-4. Let destructuring be IsDestructuring of lhs.
+4. 令 destructuring 为 lhs 的 IsDestructuring
 
-5. If destructuring is true and if lhsKind is assignment, then
-  a. Assert: lhs is a LeftHandSideExpression.
-  b. Let assignmentPattern be the AssignmentPattern that is covered by lhs.
+5. 若 destructuring 是 true and if lhsKind 是 assignment，那么
+    a. 断言: lhs 是 a LeftHandSideExpression.
+    b. 令 assignmentPattern 为 the AssignmentPattern that 是 covered by lhs.
 
-6. Repeat,
+6. 重复，
 
-   a. Let nextResult be ? Call(iteratorRecord.[[NextMethod]], iteratorRecord.[[Iterator]], « »).
-   b. If iteratorKind is async, then set nextResult to ? Await(nextResult).
-   c. If Type(nextResult) is not Object, throw a TypeError exception.
-   d. Let done be ? IteratorComplete(nextResult).
-   e. If done is true, return NormalCompletion(V).
-   f. Let nextValue be ? IteratorValue(nextResult).
-   g. If lhsKind is either assignment or varBinding, then
-   i. If destructuring is false, then
-   1. Let lhsRef be the result of evaluating lhs. (It may be evaluated repeatedly.)
-   h. Else,
-   i. Assert: lhsKind is lexicalBinding.
-   ii. Assert: lhs is a ForDeclaration.
-   iii. Let iterationEnv be NewDeclarativeEnvironment(oldEnv).
-   iv. Perform BindingInstantiation for lhs passing iterationEnv as the argument.
-   v. Set the running execution context's LexicalEnvironment to iterationEnv.
-   vi. If destructuring is false, then
-   1. Assert: lhs binds a single name.
-   2. Let lhsName be the sole element of BoundNames of lhs.
-   3. Let lhsRef be ! ResolveBinding(lhsName).
-   i. If destructuring is false, then
-   i. If lhsRef is an abrupt completion, then
-   1. Let status be lhsRef.
-   ii. Else if lhsKind is lexicalBinding, then
-   1. Let status be InitializeReferencedBinding(lhsRef, nextValue).
-   iii. Else,
-   1. Let status be PutValue(lhsRef, nextValue).
-   j. Else,
-   i. If lhsKind is assignment, then
-   1. Let status be the result of performing DestructuringAssignmentEvaluation of assignmentPattern
+   a. 令 nextResult 为 ? Call(iteratorRecord.[[NextMethod]], iteratorRecord.[[Iterator]], « »).
+   b. 若 iteratorKind 是 async，那么 设置 nextResult 为 ? Await(nextResult).
+   c. 若 Type(nextResult) 是 not Object, throw a TypeError exception.
+   d. 令 done 为 ? IteratorComplete(nextResult).
+   e. 若 done 是 true，返回 NormalCompletion(V).
+   f. 令 nextValue 为 ? IteratorValue(nextResult).
+   g. 若 lhsKind 是 either assignment or varBinding，那么
+   i. 若 destructuring 是 false，那么
+   1. 令 lhsRef be evaluating lhs. (It may 为 evaluated repeatedly.) 的结果
+   h. 否则，
+   i. 断言: lhsKind 是 lexicalBinding.
+   ii. 断言: lhs 是 a ForDeclaration.
+   iii. 令 iterationEnv 为 NewDeclarativeEnvironment(oldEnv).
+   iv. 执行 BindingInstantiation for lhs passing iterationEnv as the argument.
+   v. 设置运行时执行上下文的词法环境 为 iterationEnv.
+   vi. 若 destructuring 是 false，那么
+   1. 断言: lhs binds a single name.
+   2. 令 lhsName 为 the sole element of lhs 的 BoundNames
+   3. 令 lhsRef 为 ! ResolveBinding(lhsName).
+   i. 若 destructuring 是 false，那么
+   i. 若 lhsRef 是 abrupt completion，那么
+   1. 令 status 为 lhsRef.
+   ii. Else if lhsKind 是 lexicalBinding，那么
+   1. 令 status 为 InitializeReferencedBinding(lhsRef, nextValue).
+   iii. 否则，
+   1. 令 status 为 PutValue(lhsRef, nextValue).
+   j. 否则，
+   i. 若 lhsKind 是 assignment，那么
+   1. 令 status 为 performing DestructuringAssignmentEvaluation of assignmentPattern 的结果
    using nextValue as the argument.
-   ii. Else if lhsKind is varBinding, then
-   1. Assert: lhs is a ForBinding.
-   2. Let status be the result of performing BindingInitialization for lhs passing nextValue and
+   ii. Else if lhsKind 是 varBinding，那么
+   1. 断言: lhs 是 a ForBinding.
+   2. 令 status 为 performing BindingInitialization for lhs passing nextValue and 的结果
    undefined as the arguments.
-   iii. Else,
-   1. Assert: lhsKind is lexicalBinding.
-   2. Assert: lhs is a ForDeclaration.
-   3. Let status be the result of performing BindingInitialization for lhs passing nextValue and
+   iii. 否则，
+   1. 断言: lhsKind 是 lexicalBinding.
+   2. 断言: lhs 是 a ForDeclaration.
+   3. 令 status 为 performing BindingInitialization for lhs passing nextValue and 的结果
    iterationEnv as arguments.
-   k. If status is an abrupt completion, then
-   i. Set the running execution context's LexicalEnvironment to oldEnv.
-   ii. If iteratorKind is async, return ? AsyncIteratorClose(iteratorRecord, status).
-   iii. If iterationKind is enumerate, then
-   1. Return status.
-   iv. Else,
-   1. Assert: iterationKind is iterate.
-   2. Return ? IteratorClose(iteratorRecord, status).
-   l. Let result be the result of evaluating stmt.
-   17. m. Set the running execution context's LexicalEnvironment to oldEnv.
-      n. If LoopContinues(result, labelSet) is false, then
-      i. If iterationKind is enumerate, then
-      1. Return Completion(UpdateEmpty(result, V)).
-      ii. Else,
-      1. Assert: iterationKind is iterate.
-      2. Set status to UpdateEmpty(result, V).
-      3. If iteratorKind is async, return ? AsyncIteratorClose(iteratorRecord, status).
-      4. Return ? IteratorClose(iteratorRecord, status).
-      o. If result.[[Value]] is not empty, set V to result.[[Value]].
+   k. 若 status 是 abrupt completion，那么
+   i. 设置运行时执行上下文的词法环境 为 oldEnv.
+   ii. 若 iteratorKind 是 async，返回 ? AsyncIteratorClose(iteratorRecord, status).
+   iii. 若 iterationKind 是 enumerate，那么
+   1. 返回 status.
+   iv. 否则，
+   1. 断言: iterationKind 是 iterate.
+   2. 返回 ? IteratorClose(iteratorRecord, status).
+   l. 令 result 为 stmt 的运算结果
+   17. m. 设置运行时执行上下文的词法环境 为 oldEnv.
+         n. 若 LoopContinues(result, labelSet) 是 false，那么
+         i. 若 iterationKind 是 enumerate，那么
+      1. 返回 Completion(UpdateEmpty(result, V)).
+         ii. 否则，
+      1. 断言: iterationKind 是 iterate.
+      2. 设置 status 为 UpdateEmpty(result, V).
+      3. 若 iteratorKind 是 async，返回 ? AsyncIteratorClose(iteratorRecord, status).
+      4. 返回 ? IteratorClose(iteratorRecord, status).
+         o. 若 result.[[Value]] 是 not empty, 设置 V 为 result.[[Value]].
 
-#### 13.7.5.14 RS: Evaluation <div id="sec-for-in-and-for-of-statements-runtime-semantics-evaluation"></div>
+#### 13.7.5.14 运行时语义：Evaluation <div id="sec-for-in-and-for-of-statements-runtime-semantics-evaluation"></div>
 
 ```
 ForBinding : BindingIdentifier
 ```
 
-1. Let bindingId be StringValue of BindingIdentifier.
-2. Return ? ResolveBinding(bindingId).
+1. 令 bindingId 为 BindingIdentifier 的 StringValue
+2. 返回 ? ResolveBinding(bindingId).
 
 #### 13.7.5.15 EnumerateObjectProperties ( O ) <div id="sec-enumerate-object-properties"></div>
 
-When the abstract operation EnumerateObjectProperties is called with argument O, the following steps are taken:
+When the abstract operation EnumerateObjectProperties 是 called with argument O, the following steps are taken:
 
-1. Assert: Type(O) is Object.
-2. Return an Iterator object (25.1.1.2) whose next method iterates over all the String-valued keys of enumerable
-properties of O. The iterator object is never directly accessible to ECMAScript code. The mechanics and order of
-enumerating the properties is not specified but must conform to the rules specified below.
+1. 断言: Type(O) 是 Object.
+2. 返回 an Iterator object (25.1.1.2) whose next method iterates over all the String-valued keys of enumerable
+properties of O. The iterator object 是 never directly accessible to ECMAScript code. The mechanics and order of
+enumerating the properties 是 not specified but must conform to the rules specified below.
 
-The iterator's throw and return methods are null and are never invoked. The iterator's next method processes object properties to determine whether the property key should be returned as an iterator value. Returned property keys do not include keys that are Symbols. Properties of the target object may be deleted during enumeration. A property that is deleted before it is processed by the iterator's next method is ignored. If new properties are added to the target object during enumeration, the newly added properties are not guaranteed to be processed in the active enumeration. A property name will be returned by the iterator's next method at most once in any enumeration.
+The iterator's throw and return methods are null and are never invoked. The iterator's next method processes object properties to determine whether the property key should be returned as an iterator value. Returned property keys do not include keys that are Symbols. Properties of the target object may be deleted during enumeration. A property that 是 deleted before it 是 processed by the iterator's next method 是 ignored. 若 new properties are added to the target object during enumeration, the newly added properties are not guaranteed to be processed in the active enumeration. A property name will be returned by the iterator's next method at most once in any enumeration.
 
-Enumerating the properties of the target object includes enumerating properties of its prototype, and the prototype of the prototype, and so on, recursively; but a property of a prototype is not processed if it has the same name as a property that has already been processed by the iterator's next method. The values of [[Enumerable]] attributes are not considered when determining if a property of a prototype object has already been processed. The enumerable property names of prototype objects must be obtained by invoking EnumerateObjectProperties passing the prototype object as the argument. EnumerateObjectProperties must obtain the own property keys of the target object by calling its [[OwnPropertyKeys]] internal method. Property attributes of the target object must be obtained by calling its [[GetOwnProperty]] internal method.
+Enumerating the properties of the target object includes enumerating properties of its prototype, and the prototype of the prototype, and so on, recursively; but a property of a prototype 是 not processed if it has the same name as a property that has already been processed by the iterator's next method. The values of [[Enumerable]] attributes are not considered when determining if a property of a prototype object has already been processed. The enumerable property names of prototype objects must be obtained by invoking EnumerateObjectProperties passing the prototype object as the argument. EnumerateObjectProperties must obtain the own property keys of the target object by calling its [[OwnPropertyKeys]] internal method. Property attributes of the target object must be obtained by calling its [[GetOwnProperty]] internal method.
 
-> NOTE The following is an informative definition of an ECMAScript generator function that conforms to these rules:
+> 注：The following 是 an informative definition of an ECMAScript generator function that conforms to these rules:
 >
 > function* EnumerateObjectProperties(obj) {
 >  const visited = new Set();
->  for (const key of Reflect.ownKeys(obj)) {
+>  for (const Reflect 的 keyownKeys(obj)) {
 >  if (typeof key === "symbol") continue;
 >  const desc = Reflect.getOwnPropertyDescriptor(obj, key);
 >
@@ -2447,7 +2432,7 @@ Enumerating the properties of the target object includes enumerating properties 
 
 ## 13.8 continue 语句 <div id="sec-continue-statement"></div>
 
-Syntax
+**语法**
 
 ```
 ContinueStatement[Yield, Await] :
@@ -2455,51 +2440,51 @@ ContinueStatement[Yield, Await] :
     continue [no LineTerminator here] LabelIdentifier[?Yield, ?Await] ;
 ```
 
-### 13.8.1 SS: Early Errors <div id="sec-continue-statement-static-semantics-early-errors"></div>
+### 13.8.1 静态语义：Early Errors <div id="sec-continue-statement-static-semantics-early-errors"></div>
 
 ```
 ContinueStatement : continue ;
 ContinueStatement : continue LabelIdentifier ;
 ```
 
-It is a Syntax Error if this ContinueStatement is not nested, directly or indirectly (but not crossing function
+It 是 a Syntax Error if this ContinueStatement 是 not nested, directly or indirectly (but not crossing function
 boundaries), within an IterationStatement.
 
-### 13.8.2 SS: ContainsUndefinedContinueTarget <div id="sec-continue-statement-static-semantics-containsundefinedcontinuetarget"></div>
+### 13.8.2 静态语义：ContainsUndefinedContinueTarget <div id="sec-continue-statement-static-semantics-containsundefinedcontinuetarget"></div>
 
-With parameters iterationSet and labelSet.
-
-```
-ContinueStatement : continue ;
-```
-
-1. Return false.
-
-```
-ContinueStatement : continue LabelIdentifier ;
-```
-
-1. If the StringValue of LabelIdentifier is not an element of iterationSet, return true.
-2. Return false.
-
-### 13.8.3 RS: Evaluation <div id="sec-continue-statement-runtime-semantics-evaluation"></div>
+使用参数iterationSet和labelSet
 
 ```
 ContinueStatement : continue ;
 ```
 
-1. Return Completion { [[Type]]: continue, [[Value]]: empty, [[Target]]: empty }.
+1. 返回 false.
 
 ```
 ContinueStatement : continue LabelIdentifier ;
 ```
 
-1. Let label be the StringValue of LabelIdentifier.
-2. Return Completion { [[Type]]: continue, [[Value]]: empty, [[Target]]: label }.
+1. 若 the StringValue of LabelIdentifier 是 not an element of iterationSet，返回 true.
+2. 返回 false.
+
+### 13.8.3 运行时语义：Evaluation <div id="sec-continue-statement-runtime-semantics-evaluation"></div>
+
+```
+ContinueStatement : continue ;
+```
+
+1. 返回 Completion { [[Type]]: continue, [[Value]]: empty, [[Target]]: empty }.
+
+```
+ContinueStatement : continue LabelIdentifier ;
+```
+
+1. 令 label 为  LabelIdentifier 的 StringValue
+2. 返回 Completion { [[Type]]: continue, [[Value]]: empty, [[Target]]: label }.
 
 ## 13.9 break 语句 <div id="sec-break-statement"></div>
 
-Syntax
+**语法**
 
 ```
 BreakStatement[Yield, Await] :
@@ -2507,50 +2492,50 @@ BreakStatement[Yield, Await] :
     break [no LineTerminator here] LabelIdentifier[?Yield, ?Await] ;
 ```
 
-### 13.9.1 SS: Early Errors <div id="sec-break-statement-static-semantics-early-errors"></div>
+### 13.9.1 静态语义：Early Errors <div id="sec-break-statement-static-semantics-early-errors"></div>
 
 ```
 BreakStatement : break ;
 ```
 
-It is a Syntax Error if this BreakStatement is not nested, directly or indirectly (but not crossing function
+It 是 a Syntax Error if this BreakStatement 是 not nested, directly or indirectly (but not crossing function
 boundaries), within an IterationStatement or a SwitchStatement.
 
-### 13.9.2 SS: ContainsUndefinedBreakTarget <div id="sec-break-statement-static-semantics-containsundefinedbreaktarget"></div>
+### 13.9.2 静态语义：ContainsUndefinedBreakTarget <div id="sec-break-statement-static-semantics-containsundefinedbreaktarget"></div>
 
-With parameter labelSet.
-
-```
-BreakStatement : break ;
-```
-
-1. Return false.
-
-```
-BreakStatement : break LabelIdentifier ;
-```
-
-1. If the StringValue of LabelIdentifier is not an element of labelSet, return true.
-2. Return false.
-
-### 13.9.3 RS: Evaluation <div id="sec-break-statement-runtime-semantics-evaluation"></div>
+使用参数 labelSet
 
 ```
 BreakStatement : break ;
 ```
 
-1. Return Completion { [[Type]]: break, [[Value]]: empty, [[Target]]: empty }.
+1. 返回 false.
 
 ```
 BreakStatement : break LabelIdentifier ;
 ```
 
-1. Let label be the StringValue of LabelIdentifier.
-2. Return Completion { [[Type]]: break, [[Value]]: empty, [[Target]]: label }.
+1. 若 the StringValue of LabelIdentifier 是 not an element of labelSet，返回 true.
+2. 返回 false.
+
+### 13.9.3 运行时语义：Evaluation <div id="sec-break-statement-runtime-semantics-evaluation"></div>
+
+```
+BreakStatement : break ;
+```
+
+1. 返回 Completion { [[Type]]: break, [[Value]]: empty, [[Target]]: empty }.
+
+```
+BreakStatement : break LabelIdentifier ;
+```
+
+1. 令 label 为  LabelIdentifier 的 StringValue
+2. 返回 Completion { [[Type]]: break, [[Value]]: empty, [[Target]]: label }.
 
 ## 13.10 return 语句 <div id="sec-return-statement"></div>
 
-Syntax
+**语法**
 
 ```
 ReturnStatement[Yield, Await] :
@@ -2558,114 +2543,114 @@ ReturnStatement[Yield, Await] :
     return [no LineTerminator here] Expression[+In, ?Yield, ?Await] ;
 ```
 
-> NOTE A return statement causes a function to cease execution and, in most cases, returns a value to the caller. If Expression is omitted, the return value is undefined. Otherwise, the return value is the value of Expression. A return statement may not actually return a value to the caller depending on surrounding context. For example, in a try block, a return statement's completion record may be replaced with another completion record during evaluation of the finally block.
+> 注：A return statement causes a function to cease execution and, in most cases, returns a value to the caller. 若 Expression 是 omitted, the return value 是 undefined. Otherwise, the return value 是  Expression 的 value A return statement may not actually return a value to the caller depending on surrounding context. For example, in a try block, a return statement's completion record may be replaced with another completion record during evaluation of the finally block.
 
-### 13.10.1 RS: Evaluation <div id="sec-return-statement-runtime-semantics-evaluation"></div>
+### 13.10.1 运行时语义：Evaluation <div id="sec-return-statement-runtime-semantics-evaluation"></div>
 
 ```
 ReturnStatement : return ;
 ```
 
-1. Return Completion { [[Type]]: return, [[Value]]: undefined, [[Target]]: empty }.
+1. 返回 Completion { [[Type]]: return, [[Value]]: undefined, [[Target]]: empty }.
 
 ```
 ReturnStatement : return Expression ;
 ```
 
-1. Let exprRef be the result of evaluating Expression.
-2. Let exprValue be ? GetValue(exprRef).
-3. If ! GetGeneratorKind() is async, set exprValue to ? Await(exprValue).
-4. Return Completion { [[Type]]: return, [[Value]]: exprValue, [[Target]]: empty }.
+1. 令 exprRef 为 Expression 的运算结果
+2. 令 exprValue 为 ? GetValue(exprRef).
+3. 若 ! GetGeneratorKind() 是 async, 设置 exprValue 为 ? Await(exprValue).
+4. 返回 Completion { [[Type]]: return, [[Value]]: exprValue, [[Target]]: empty }.
 
 ## 13.11 with 语句 <div id="sec-with-statement"></div>
 
-Syntax
+**语法**
 
 ```
 WithStatement[Yield, Await, Return] :
     with ( Expression[+In, ?Yield, ?Await] ) Statement[?Yield, ?Await, ?Return]
 ```
 
-> NOTE The with statement adds an object Environment Record for a computed object to the lexical environment of the running execution context. It then executes a statement using this augmented lexical environment. Finally, it restores the original lexical environment.
+> 注：The with statement adds an object Environment Record for a computed object to the lexical environment of the running execution context. It then executes a statement using this augmented lexical environment. Finally, it restores the original lexical environment.
 
-### 13.11.1 SS: Early Errors <div id="sec-with-statement-static-semantics-early-errors"></div>
-
-```
-WithStatement : with ( Expression ) Statement
-```
-
-It is a Syntax Error if the code that matches this production is contained in strict mode code.
-It is a Syntax Error if IsLabelledFunction(Statement) is true.
-
-> NOTE It is only necessary to apply the second rule if the extension specified in B.3.2 is implemented.
-
-### 13.11.2 SS: ContainsDuplicateLabels <div id="sec-with-statement-static-semantics-containsduplicatelabels"></div>
-
-With parameter labelSet.
+### 13.11.1 静态语义：Early Errors <div id="sec-with-statement-static-semantics-early-errors"></div>
 
 ```
 WithStatement : with ( Expression ) Statement
 ```
 
-1. Return ContainsDuplicateLabels of Statement with argument labelSe
+It 是 a Syntax Error if the code that matches this production 是 contained in strict mode code.
+It 是 a Syntax Error if IsLabelledFunction(Statement) 是 true.
 
-### 13.11.3 SS: ContainsUndefinedBreakTarget <div id="sec-with-statement-static-semantics-containsundefinedbreaktarget"></div>
+> 注：It 是 only necessary to apply the second rule if the extension specified in B.3.2 是 implemented.
 
-With parameter labelSet
+### 13.11.2 静态语义：ContainsDuplicateLabels <div id="sec-with-statement-static-semantics-containsduplicatelabels"></div>
 
-```
-WithStatement : with ( Expression ) Statement
-```
-
-1. Return ContainsUndefinedBreakTarget of Statement with argument labelSet.
-
-### 13.11.4 SS: ContainsUndefinedContinueTarget <div id="sec-with-statement-static-semantics-containsundefinedcontinuetarget"></div>
-
-With parameters iterationSet and labelSet.
+使用参数 labelSet
 
 ```
 WithStatement : with ( Expression ) Statement
 ```
 
-1. Return ContainsUndefinedContinueTarget of Statement with arguments iterationSet and « ».
+1. 返回 ContainsDuplicateLabels of Statement with argument labelSe
 
-### 13.11.5 SS: VarDeclaredNames <div id="sec-with-statement-static-semantics-vardeclarednames"></div>
+### 13.11.3 静态语义：ContainsUndefinedBreakTarget <div id="sec-with-statement-static-semantics-containsundefinedbreaktarget"></div>
 
-```
-WithStatement : with ( Expression ) Statement
-```
-
-1. Return the VarDeclaredNames of Statement.
-
-### 13.11.6 SS: VarScopedDeclarations <div id="sec-with-statement-static-semantics-varscopeddeclarations"></div>
+使用参数 labelSe
 
 ```
 WithStatement : with ( Expression ) Statement
 ```
 
-1. Return the VarScopedDeclarations of Statement.
+1. 返回带有参数 labelSet 的 Statement 的 ContainsUndefinedBreakTarget
 
-### 13.11.7 RS: Evaluation <div id="sec-with-statement-runtime-semantics-evaluation"></div>
+### 13.11.4 静态语义：ContainsUndefinedContinueTarget <div id="sec-with-statement-static-semantics-containsundefinedcontinuetarget"></div>
+
+使用参数iterationSet和labelSet
 
 ```
 WithStatement : with ( Expression ) Statement
 ```
 
-1. Let val be the result of evaluating Expression.
-2. Let obj be ? ToObject(? GetValue(val)).
-3. Let oldEnv be the running execution context's LexicalEnvironment.
-4. Let newEnv be NewObjectEnvironment(obj, oldEnv).
-5. Set the withEnvironment flag of newEnv's EnvironmentRecord to true.
-6. Set the running execution context's LexicalEnvironment to newEnv.
-7. Let C be the result of evaluating Statement.
-8. Set the running execution context's LexicalEnvironment to oldEnv.
-9. Return Completion(UpdateEmpty(C, undefined)).
+1. 返回带有参数 iterationSet 和 « » 的 Statement 的 ContainsUndefinedContinueTarget
 
-> NOTE No matter how control leaves the embedded Statement, whether normally or by some form of abrupt completion or exception, the LexicalEnvironment is always restored to its former state.
+### 13.11.5 静态语义：VarDeclaredNames <div id="sec-with-statement-static-semantics-vardeclarednames"></div>
+
+```
+WithStatement : with ( Expression ) Statement
+```
+
+1. 返回  Statement 的 VarDeclaredNames
+
+### 13.11.6 静态语义：VarScopedDeclarations <div id="sec-with-statement-static-semantics-varscopeddeclarations"></div>
+
+```
+WithStatement : with ( Expression ) Statement
+```
+
+1. 返回  Statement 的 VarScopedDeclarations
+
+### 13.11.7 运行时语义：Evaluation <div id="sec-with-statement-runtime-semantics-evaluation"></div>
+
+```
+WithStatement : with ( Expression ) Statement
+```
+
+1. 令 val 为 Expression 的运算结果
+2. 令 obj 为 ? ToObject(? GetValue(val)).
+3. 令 oldEnv 为运行时执行上下文的词法环境.
+4. 令 newEnv 为 NewObjectEnvironment(obj, oldEnv).
+5. 设置 the withEnvironment flag of newEnv's EnvironmentRecord 为 true.
+6. 设置运行时执行上下文的词法环境 为 newEnv.
+7. 令 C 为 Statement 的运算结果
+8. 设置运行时执行上下文的词法环境 为 oldEnv.
+9. 返回 Completion(UpdateEmpty(C, undefined)).
+
+> 注：No matter how control leaves the embedded Statement, whether normally or by some form of abrupt completion or exception, the LexicalEnvironment 是 always restored to its former state.
 
 ## 13.12 switch 语句 <div id="sec-switch-statement"></div>
 
-Syntax
+**语法**
 
 ```
 SwitchStatement[Yield, Await, Return] :
@@ -2683,464 +2668,464 @@ DefaultClause[Yield, Await, Return] :
     default : StatementList[?Yield, ?Await, ?Return] opt
 ```
 
-### 13.12.1 SS: Early Errors <div id="sec-switch-statement-static-semantics-early-errors"></div>
+### 13.12.1 静态语义：Early Errors <div id="sec-switch-statement-static-semantics-early-errors"></div>
 
 ```
 SwitchStatement : switch ( Expression ) CaseBlock
 ```
 
-It is a Syntax Error if the LexicallyDeclaredNames of CaseBlock contains any duplicate entries.
-It is a Syntax Error if any element of the LexicallyDeclaredNames of CaseBlock also occurs in the
+It 是 a Syntax Error if the LexicallyDeclaredNames of CaseBlock contains any duplicate entries.
+It 是 a Syntax Error if any element of the LexicallyDeclaredNames of CaseBlock also occurs in the
 VarDeclaredNames of CaseBlock.
 
-### 13.12.2 SS: ContainsDuplicateLabels <div id="sec-switch-statement-static-semantics-containsduplicatelabels"></div>
+### 13.12.2 静态语义：ContainsDuplicateLabels <div id="sec-switch-statement-static-semantics-containsduplicatelabels"></div>
 
-With parameter labelSet.
+使用参数 labelSet
 
 ```
 SwitchStatement : switch ( Expression ) CaseBlock
 ```
 
-1. Return ContainsDuplicateLabels of CaseBlock with argument labelSet.
+1. 返回带有参数 labelSet 的 CaseBlock 的 ContainsDuplicateLabels
 
 ```
 CaseBlock : { }
 ```
 
-1. Return false
+1. 返回 false
 
 ```
 CaseBlock : { CaseClauses DefaultClause CaseClauses }
 ```
 
-1. If the first CaseClauses is present, then
-a. Let hasDuplicates be ContainsDuplicateLabels of the first CaseClauses with argument labelSet.
-b. If hasDuplicates is true, return true.
-2. Let hasDuplicates be ContainsDuplicateLabels of DefaultClause with argument labelSet.
-3. If hasDuplicates is true, return true.
-4. If the second CaseClauses is not present, return false.
-5. Return ContainsDuplicateLabels of the second CaseClauses with argument labelSet.
+1. 若 the first CaseClauses 存在，那么
+a. 令 hasDuplicates 为 ContainsDuplicateLabels of the first CaseClauses with argument labelSet.
+b. 若 hasDuplicates 是 true，返回 true.
+2. 令 hasDuplicates 为带有参数 labelSet 的 DefaultClause 的 ContainsDuplicateLabels
+3. 若 hasDuplicates 是 true，返回 true.
+4. 若 the second CaseClauses 不存在，返回 false.
+5. 返回 ContainsDuplicateLabels of the second CaseClauses with argument labelSet.
 
 ```
 CaseClauses : CaseClauses CaseClause
 ```
 
-1. Let hasDuplicates be ContainsDuplicateLabels of CaseClauses with argument labelSet.
-2. If hasDuplicates is true, return true.
-3. Return ContainsDuplicateLabels of CaseClause with argument labelSet.
+1. 令 hasDuplicates 为带有参数 labelSet 的 CaseClauses 的 ContainsDuplicateLabels
+2. 若 hasDuplicates 是 true，返回 true.
+3. 返回带有参数 labelSet 的 CaseClause 的 ContainsDuplicateLabels
 
 ```
 CaseClause : case Expression : StatementList
 ```
 
-1. If the StatementList is present, return ContainsDuplicateLabels of StatementList with argument labelSet.
-2. Return false.
+1. 若 the StatementList 存在，返回带有参数 labelSet 的 StatementList 的 ContainsDuplicateLabels
+2. 返回 false.
 
 ```
 DefaultClause : default : StatementList
 ```
 
-1. If the StatementList is present, return ContainsDuplicateLabels of StatementList with argument labelSet.
-2. Return false
+1. 若 the StatementList 存在，返回带有参数 labelSet 的 StatementList 的 ContainsDuplicateLabels
+2. 返回 false
 
-### 13.12.3 SS: ContainsUndefinedBreakTarget <div id="sec-switch-statement-static-semantics-containsundefinedbreaktarget"></div>
+### 13.12.3 静态语义：ContainsUndefinedBreakTarget <div id="sec-switch-statement-static-semantics-containsundefinedbreaktarget"></div>
 
-With parameter labelSet.
+使用参数 labelSet
 
 ```
 SwitchStatement : switch ( Expression ) CaseBlock
 ```
 
-1. Return ContainsUndefinedBreakTarget of CaseBlock with argument labelSet.
+1. 返回带有参数 labelSet 的 CaseBlock 的 ContainsUndefinedBreakTarget
 
 ```
 CaseBlock : { }
 ```
 
-1. Return false.
+1. 返回 false.
 
 ```
 CaseBlock : { CaseClauses DefaultClause CaseClauses }
 ```
 
-1. If the first CaseClauses is present, then
-a. Let hasUndefinedLabels be ContainsUndefinedBreakTarget of the first CaseClauses with argument labelSet.
-b. If hasUndefinedLabels is true, return true.
-2. Let hasUndefinedLabels be ContainsUndefinedBreakTarget of DefaultClause with argument labelSet.
-3. If hasUndefinedLabels is true, return true.
-4. If the second CaseClauses is not present, return false.
-5. Return ContainsUndefinedBreakTarget of the second CaseClauses with argument labelSet.
+1. 若 the first CaseClauses 存在，那么
+a. 令 hasUndefinedLabels 为 ContainsUndefinedBreakTarget of the first CaseClauses with argument labelSet.
+b. 若 hasUndefinedLabels 是 true，返回 true.
+2. 令 hasUndefinedLabels 为带有参数 labelSet 的 DefaultClause 的 ContainsUndefinedBreakTarget
+3. 若 hasUndefinedLabels 是 true，返回 true.
+4. 若 the second CaseClauses 不存在，返回 false.
+5. 返回 ContainsUndefinedBreakTarget of the second CaseClauses with argument labelSet.
 
 ```
 CaseClauses : CaseClauses CaseClause
 ```
 
-1. Let hasUndefinedLabels be ContainsUndefinedBreakTarget of CaseClauses with argument labelSet.
-2. If hasUndefinedLabels is true, return true.
-3. Return ContainsUndefinedBreakTarget of CaseClause with argument labelSet.
+1. 令 hasUndefinedLabels 为带有参数 labelSet 的 CaseClauses 的 ContainsUndefinedBreakTarget
+2. 若 hasUndefinedLabels 是 true，返回 true.
+3. 返回带有参数 labelSet 的 CaseClause 的 ContainsUndefinedBreakTarget
 
 ```
 CaseClause : case Expression : StatementList
 ```
 
-1. If the StatementList is present, return ContainsUndefinedBreakTarget of StatementList with argument labelSet.
-2. Return false.
+1. 若 the StatementList 存在，返回带有参数 labelSet 的 StatementList 的 ContainsUndefinedBreakTarget
+2. 返回 false.
 
 ```
 DefaultClause : default : StatementList
 ```
 
-1. If the StatementList is present, return ContainsUndefinedBreakTarget of StatementList with argument labelSet.
-2. Return false.
+1. 若 the StatementList 存在，返回带有参数 labelSet 的 StatementList 的 ContainsUndefinedBreakTarget
+2. 返回 false.
 
-### 13.12.4 SS: ContainsUndefinedContinueTarget <div id="sec-switch-statement-static-semantics-containsundefinedcontinuetarget"></div>
+### 13.12.4 静态语义：ContainsUndefinedContinueTarget <div id="sec-switch-statement-static-semantics-containsundefinedcontinuetarget"></div>
 
-With parameters iterationSet and labelSet.
+使用参数iterationSet和labelSet
 
 ```
 SwitchStatement : switch ( Expression ) CaseBlock
 ```
 
-1. Return ContainsUndefinedContinueTarget of CaseBlock with arguments iterationSet and « ».
+1. 返回带有参数 iterationSet 和 « » 的 CaseBlock 的 ContainsUndefinedContinueTarget
 
 ```
 CaseBlock : { }
 ```
 
-1. Return false
+1. 返回 false
 
 ```
 CaseBlock : { CaseClauses DefaultClause CaseClauses }
 ```
 
-1. If the first CaseClauses is present, then
-a. Let hasUndefinedLabels be ContainsUndefinedContinueTarget of the first CaseClauses with arguments
+1. 若 the first CaseClauses 存在，那么
+a. 令 hasUndefinedLabels 为 ContainsUndefinedContinueTarget of the first CaseClauses with arguments
 iterationSet and « ».
-b. If hasUndefinedLabels is true, return true.
-2. Let hasUndefinedLabels be ContainsUndefinedContinueTarget of DefaultClause with arguments iterationSet and «
+b. 若 hasUndefinedLabels 是 true，返回 true.
+2. 令 hasUndefinedLabels 为 ContainsUndefinedContinueTarget of DefaultClause with arguments iterationSet and «
 ».
-3. If hasUndefinedLabels is true, return true.
-4. If the second CaseClauses is not present, return false.
-5. Return ContainsUndefinedContinueTarget of the second CaseClauses with arguments iterationSet and « ».
+3. 若 hasUndefinedLabels 是 true，返回 true.
+4. 若 the second CaseClauses 不存在，返回 false.
+5. 返回 ContainsUndefinedContinueTarget of the second CaseClauses with arguments iterationSet and « ».
 
 ```
 CaseClauses : CaseClauses CaseClause
 ```
 
-1. Let hasUndefinedLabels be ContainsUndefinedContinueTarget of CaseClauses with arguments iterationSet and « ».
-2. If hasUndefinedLabels is true, return true.
-3. Return ContainsUndefinedContinueTarget of CaseClause with arguments iterationSet and « ».
+1. 令 hasUndefinedLabels 为带有参数 iterationSet 和 « » 的 CaseClauses 的 ContainsUndefinedContinueTarget
+2. 若 hasUndefinedLabels 是 true，返回 true.
+3. 返回带有参数 iterationSet 和 « » 的 CaseClause 的 ContainsUndefinedContinueTarget
 
 ```
 CaseClause : case Expression : StatementList
 ```
 
-1. If the StatementList is present, return ContainsUndefinedContinueTarget of StatementList with arguments iterationSet and « ».
-2. Return false.
+1. 若 the StatementList 存在，返回带有参数 iterationSet 和 « » 的 StatementList 的 ContainsUndefinedContinueTarget
+2. 返回 false.
 
 ```
 DefaultClause : default : StatementList
 ```
 
-1. If the StatementList is present, return ContainsUndefinedContinueTarget of StatementList with arguments iterationSet and « ».
-2. Return false.
+1. 若 the StatementList 存在，返回带有参数 iterationSet 和 « » 的 StatementList 的 ContainsUndefinedContinueTarget
+2. 返回 false.
 
-### 13.12.5 SS: LexicallyDeclaredNames <div id="sec-switch-statement-static-semantics-lexicallydeclarednames"></div>
+### 13.12.5 静态语义：LexicallyDeclaredNames <div id="sec-switch-statement-static-semantics-lexicallydeclarednames"></div>
 
 ```
 CaseBlock : { }
 ```
 
-1. Return a new empty List.
+1. 返回一个新的空列表.
 
 ```
 CaseBlock : { CaseClauses DefaultClause CaseClauses }
 ```
 
-1. If the first CaseClauses is present, let names be the LexicallyDeclaredNames of the first CaseClauses.
-2. Else, let names be a new empty List.
-3. Append to names the elements of the LexicallyDeclaredNames of the DefaultClause.
-4. If the second CaseClauses is not present, return names
+1. 若 the first CaseClauses 存在, let names be the LexicallyDeclaredNames of the first CaseClauses.
+2. 否则， let names be一个新的空列表.
+3. 在 names 后追加 DefaultClause 的 LexicallyDeclaredNames 元素 
+4. 若 the second CaseClauses 不存在，返回 names
 
-5. Return the result of appending to names the elements of the LexicallyDeclaredNames of the second CaseClauses
+5. 返回 appending to names the elements of the LexicallyDeclaredNames of the second CaseClauses 的结果
 
 ```
 CaseClauses : CaseClauses CaseClause
 ```
 
-1. Let names be LexicallyDeclaredNames of CaseClauses.
-2. Append to names the elements of the LexicallyDeclaredNames of CaseClause.
-3. Return names.
+1. 令 names 为 CaseClauses 的 LexicallyDeclaredNames
+2. 在 names 后追加 CaseClause 的 LexicallyDeclaredNames 元素 
+3. 返回 names.
 
 ```
 CaseClause : case Expression : StatementList
 ```
 
-1. If the StatementList is present, return the LexicallyDeclaredNames of StatementList.
-2. Return a new empty List.
+1. 若 the StatementList 存在，返回  StatementList 的 LexicallyDeclaredNames
+2. 返回一个新的空列表.
 
 ```
 DefaultClause : default : StatementList
 ```
 
-1. If the StatementList is present, return the LexicallyDeclaredNames of StatementList.
-2. Return a new empty List.
+1. 若 the StatementList 存在，返回  StatementList 的 LexicallyDeclaredNames
+2. 返回一个新的空列表.
 
-### 13.12.6 SS: LexicallyScopedDeclarations <div id="sec-switch-statement-static-semantics-lexicallyscopeddeclarations"></div>
+### 13.12.6 静态语义：LexicallyScopedDeclarations <div id="sec-switch-statement-static-semantics-lexicallyscopeddeclarations"></div>
 
 ```
 CaseBlock : { }
 ```
 
-1. Return a new empty List.
+1. 返回一个新的空列表.
 
 ```
 CaseBlock : { CaseClauses DefaultClause CaseClauses }
 ```
 
-1. If the first CaseClauses is present, let declarations be the LexicallyScopedDeclarations of the first CaseClauses.
-2. Else, let declarations be a new empty List.
-3. Append to declarations the elements of the LexicallyScopedDeclarations of the DefaultClause.
-4. If the second CaseClauses is not present, return declarations.
-5. Return the result of appending to declarations the elements of the LexicallyScopedDeclarations of the second CaseClauses.
+1. 若 the first CaseClauses 存在, let declarations be the LexicallyScopedDeclarations of the first CaseClauses.
+2. 否则， let declarations be一个新的空列表.
+3. 在 declarations 后追加 DefaultClause 的 LexicallyScopedDeclarations 元素 
+4. 若 the second CaseClauses 不存在，返回 declarations.
+5. 返回 appending to declarations the elements of the LexicallyScopedDeclarations of the second CaseClauses. 的结果
 
 ```
 CaseClauses : CaseClauses CaseClause
 ```
 
-1. Let declarations be LexicallyScopedDeclarations of CaseClauses.
-2. Append to declarations the elements of the LexicallyScopedDeclarations of CaseClause.
-3. Return declarations
+1. 令 declarations 为 CaseClauses 的 LexicallyScopedDeclarations
+2. 在 declarations 后追加 CaseClause 的 LexicallyScopedDeclarations 元素 
+3. 返回 declarations
 
 ```
 CaseClause : case Expression : StatementList
 ```
 
-1. If the StatementList is present, return the LexicallyScopedDeclarations of StatementList.
-2. Return a new empty List.
+1. 若 the StatementList 存在，返回  StatementList 的 LexicallyScopedDeclarations
+2. 返回一个新的空列表.
 
 ```
 DefaultClause : default : StatementList
 ```
 
-1. If the StatementList is present, return the LexicallyScopedDeclarations of StatementList.
-2. Return a new empty List.
+1. 若 the StatementList 存在，返回  StatementList 的 LexicallyScopedDeclarations
+2. 返回一个新的空列表.
 
-### 13.12.7 SS: VarDeclaredNames <div id="sec-switch-statement-static-semantics-vardeclarednames"></div>
+### 13.12.7 静态语义：VarDeclaredNames <div id="sec-switch-statement-static-semantics-vardeclarednames"></div>
 
 ```
 SwitchStatement : switch ( Expression ) CaseBlock
 ```
 
-1. Return the VarDeclaredNames of CaseBlock.
+1. 返回  CaseBlock 的 VarDeclaredNames
 
 ```
 CaseBlock : { }
 ```
 
-1. Return a new empty List.
+1. 返回一个新的空列表.
 
 ```
 CaseBlock : { CaseClauses DefaultClause CaseClauses }
 ```
 
-1. If the first CaseClauses is present, let names be the VarDeclaredNames of the first CaseClauses.
-2. Else, let names be a new empty List.
-3. Append to names the elements of the VarDeclaredNames of the DefaultClause.
-4. If the second CaseClauses is not present, return names.
-5. Return the result of appending to names the elements of the VarDeclaredNames of the second CaseClauses.
+1. 若 the first CaseClauses 存在, let names be the VarDeclaredNames of the first CaseClauses.
+2. 否则， let names be一个新的空列表.
+3. 在 names 后追加 DefaultClause 的 VarDeclaredNames 元素 
+4. 若 the second CaseClauses 不存在，返回 names.
+5. 返回 appending to names the elements of the VarDeclaredNames of the second CaseClauses. 的结果
 
 ```
 CaseClauses : CaseClauses CaseClause
 ```
 
-1. Let names be VarDeclaredNames of CaseClauses.
-2. Append to names the elements of the VarDeclaredNames of CaseClause.
-3. Return names.
+1. 令 names 为 CaseClauses 的 VarDeclaredNames
+2. 在 names 后追加 CaseClause 的 VarDeclaredNames 元素 
+3. 返回 names.
 
 ```
 CaseClause : case Expression : StatementList
 ```
 
-1. If the StatementList is present, return the VarDeclaredNames of StatementList.
-2. Return a new empty List.
+1. 若 the StatementList 存在，返回  StatementList 的 VarDeclaredNames
+2. 返回一个新的空列表.
 
 ```
 DefaultClause : default : StatementList
 ```
 
-1. If the StatementList is present, return the VarDeclaredNames of StatementList.
-2. Return a new empty List.
+1. 若 the StatementList 存在，返回  StatementList 的 VarDeclaredNames
+2. 返回一个新的空列表.
 
-### 13.12.8 SS: VarScopedDeclarations <div id="sec-switch-statement-static-semantics-varscopeddeclarations"></div>
+### 13.12.8 静态语义：VarScopedDeclarations <div id="sec-switch-statement-static-semantics-varscopeddeclarations"></div>
 
 ```
 SwitchStatement : switch ( Expression ) CaseBlock
 ```
 
-1. Return the VarScopedDeclarations of CaseBlock.
+1. 返回  CaseBlock 的 VarScopedDeclarations
 
 ```
 CaseBlock : { }
 ```
 
-1. Return a new empty List.
+1. 返回一个新的空列表.
 
 ```
 CaseBlock : { CaseClauses DefaultClause CaseClauses }
 ```
 
-1. If the first CaseClauses is present, let declarations be the VarScopedDeclarations of the first CaseClauses.
-2. Else, let declarations be a new empty List.
-3. Append to declarations the elements of the VarScopedDeclarations of the DefaultClause.
-4. If the second CaseClauses is not present, return declarations.
-5. Return the result of appending to declarations the elements of the VarScopedDeclarations of the second CaseClauses.
+1. 若 the first CaseClauses 存在, let declarations be the VarScopedDeclarations of the first CaseClauses.
+2. 否则， let declarations be一个新的空列表.
+3. 在 declarations 后追加 DefaultClause 的 VarScopedDeclarations 元素 
+4. 若 the second CaseClauses 不存在，返回 declarations.
+5. 返回 appending to declarations the elements of the VarScopedDeclarations of the second CaseClauses. 的结果
 
 ```
 CaseClauses : CaseClauses CaseClause
 ```
 
-1. Let declarations be VarScopedDeclarations of CaseClauses.
-2. Append to declarations the elements of the VarScopedDeclarations of CaseClause.
-3. Return declarations.
+1. 令 declarations 为 CaseClauses 的 VarScopedDeclarations
+2. 在 declarations 后追加 CaseClause 的 VarScopedDeclarations 元素 
+3. 返回 declarations.
 
 ```
 CaseClause : case Expression : StatementList
 ```
 
-1. If the StatementList is present, return the VarScopedDeclarations of StatementList.
-2. Return a new empty List.
+1. 若 the StatementList 存在，返回  StatementList 的 VarScopedDeclarations
+2. 返回一个新的空列表.
 
 ```
 DefaultClause : default : StatementList
 ```
 
-1. If the StatementList is present, return the VarScopedDeclarations of StatementList.
-2. Return a new empty List.
+1. 若 the StatementList 存在，返回  StatementList 的 VarScopedDeclarations
+2. 返回一个新的空列表.
 
-### 13.12.9 RS: CaseBlockEvaluation <div id="sec-runtime-semantics-caseblockevaluation"></div>
+### 13.12.9 运行时语义：CaseBlockEvaluation <div id="sec-runtime-semantics-caseblockevaluation"></div>
 
-With parameter input.
+使用参数 input
 
 ```
 CaseBlock : { }
 ```
 
-1. Return NormalCompletion(undefined).
+1. 返回 NormalCompletion(undefined).
 
 ```
 CaseBlock : { CaseClauses }
 ```
 
-1. Let V be undefined.
-2. Let A be the List of CaseClause items in CaseClauses, in source text order.
-3. Let found be false.
-4. For each CaseClause C in A, do
-a. If found is false, then
-i. Set found to ? CaseClauseIsSelected(C, input).
-b. If found is true, then
-i. Let R be the result of evaluating C.
-ii. If R.[[Value]] is not empty, set V to R.[[Value]].
-iii. If R is an abrupt completion, return Completion(UpdateEmpty(R, V)).
-5. Return NormalCompletion(V).
+1. 令 V 为 undefined.
+2. 令 A 为 the List of CaseClause items in CaseClauses, in source text order.
+3. 令 found 为 false.
+4. 对于A中的CaseClause C，执行
+a. 若 found 是 false，那么
+i. 设置 found 为 ? CaseClauseIsSelected(C, input).
+b. 若 found 是 true，那么
+i. 令 R 为 C 的运算结果
+ii. 若 R.[[Value]] 是 not empty, 设置 V 为 R.[[Value]].
+iii. 若 R 是 abrupt completion，返回 Completion(UpdateEmpty(R, V)).
+5. 返回 NormalCompletion(V).
 
 ```
 CaseBlock : { CaseClauses DefaultClause CaseClauses }
 ```
 
-1. Let V be undefined.
-2. If the first CaseClauses is present, then
-a. Let A be the List of CaseClause items in the first CaseClauses, in source text order.
-3. Else,
-a. Let A be « ».
-4. Let found be false.
-5. For each CaseClause C in A, do
-a. If found is false, then
-i. Set found to ? CaseClauseIsSelected(C, input).
-b. If found is true, then
-i. Let R be the result of evaluating C.
-ii. If R.[[Value]] is not empty, set V to R.[[Value]].
-iii. If R is an abrupt completion, return Completion(UpdateEmpty(R, V)).
-6. Let foundInB be false.
-7. If the second CaseClauses is present, then
-a. Let B be the List of CaseClause items in the second CaseClauses, in source text order.
-8. Else,
-a. Let B be « ».
+1. 令 V 为 undefined.
+2. 若 the first CaseClauses 存在，那么
+a. 令 A 为 the List of CaseClause items in the first CaseClauses, in source text order.
+3. 否则，
+a. 令 A 为 « ».
+4. 令 found 为 false.
+5. 对于A中的CaseClause C，执行
+a. 若 found 是 false，那么
+i. 设置 found 为 ? CaseClauseIsSelected(C, input).
+b. 若 found 是 true，那么
+i. 令 R 为 C 的运算结果
+ii. 若 R.[[Value]] 是 not empty, 设置 V 为 R.[[Value]].
+iii. 若 R 是 abrupt completion，返回 Completion(UpdateEmpty(R, V)).
+6. 令 foundInB 为 false.
+7. 若 the second CaseClauses 存在，那么
+a. 令 B 为 the List of CaseClause items in the second CaseClauses, in source text order.
+8. 否则，
+a. 令 B 为 « ».
 
-9. If found is false, then
-a. For each CaseClause C in B, do
-i. If foundInB is false, then
-1. Set foundInB to ? CaseClauseIsSelected(C, input).
-ii. If foundInB is true, then
-1. Let R be the result of evaluating CaseClause C.
-2. If R.[[Value]] is not empty, set V to R.[[Value]].
-3. If R is an abrupt completion, return Completion(UpdateEmpty(R, V)).
-10. If foundInB is true, return NormalCompletion(V).
-11. Let R be the result of evaluating DefaultClause.
-12. If R.[[Value]] is not empty, set V to R.[[Value]].
-13. If R is an abrupt completion, return Completion(UpdateEmpty(R, V)).
-14. For each CaseClause C in B (NOTE: this is another complete iteration of the second CaseClauses), do
-a. Let R be the result of evaluating CaseClause C.
-b. If R.[[Value]] is not empty, set V to R.[[Value]].
-c. If R is an abrupt completion, return Completion(UpdateEmpty(R, V)).
-15. Return NormalCompletion(V).
+9. 若 found 是 false，那么
+a. 对于B中的CaseClause C，执行
+i. 若 foundInB 是 false，那么
+1. 设置 foundInB 为 ? CaseClauseIsSelected(C, input).
+ii. 若 foundInB 是 true，那么
+1. 令 R 为 CaseClause C 的运算结果
+2. 若 R.[[Value]] 是 not empty, 设置 V 为 R.[[Value]].
+3. 若 R 是 abrupt completion，返回 Completion(UpdateEmpty(R, V)).
+10. 若 foundInB 是 true，返回 NormalCompletion(V).
+11. 令 R 为 DefaultClause 的运算结果
+12. 若 R.[[Value]] 是 not empty, 设置 V 为 R.[[Value]].
+13. 若 R 是 abrupt completion，返回 Completion(UpdateEmpty(R, V)).
+14. For each CaseClause C in B (注: this 是 another complete iteration of the second CaseClauses), do
+a. 令 R 为 CaseClause C 的运算结果
+b. 若 R.[[Value]] 是 not empty, 设置 V 为 R.[[Value]].
+c. 若 R 是 abrupt completion，返回 Completion(UpdateEmpty(R, V)).
+15. 返回 NormalCompletion(V).
 
-### 13.12.10 RS: CaseClauseIsSelected ( C, input ) <div id="sec-runtime-semantics-caseclauseisselected"></div>
+### 13.12.10 运行时语义：CaseClauseIsSelected ( C, input ) <div id="sec-runtime-semantics-caseclauseisselected"></div>
 
 The abstract operation CaseClauseIsSelected, given CaseClause C and value input, determines whether C matches input.
 
-1. Assert: C is an instance of the production CaseClause : case Expression : StatementList .
-2. Let exprRef be the result of evaluating the Expression of C.
-3. Let clauseSelector be ? GetValue(exprRef).
-4. Return the result of performing Strict Equality Comparison input === clauseSelector.
+1. 断言: C 是 an instance of the production CaseClause : case Expression : StatementList .
+2. 令 exprRef 为 evaluating  C 的 Expression 的结果
+3. 令 clauseSelector 为 ? GetValue(exprRef).
+4. 返回 performing Strict Equality Comparison input === clauseSelector. 的结果
 
-> NOTE This operation does not execute C's StatementList (if any). The CaseBlock algorithm uses its return value to determine which StatementList to start executing.
+> 注：This operation does not execute C's StatementList (if any). The CaseBlock algorithm uses its return value to determine which StatementList to start executing.
 
-### 13.12.11 RS: Evaluation <div id="sec-switch-statement-runtime-semantics-evaluation"></div>
+### 13.12.11 运行时语义：Evaluation <div id="sec-switch-statement-runtime-semantics-evaluation"></div>
 
 ```
 SwitchStatement : switch ( Expression ) CaseBlock
 ```
 
-1. Let exprRef be the result of evaluating Expression.
-2. Let switchValue be ? GetValue(exprRef).
-3. Let oldEnv be the running execution context's LexicalEnvironment.
-4. Let blockEnv be NewDeclarativeEnvironment(oldEnv).
-5. Perform BlockDeclarationInstantiation(CaseBlock, blockEnv).
-6. Set the running execution context's LexicalEnvironment to blockEnv.
-7. Let R be the result of performing CaseBlockEvaluation of CaseBlock with argument switchValue.
-8. Set the running execution context's LexicalEnvironment to oldEnv.
-9. Return R
+1. 令 exprRef 为 Expression 的运算结果
+2. 令 switchValue 为 ? GetValue(exprRef).
+3. 令 oldEnv 为运行时执行上下文的词法环境.
+4. 令 blockEnv 为 NewDeclarativeEnvironment(oldEnv).
+5. 执行 BlockDeclarationInstantiation(CaseBlock, blockEnv).
+6. 设置运行时执行上下文的词法环境 为 blockEnv.
+7. 令 R 为 performing带有参数 switchValue 的 CaseBlock 的 CaseBlockEvaluation 的结果
+8. 设置运行时执行上下文的词法环境 为 oldEnv.
+9. 返回 R
 
-> NOTE No matter how control leaves the SwitchStatement the LexicalEnvironment is always restored to its former state.
+> 注：No matter how control leaves the SwitchStatement the LexicalEnvironment 是 always restored to its former state.
 
 ```
 CaseClause : case Expression :
 ```
 
-1. Return NormalCompletion(empty).
+1. 返回 NormalCompletion(empty).
 
 ```
 CaseClause : case Expression : StatementList
 ```
 
-1. Return the result of evaluating StatementList.
+1. 返回 StatementList 的运算结果
 
 ```
 DefaultClause : default :
 ```
 
-1. Return NormalCompletion(empty).
+1. 返回 NormalCompletion(empty).
 
 ```
 DefaultClause : default : StatementList
 ```
 
-1. Return the result of evaluating StatementList.
+1. 返回 StatementList 的运算结果
 
 ## 13.13 带标签的语句 <div id="sec-labelled-statements"></div>
 
-Syntax
+**语法**
 
 ```
 LabelledStatement[Yield, Await, Return] :
@@ -3150,270 +3135,270 @@ LabelledItem[Yield, Await, Return] :
     FunctionDeclaration[?Yield, ?Await, ~Default]
 ```
 
-> NOTE A Statement may be prefixed by a label. Labelled statements are only used in conjunction with labelled break and continue statements. ECMAScript has no goto statement. A Statement can be part of a LabelledStatement, which itself can be part of a LabelledStatement, and so on. The labels introduced this way are collectively referred to as the “current label set” when describing the semantics of individual statements.
+> 注：A Statement may be prefixed by a label. Labelled statements are only used in conjunction with labelled break and continue statements. ECMAScript has no goto statement. A Statement can be part of a LabelledStatement, which itself can be part of a LabelledStatement, and so on. The labels introduced this way are collectively referred to as the “current label set” when describing the semantics of individual statements.
 
-### 13.13.1 SS: Early Errors <div id="sec-labelled-statements-static-semantics-early-errors"></div>
+### 13.13.1 静态语义：Early Errors <div id="sec-labelled-statements-static-semantics-early-errors"></div>
 
 ```
 LabelledItem : FunctionDeclaration
 ```
 
-It is a Syntax Error if any source text matches this rule.
+It 是 a Syntax Error if any source text matches this rule.
 
-> NOTE An alternative definition for this rule is provided in B.3.2.
+> 注：An alternative definition for this rule 是 provided in B.3.2.
 
-### 13.13.2 SS: ContainsDuplicateLabels <div id="sec-labelled-statements-static-semantics-containsduplicatelabels"></div>
+### 13.13.2 静态语义：ContainsDuplicateLabels <div id="sec-labelled-statements-static-semantics-containsduplicatelabels"></div>
 
-With parameter labelSet.
+使用参数 labelSet
 
 ```
 LabelledStatement : LabelIdentifier : LabelledItem
 ```
 
-1. Let label be the StringValue of LabelIdentifier.
-2. If label is an element of labelSet, return true.
-3. Let newLabelSet be a copy of labelSet with label appended.
-4. Return ContainsDuplicateLabels of LabelledItem with argument newLabelSet.
+1. 令 label 为  LabelIdentifier 的 StringValue
+2. 若 label 是 an element of labelSet，返回 true.
+3. 令 newLabelSet 为 a copy of labelSet with label appended.
+4. 返回带有参数 newLabelSet 的 LabelledItem 的 ContainsDuplicateLabels
 
 ```
 LabelledItem : FunctionDeclaration
 ```
 
-1. Return false.
+1. 返回 false.
 
-### 13.13.3 SS: ContainsUndefinedBreakTarget <div id="sec-labelled-statements-static-semantics-containsundefinedbreaktarget"></div>
+### 13.13.3 静态语义：ContainsUndefinedBreakTarget <div id="sec-labelled-statements-static-semantics-containsundefinedbreaktarget"></div>
 
-With parameter labelSet.
+使用参数 labelSet
 
 ```
 LabelledStatement : LabelIdentifier : LabelledItem
 ```
 
-1. Let label be the StringValue of LabelIdentifier.
-2. Let newLabelSet be a copy of labelSet with label appended.
-3. Return ContainsUndefinedBreakTarget of LabelledItem with argument newLabelSet.
+1. 令 label 为  LabelIdentifier 的 StringValue
+2. 令 newLabelSet 为 a copy of labelSet with label appended.
+3. 返回带有参数 newLabelSet 的 LabelledItem 的 ContainsUndefinedBreakTarget
 
 ```
 LabelledItem : FunctionDeclaration
 ```
 
-1. Return false.
+1. 返回 false.
 
-### 13.13.4 SS: ContainsUndefinedContinueTarget <div id="sec-labelled-statements-static-semantics-containsundefinedcontinuetarget"></div>
+### 13.13.4 静态语义：ContainsUndefinedContinueTarget <div id="sec-labelled-statements-static-semantics-containsundefinedcontinuetarget"></div>
 
-With parameters iterationSet and labelSet.
+使用参数iterationSet和labelSet
 
 ```
 LabelledStatement : LabelIdentifier : LabelledItem
 ```
 
-1. Let label be the StringValue of LabelIdentifier.
-2. Let newLabelSet be a copy of labelSet with label appended.
-3. Return ContainsUndefinedContinueTarget of LabelledItem with arguments iterationSet and newLabelSet.
+1. 令 label 为  LabelIdentifier 的 StringValue
+2. 令 newLabelSet 为 a copy of labelSet with label appended.
+3. 返回带有参数 iterationSet 和 newLabelSet 的 LabelledItem 的 ContainsUndefinedContinueTarget
 
 ```
 LabelledItem : FunctionDeclaration
 ```
 
-1. Return false.
+1. 返回 false.
 
-### 13.13.5 SS: IsLabelledFunction ( stmt ) <div id="sec-islabelledfunction"></div>
+### 13.13.5 静态语义：IsLabelledFunction ( stmt ) <div id="sec-islabelledfunction"></div>
 
 The abstract operation IsLabelledFunction with argument stmt performs the following steps:
 
-1. If stmt is not a LabelledStatement, return false.
-2. Let item be the LabelledItem of stmt.
-3. If item is LabelledItem : FunctionDeclaration , return true.
-4. Let subStmt be the Statement of item.
-5. Return IsLabelledFunction(subStmt).
+1. 若 stmt 是 not a LabelledStatement，返回 false.
+2. 令 item 为  stmt 的 LabelledItem
+3. 若 item 是 LabelledItem : FunctionDeclaration ，返回 true.
+4. 令 subStmt 为  item 的 Statement
+5. 返回 IsLabelledFunction(subStmt).
 
-### 13.13.6 SS: LexicallyDeclaredNames <div id="sec-labelled-statements-static-semantics-lexicallydeclarednames"></div>
+### 13.13.6 静态语义：LexicallyDeclaredNames <div id="sec-labelled-statements-static-semantics-lexicallydeclarednames"></div>
 
 ```
 LabelledStatement : LabelIdentifier : LabelledItem
 ```
 
-1. Return the LexicallyDeclaredNames of LabelledItem.
+1. 返回  LabelledItem 的 LexicallyDeclaredNames
 
 ```
 LabelledItem : Statement
 ```
 
-1. Return a new empty List.
+1. 返回一个新的空列表.
 
 ```
 LabelledItem : FunctionDeclaration
 ```
 
-1. Return BoundNames of FunctionDeclaration.
+1. 返回 FunctionDeclaration 的 BoundNames
 
-### 13.13.7 SS: LexicallyScopedDeclarations <div id="sec-labelled-statements-static-semantics-lexicallyscopeddeclarations"></div>
+### 13.13.7 静态语义：LexicallyScopedDeclarations <div id="sec-labelled-statements-static-semantics-lexicallyscopeddeclarations"></div>
 
 ```
 LabelledStatement : LabelIdentifier : LabelledItem
 ```
 
-1. Return the LexicallyScopedDeclarations of LabelledItem.
+1. 返回  LabelledItem 的 LexicallyScopedDeclarations
 
 ```
 LabelledItem : Statement
 ```
 
-1. Return a new empty List.
+1. 返回一个新的空列表.
 
 ```
 LabelledItem : FunctionDeclaration
 ```
 
-1. Return a new List containing FunctionDeclaration.
+1. 返回包含 FunctionDeclaration. 的新列表
 
-### 13.13.8 SS: TopLevelLexicallyDeclaredNames <div id="sec-labelled-statements-static-semantics-toplevellexicallydeclarednames"></div>
-
-```
-LabelledStatement : LabelIdentifier : LabelledItem
-```
-
-1. Return a new empty List.
-
-### 13.13.9 SS: TopLevelLexicallyScopedDeclarations <div id="sec-labelled-statements-static-semantics-toplevellexicallyscopeddeclarations"></div>
+### 13.13.8 静态语义：TopLevelLexicallyDeclaredNames <div id="sec-labelled-statements-static-semantics-toplevellexicallydeclarednames"></div>
 
 ```
 LabelledStatement : LabelIdentifier : LabelledItem
 ```
 
-1. Return a new empty List.
+1. 返回一个新的空列表.
 
-### 13.13.10 SS: TopLevelVarDeclaredNames <div id="sec-labelled-statements-static-semantics-toplevelvardeclarednames"></div>
+### 13.13.9 静态语义：TopLevelLexicallyScopedDeclarations <div id="sec-labelled-statements-static-semantics-toplevellexicallyscopeddeclarations"></div>
 
 ```
 LabelledStatement : LabelIdentifier : LabelledItem
 ```
 
-1. Return the TopLevelVarDeclaredNames of LabelledItem.
+1. 返回一个新的空列表.
+
+### 13.13.10 静态语义：TopLevelVarDeclaredNames <div id="sec-labelled-statements-static-semantics-toplevelvardeclarednames"></div>
+
+```
+LabelledStatement : LabelIdentifier : LabelledItem
+```
+
+1. 返回  LabelledItem 的 TopLevelVarDeclaredNames
 
 ```
 LabelledItem : Statement
 ```
 
-1. If Statement is Statement : LabelledStatement , return TopLevelVarDeclaredNames of Statement.
-2. Return VarDeclaredNames of Statement.
+1. 若 Statement 是 Statement : LabelledStatement ，返回 Statement 的 TopLevelVarDeclaredNames
+2. 返回 Statement 的 VarDeclaredNames
 
 ```
 LabelledItem : FunctionDeclaration
 ```
 
-1. Return BoundNames of FunctionDeclaration.
+1. 返回 FunctionDeclaration 的 BoundNames
 
-### 13.13.11 SS: TopLevelVarScopedDeclarations <div id="sec-labelled-statements-static-semantics-toplevelvarscopeddeclarations"></div>
+### 13.13.11 静态语义：TopLevelVarScopedDeclarations <div id="sec-labelled-statements-static-semantics-toplevelvarscopeddeclarations"></div>
 
 ```
 LabelledStatement : LabelIdentifier : LabelledItem
 ```
 
-1. Return the TopLevelVarScopedDeclarations of LabelledItem.
+1. 返回  LabelledItem 的 TopLevelVarScopedDeclarations
 
 ```
 LabelledItem : Statement
 ```
 
-1. If Statement is Statement : LabelledStatement , return TopLevelVarScopedDeclarations of Statement.
-2. Return VarScopedDeclarations of Statement.
+1. 若 Statement 是 Statement : LabelledStatement ，返回 Statement 的 TopLevelVarScopedDeclarations
+2. 返回 Statement 的 VarScopedDeclarations
 
 ```
 LabelledItem : FunctionDeclaration
 ```
 
-1. Return a new List containing FunctionDeclaration.
+1. 返回包含 FunctionDeclaration. 的新列表
 
-### 13.13.12 SS: VarDeclaredNames <div id="sec-labelled-statements-static-semantics-vardeclarednames"></div>
+### 13.13.12 静态语义：VarDeclaredNames <div id="sec-labelled-statements-static-semantics-vardeclarednames"></div>
 
 ```
 LabelledStatement : LabelIdentifier : LabelledItem
 ```
 
-1. Return the VarDeclaredNames of LabelledItem.
+1. 返回  LabelledItem 的 VarDeclaredNames
 
 ```
 LabelledItem : FunctionDeclaration
 ```
 
-1. Return a new empty List.
+1. 返回一个新的空列表.
 
-### 13.13.13 SS: VarScopedDeclarations <div id="sec-labelled-statements-static-semantics-varscopeddeclarations"></div>
+### 13.13.13 静态语义：VarScopedDeclarations <div id="sec-labelled-statements-static-semantics-varscopeddeclarations"></div>
 
 ```
 LabelledStatement : LabelIdentifier : LabelledItem
 ```
 
-1. Return the VarScopedDeclarations of LabelledItem.
+1. 返回  LabelledItem 的 VarScopedDeclarations
 
 ```
 LabelledItem : FunctionDeclaration
 ```
 
-1. Return a new empty List.
+1. 返回一个新的空列表.
 
-### 13.13.14 RS: LabelledEvaluation <div id="sec-labelled-statements-runtime-semantics-labelledevaluation"></div>
+### 13.13.14 运行时语义：LabelledEvaluation <div id="sec-labelled-statements-runtime-semantics-labelledevaluation"></div>
 
-With parameter labelSet.
+使用参数 labelSet
 
 ```
 LabelledStatement : LabelIdentifier : LabelledItem
 ```
 
-1. Let label be the StringValue of LabelIdentifier.
-2. Append label as an element of labelSet.
-3. Let stmtResult be LabelledEvaluation of LabelledItem with argument labelSet.
-4. If stmtResult.[[Type]] is break and SameValue(stmtResult.[[Target]], label) is true, then
-a. Set stmtResult to NormalCompletion(stmtResult.[[Value]]).
-5. Return Completion(stmtResult).
+1. 令 label 为  LabelIdentifier 的 StringValue
+2. Append label as an labelSet 的 element
+3. 令 stmtResult 为带有参数 labelSet 的 LabelledItem 的 LabelledEvaluation
+4. 若 stmtResult.[[Type]] 是 break and SameValue(stmtResult.[[Target]], label) 是 true，那么
+a. 设置 stmtResult 为 NormalCompletion(stmtResult.[[Value]]).
+5. 返回 Completion(stmtResult).
 
 ```
 LabelledItem : Statement
 ```
 
-1. If Statement is either a LabelledStatement or a BreakableStatement, then
-a. Return LabelledEvaluation of Statement with argument labelSet.
-2. Else,
-a. Return the result of evaluating Statement.
+1. 若 Statement 是 either a LabelledStatement or a BreakableStatement，那么
+a. 返回带有参数 labelSet 的 Statement 的 LabelledEvaluation
+2. 否则，
+a. 返回 Statement 的运算结果
 
 ```
 LabelledItem : FunctionDeclaration
 ```
 
-1. Return the result of evaluating FunctionDeclaration.
+1. 返回 FunctionDeclaration 的运算结果
 
-### 13.13.15 RS: Evaluation <div id="sec-labelled-statements-runtime-semantics-evaluation"></div>
+### 13.13.15 运行时语义：Evaluation <div id="sec-labelled-statements-runtime-semantics-evaluation"></div>
 
 ```
 LabelledStatement : LabelIdentifier : LabelledItem
 ```
 
-1. Let newLabelSet be a new empty List.
-2. Return LabelledEvaluation of this LabelledStatement with argument newLabelSet.
+1. 令 newLabelSet 为一个新的空列表.
+2. 返回 LabelledEvaluation of this LabelledStatement with argument newLabelSet.
 
 ## 13.14 throw 语句 <div id="sec-throw-statement"></div>
 
-Syntax
+**语法**
 
 ```
 ThrowStatement[Yield, Await] :
     throw [no LineTerminator here] Expression[+In, ?Yield, ?Await] ;
 ```
 
-### 13.14.1 RS: Evaluation <div id="sec-throw-statement-runtime-semantics-evaluation"></div>
+### 13.14.1 运行时语义：Evaluation <div id="sec-throw-statement-runtime-semantics-evaluation"></div>
 
 ```
 ThrowStatement : throw Expression ;
 ```
 
-1. Let exprRef be the result of evaluating Expression.
-2. Let exprValue be ? GetValue(exprRef).
-3. Return ThrowCompletion(exprValue).
+1. 令 exprRef 为 Expression 的运算结果
+2. 令 exprValue 为 ? GetValue(exprRef).
+3. 返回 ThrowCompletion(exprValue).
 
 ## 13.15 try 语句 <div id="sec-try-statement"></div>
 
-Syntax
+**语法**
 
 ```
 TryStatement[Yield, Await, Return] :
@@ -3431,274 +3416,274 @@ CatchParameter[Yield, Await] :
     BindingPattern[?Yield, ?Await]
 ```
 
-> NOTE The try statement encloses a block of code in which an exceptional condition can occur, such as a runtime error or a throw statement. The catch clause provides the exception-handling code. When a catch clause catches an exception, its CatchParameter is bound to that exception.
+> 注：The try statement encloses a block of code in which an exceptional condition can occur, such as a runtime error or a throw statement. The catch clause provides the exception-handling code. When a catch clause catches an exception, its CatchParameter 是 bound to that exception.
 
-### 13.15.1 SS: Early Errors <div id="sec-try-statement-static-semantics-early-errors"></div>
+### 13.15.1 静态语义：Early Errors <div id="sec-try-statement-static-semantics-early-errors"></div>
 
 ```
 Catch : catch ( CatchParameter ) Block
 ```
 
-It is a Syntax Error if BoundNames of CatchParameter contains any duplicate elements.
-It is a Syntax Error if any element of the BoundNames of CatchParameter also occurs in the
+It 是 a Syntax Error if BoundNames of CatchParameter contains any duplicate elements.
+It 是 a Syntax Error if any element of the BoundNames of CatchParameter also occurs in the
 LexicallyDeclaredNames of Block.
 
-It is a Syntax Error if any element of the BoundNames of CatchParameter also occurs in the VarDeclaredNames of Block.
+It 是 a Syntax Error if any element of the BoundNames of CatchParameter also occurs in  Block 的 VarDeclaredNames
 
-> NOTE An alternative static semantics for this production is given in B.3.5.
+> 注：An alternative static semantics for this production 是 given in B.3.5.
 
-### 13.15.2 SS: ContainsDuplicateLabels <div id="sec-try-statement-static-semantics-containsduplicatelabels"></div>
+### 13.15.2 静态语义：ContainsDuplicateLabels <div id="sec-try-statement-static-semantics-containsduplicatelabels"></div>
 
-With parameter labelSet.
-
-```
-TryStatement : try Block Catch
-```
-
-1. Let hasDuplicates be ContainsDuplicateLabels of Block with argument labelSet.
-2. If hasDuplicates is true, return true.
-3. Return ContainsDuplicateLabels of Catch with argument labelSet.
-
-```
-TryStatement : try Block Finally
-```
-
-1. Let hasDuplicates be ContainsDuplicateLabels of Block with argument labelSet.
-2. If hasDuplicates is true, return true.
-3. Return ContainsDuplicateLabels of Finally with argument labelSet.
-
-```
-TryStatement : try Block Catch Finally
-```
-
-1. Let hasDuplicates be ContainsDuplicateLabels of Block with argument labelSet.
-2. If hasDuplicates is true, return true.
-3. Let hasDuplicates be ContainsDuplicateLabels of Catch with argument labelSet.
-4. If hasDuplicates is true, return true.
-5. Return ContainsDuplicateLabels of Finally with argument labelSet.
-
-```
-Catch : catch ( CatchParameter ) Block
-```
-
-1. Return ContainsDuplicateLabels of Block with argument labelSet.
-
-### 13.15.3 SS: ContainsUndefinedBreakTarget <div id="sec-try-statement-static-semantics-containsundefinedbreaktarget"></div>
-
-With parameter labelSet.
+使用参数 labelSet
 
 ```
 TryStatement : try Block Catch
 ```
 
-1. Let hasUndefinedLabels be ContainsUndefinedBreakTarget of Block with argument labelSet.
-2. If hasUndefinedLabels is true, return true.
-3. Return ContainsUndefinedBreakTarget of Catch with argument labelSet.
+1. 令 hasDuplicates 为带有参数 labelSet 的 Block 的 ContainsDuplicateLabels
+2. 若 hasDuplicates 是 true，返回 true.
+3. 返回带有参数 labelSet 的 Catch 的 ContainsDuplicateLabels
 
 ```
 TryStatement : try Block Finally
 ```
 
-1. Let hasUndefinedLabels be ContainsUndefinedBreakTarget of Block with argument labelSet.
-2. If hasUndefinedLabels is true, return true.
-3. Return ContainsUndefinedBreakTarget of Finally with argument labelSet.
+1. 令 hasDuplicates 为带有参数 labelSet 的 Block 的 ContainsDuplicateLabels
+2. 若 hasDuplicates 是 true，返回 true.
+3. 返回带有参数 labelSet 的 Finally 的 ContainsDuplicateLabels
 
 ```
 TryStatement : try Block Catch Finally
 ```
 
-1. Let hasUndefinedLabels be ContainsUndefinedBreakTarget of Block with argument labelSet.
-2. If hasUndefinedLabels is true, return true.
-3. Let hasUndefinedLabels be ContainsUndefinedBreakTarget of Catch with argument labelSet.
-4. If hasUndefinedLabels is true, return true.
-5. Return ContainsUndefinedBreakTarget of Finally with argument labelSet.
+1. 令 hasDuplicates 为带有参数 labelSet 的 Block 的 ContainsDuplicateLabels
+2. 若 hasDuplicates 是 true，返回 true.
+3. 令 hasDuplicates 为带有参数 labelSet 的 Catch 的 ContainsDuplicateLabels
+4. 若 hasDuplicates 是 true，返回 true.
+5. 返回带有参数 labelSet 的 Finally 的 ContainsDuplicateLabels
 
 ```
 Catch : catch ( CatchParameter ) Block
 ```
 
-1. Return ContainsUndefinedBreakTarget of Block with argument labelSet.
+1. 返回带有参数 labelSet 的 Block 的 ContainsDuplicateLabels
 
-### 13.15.4 SS: ContainsUndefinedContinueTarget <div id="sec-try-statement-static-semantics-containsundefinedcontinuetarget"></div>
+### 13.15.3 静态语义：ContainsUndefinedBreakTarget <div id="sec-try-statement-static-semantics-containsundefinedbreaktarget"></div>
 
-With parameters iterationSet and labelSet.
+使用参数 labelSet
 
 ```
 TryStatement : try Block Catch
 ```
 
-1. Let hasUndefinedLabels be ContainsUndefinedContinueTarget of Block with arguments iterationSet and « ».
-2. If hasUndefinedLabels is true, return true.
-3. Return ContainsUndefinedContinueTarget of Catch with arguments iterationSet and « ».
+1. 令 hasUndefinedLabels 为带有参数 labelSet 的 Block 的 ContainsUndefinedBreakTarget
+2. 若 hasUndefinedLabels 是 true，返回 true.
+3. 返回带有参数 labelSet 的 Catch 的 ContainsUndefinedBreakTarget
 
 ```
 TryStatement : try Block Finally
 ```
 
-1. Let hasUndefinedLabels be ContainsUndefinedContinueTarget of Block with arguments iterationSet and « ».
-2. If hasUndefinedLabels is true, return true.
-3. Return ContainsUndefinedContinueTarget of Finally with arguments iterationSet and « ».
+1. 令 hasUndefinedLabels 为带有参数 labelSet 的 Block 的 ContainsUndefinedBreakTarget
+2. 若 hasUndefinedLabels 是 true，返回 true.
+3. 返回带有参数 labelSet 的 Finally 的 ContainsUndefinedBreakTarget
 
 ```
 TryStatement : try Block Catch Finally
 ```
 
-1. Let hasUndefinedLabels be ContainsUndefinedContinueTarget of Block with arguments iterationSet and « ».
-2. If hasUndefinedLabels is true, return true.
-3. Let hasUndefinedLabels be ContainsUndefinedContinueTarget of Catch with arguments iterationSet and « ».
-4. If hasUndefinedLabels is true, return true.
-5. Return ContainsUndefinedContinueTarget of Finally with arguments iterationSet and « ».
+1. 令 hasUndefinedLabels 为带有参数 labelSet 的 Block 的 ContainsUndefinedBreakTarget
+2. 若 hasUndefinedLabels 是 true，返回 true.
+3. 令 hasUndefinedLabels 为带有参数 labelSet 的 Catch 的 ContainsUndefinedBreakTarget
+4. 若 hasUndefinedLabels 是 true，返回 true.
+5. 返回带有参数 labelSet 的 Finally 的 ContainsUndefinedBreakTarget
 
 ```
 Catch : catch ( CatchParameter ) Block
 ```
 
-1. Return ContainsUndefinedContinueTarget of Block with arguments iterationSet and « ».
+1. 返回带有参数 labelSet 的 Block 的 ContainsUndefinedBreakTarget
 
-### 13.15.5 SS: VarDeclaredNames <div id="sec-try-statement-static-semantics-vardeclarednames"></div>
+### 13.15.4 静态语义：ContainsUndefinedContinueTarget <div id="sec-try-statement-static-semantics-containsundefinedcontinuetarget"></div>
+
+使用参数iterationSet和labelSet
 
 ```
 TryStatement : try Block Catch
 ```
 
-1. Let names be VarDeclaredNames of Block.
-2. Append to names the elements of the VarDeclaredNames of Catch.
-3. Return names.
+1. 令 hasUndefinedLabels 为带有参数 iterationSet 和 « » 的 Block 的 ContainsUndefinedContinueTarget
+2. 若 hasUndefinedLabels 是 true，返回 true.
+3. 返回带有参数 iterationSet 和 « » 的 Catch 的 ContainsUndefinedContinueTarget
 
 ```
 TryStatement : try Block Finally
 ```
 
-1. Let names be VarDeclaredNames of Block.
-2. Append to names the elements of the VarDeclaredNames of Finally.
-3. Return names.
+1. 令 hasUndefinedLabels 为带有参数 iterationSet 和 « » 的 Block 的 ContainsUndefinedContinueTarget
+2. 若 hasUndefinedLabels 是 true，返回 true.
+3. 返回带有参数 iterationSet 和 « » 的 Finally 的 ContainsUndefinedContinueTarget
 
 ```
 TryStatement : try Block Catch Finally
 ```
 
-1. Let names be VarDeclaredNames of Block.
-2. Append to names the elements of the VarDeclaredNames of Catch.
-3. Append to names the elements of the VarDeclaredNames of Finally.
-4. Return names.
+1. 令 hasUndefinedLabels 为带有参数 iterationSet 和 « » 的 Block 的 ContainsUndefinedContinueTarget
+2. 若 hasUndefinedLabels 是 true，返回 true.
+3. 令 hasUndefinedLabels 为带有参数 iterationSet 和 « » 的 Catch 的 ContainsUndefinedContinueTarget
+4. 若 hasUndefinedLabels 是 true，返回 true.
+5. 返回带有参数 iterationSet 和 « » 的 Finally 的 ContainsUndefinedContinueTarget
 
 ```
 Catch : catch ( CatchParameter ) Block
 ```
 
-1. Return the VarDeclaredNames of Block.
+1. 返回带有参数 iterationSet 和 « » 的 Block 的 ContainsUndefinedContinueTarget
 
-### 13.15.6 SS: VarScopedDeclarations <div id="sec-try-statement-static-semantics-varscopeddeclarations"></div>
+### 13.15.5 静态语义：VarDeclaredNames <div id="sec-try-statement-static-semantics-vardeclarednames"></div>
 
 ```
 TryStatement : try Block Catch
 ```
 
-1. Let declarations be VarScopedDeclarations of Block.
-2. Append to declarations the elements of the VarScopedDeclarations of Catch.
-3. Return declarations.
+1. 令 names 为 Block 的 VarDeclaredNames
+2. 在 names 后追加 Catch 的 VarDeclaredNames 元素 
+3. 返回 names.
 
 ```
 TryStatement : try Block Finally
 ```
 
-1. Let declarations be VarScopedDeclarations of Block.
-2. Append to declarations the elements of the VarScopedDeclarations of Finally.
-3. Return declarations.
+1. 令 names 为 Block 的 VarDeclaredNames
+2. 在 names 后追加 Finally 的 VarDeclaredNames 元素 
+3. 返回 names.
 
 ```
 TryStatement : try Block Catch Finally
 ```
 
-1. Let declarations be VarScopedDeclarations of Block.
-2. Append to declarations the elements of the VarScopedDeclarations of Catch.
-3. Append to declarations the elements of the VarScopedDeclarations of Finally.
-4. Return declarations.
+1. 令 names 为 Block 的 VarDeclaredNames
+2. 在 names 后追加 Catch 的 VarDeclaredNames 元素 
+3. 在 names 后追加 Finally 的 VarDeclaredNames 元素 
+4. 返回 names.
 
 ```
 Catch : catch ( CatchParameter ) Block
 ```
 
-1. Return the VarScopedDeclarations of Block.
+1. 返回  Block 的 VarDeclaredNames
 
-### 13.15.7 RS: CatchClauseEvaluation <div id="sec-runtime-semantics-catchclauseevaluation"></div>
+### 13.15.6 静态语义：VarScopedDeclarations <div id="sec-try-statement-static-semantics-varscopeddeclarations"></div>
 
-With parameter thrownValue.
+```
+TryStatement : try Block Catch
+```
+
+1. 令 declarations 为 Block 的 VarScopedDeclarations
+2. 在 declarations 后追加 Catch 的 VarScopedDeclarations 元素 
+3. 返回 declarations.
+
+```
+TryStatement : try Block Finally
+```
+
+1. 令 declarations 为 Block 的 VarScopedDeclarations
+2. 在 declarations 后追加 Finally 的 VarScopedDeclarations 元素 
+3. 返回 declarations.
+
+```
+TryStatement : try Block Catch Finally
+```
+
+1. 令 declarations 为 Block 的 VarScopedDeclarations
+2. 在 declarations 后追加 Catch 的 VarScopedDeclarations 元素 
+3. 在 declarations 后追加 Finally 的 VarScopedDeclarations 元素 
+4. 返回 declarations.
 
 ```
 Catch : catch ( CatchParameter ) Block
 ```
 
-1. Let oldEnv be the running execution context's LexicalEnvironment.
-2. Let catchEnv be NewDeclarativeEnvironment(oldEnv).
-3. Let catchEnvRec be catchEnv's EnvironmentRecord.
+1. 返回  Block 的 VarScopedDeclarations
+
+### 13.15.7 运行时语义：CatchClauseEvaluation <div id="sec-runtime-semantics-catchclauseevaluation"></div>
+
+使用参数 thrownValue
+
+```
+Catch : catch ( CatchParameter ) Block
+```
+
+1. 令 oldEnv 为运行时执行上下文的词法环境.
+2. 令 catchEnv 为 NewDeclarativeEnvironment(oldEnv).
+3. 令 catchEnvRec 为 catchEnv's EnvironmentRecord.
 4. For each element argName of the BoundNames of CatchParameter, do
-a. Perform ! catchEnvRec.CreateMutableBinding(argName, false).
-5. Set the running execution context's LexicalEnvironment to catchEnv.
-6. Let status be the result of performing BindingInitialization for CatchParameter passing thrownValue and catchEnv
+a. 执行 ! catchEnvRec.CreateMutableBinding(argName, false).
+5. 设置运行时执行上下文的词法环境 为 catchEnv.
+6. 令 status 为 performing BindingInitialization for CatchParameter passing thrownValue and catchEnv 的结果
 as arguments.
-7. If status is an abrupt completion, then
-a. Set the running execution context's LexicalEnvironment to oldEnv.
-b. Return Completion(status).
-8. Let B be the result of evaluating Block.
-9. Set the running execution context's LexicalEnvironment to oldEnv.
-10. Return Completion(B).
+7. 若 status 是 abrupt completion，那么
+a. 设置运行时执行上下文的词法环境 为 oldEnv.
+b. 返回 Completion(status).
+8. 令 B 为 Block 的运算结果
+9. 设置运行时执行上下文的词法环境 为 oldEnv.
+10. 返回 Completion(B).
 
 ```
 Catch : catch Block
 ```
 
-1. Return the result of evaluating Block
+1. 返回 evaluating Block 的结果
 
-> NOTE No matter how control leaves the Block the LexicalEnvironment is always restored to its former state.
+> 注：No matter how control leaves the Block the LexicalEnvironment 是 always restored to its former state.
 
-### 13.15.8 RS: Evaluation <div id="sec-try-statement-runtime-semantics-evaluation"></div>
+### 13.15.8 运行时语义：Evaluation <div id="sec-try-statement-runtime-semantics-evaluation"></div>
 
 ```
 TryStatement : try Block Catch
 ```
 
-1. Let B be the result of evaluating Block.
-2. If B.[[Type]] is throw, let C be CatchClauseEvaluation of Catch with argument B.[[Value]].
-3. Else, let C be B.
-4. Return Completion(UpdateEmpty(C, undefined)).
+1. 令 B 为 Block 的运算结果
+2. 若 B.[[Type]] 是 throw, let C be带有参数 B 的 Catch 的 CatchClauseEvaluation[[Value]].
+3. 否则， let C be B.
+4. 返回 Completion(UpdateEmpty(C, undefined)).
 
 ```
 TryStatement : try Block Finally
 ```
 
-1. Let B be the result of evaluating Block.
-2. Let F be the result of evaluating Finally.
-3. If F.[[Type]] is normal, set F to B.
-4. Return Completion(UpdateEmpty(F, undefined)).
+1. 令 B 为 Block 的运算结果
+2. 令 F 为 Finally 的运算结果
+3. 若 F.[[Type]] 是 normal, 设置 F 为 B.
+4. 返回 Completion(UpdateEmpty(F, undefined)).
 
 ```
 TryStatement : try Block Catch Finally
 ```
 
-1. Let B be the result of evaluating Block.
-2. If B.[[Type]] is throw, let C be CatchClauseEvaluation of Catch with argument B.[[Value]].
-3. Else, let C be B.
-4. Let F be the result of evaluating Finally.
-5. If F.[[Type]] is normal, set F to C.
-6. Return Completion(UpdateEmpty(F, undefined)).
+1. 令 B 为 Block 的运算结果
+2. 若 B.[[Type]] 是 throw, let C be带有参数 B 的 Catch 的 CatchClauseEvaluation[[Value]].
+3. 否则， let C be B.
+4. 令 F 为 Finally 的运算结果
+5. 若 F.[[Type]] 是 normal, 设置 F 为 C.
+6. 返回 Completion(UpdateEmpty(F, undefined)).
 
 ## 13.16 debugger 语句 <div id="sec-debugger-statement"></div>
 
-Syntax
+**语法**
 
 ```
 DebuggerStatement :
     debugger ;
 ```
 
-### 13.16.1 RS: Evaluation <div id="sec-debugger-statement-runtime-semantics-evaluation"></div>
+### 13.16.1 运行时语义：Evaluation <div id="sec-debugger-statement-runtime-semantics-evaluation"></div>
 
-> NOTE Evaluating a DebuggerStatement may allow an implementation to cause a breakpoint when run under a debugger. If a debugger is not present or active this statement has no observable effect.
+> 注：Evaluating a DebuggerStatement may allow an implementation to cause a breakpoint when run under a debugger. 若 a debugger 不存在 or active this statement has no observable effect.
 
-1. If an implementation-defined debugging facility is available and enabled, then
-a. Perform an implementation-defined debugging action.
-b. Let result be an implementation-defined Completion value.
-2. Else,
-a. Let result be NormalCompletion(empty).
-3. Return result.
+1. 若 an implementation-defined debugging facility 是 available and enabled，那么
+a. 执行 an implementation-defined debugging action.
+b. 令 result 为 an implementation-defined Completion value.
+2. 否则，
+a. 令 result 为 NormalCompletion(empty).
+3. 返回 result.
