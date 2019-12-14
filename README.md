@@ -18,8 +18,8 @@ Gitbook 链接：https://lhzcode.github.io/es10-cn/
 - [x] [9 普通和异类对象行为](ordinary-and-exotic-object-behaviours.md)
 - [x] [10 ECMAScript语言：源代码](source-code.md)
 - [x] [11 ECMAScript语言：词法语法](lexical-grammar.md)
-- [ ] 12 ECMAScript语言：表达式
-- [ ] 13 ECMAScript语言：语句和声明
+- [x] [12 ECMAScript语言：表达式](expressions.md)
+- [ ] [13 ECMAScript语言：语句和声明](statements-and-declarations.md)
 - [ ] 14 ECMAScript语言：函数和类
 - [ ] 15 ECMAScript语言：脚本和模块
 - [ ] 16 错误处理和语言扩展

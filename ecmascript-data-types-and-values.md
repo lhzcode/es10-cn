@@ -1,4 +1,4 @@
-# 6 ECMAScript数据类型和值 <div id="sec-ecmascript-data-types-and-values"></div>
+# 6 ECMAScript数据类型和值
 
 本规范的算法操作的值每一个都有其相应的类型。 可能的值类型正是本节中定义的值类型。类型又进一步分为ECMAScript语言类型（language types）以及规范类型（specification types）。 
 
