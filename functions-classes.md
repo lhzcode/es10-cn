@@ -1,6 +1,6 @@
-14 ECMAScript语言：函数和类
+# 14 ECMAScript语言：函数和类
 
-> NOTE
+> 注
 >
 > Various ECMAScript language elements cause the creation of ECMAScript function objects (9.2). Evaluation of such functions starts with the execution of their [[Call]] internal method (9.2.1).
 
@@ -47,7 +47,7 @@ A Use Strict Directive is an ExpressionStatement in a Directive Prologue whose S
 
 A Directive Prologue may contain more than one Use Strict Directive. However, an implementation may issue a warning if this occurs.
 
-> NOTE
+> 注
 >
 > The ExpressionStatements of a Directive Prologue are evaluated normally during evaluation of the containing production. Implementations may define implementation specific meanings for ExpressionStatements which are not a Use Strict Directive and which occur in a Directive Prologue. If an appropriate notification mechanism exists, an implementation should issue a warning if it encounters in a Directive Prologue an ExpressionStatement that is not a Use Strict Directive and which does not have a meaning defined by the implementation.
 
@@ -69,7 +69,7 @@ FunctionExpression : function BindingIdentifier ( FormalParameters ) { FunctionB
 - It is a Syntax Error if FormalParameters Contains SuperCall is true.
 - It is a Syntax Error if FunctionBody Contains SuperCall is true.
 
-> NOTE 1
+> 注 1
 >
 > The LexicallyDeclaredNames of a FunctionBody does not include identifiers bound using var or function declarations
 
@@ -85,7 +85,7 @@ FormalParameters : FormalParameterList
 
 It is a Syntax Error if IsSimpleParameterList of FormalParameterList is false and BoundNames of FormalParameterList contains any duplicate elements.
 
-> NOTE 2
+> 注 2
 >
 > Multiple occurrences of the same BindingIdentifier in a FormalParameterList is only allowed for functions which have simple parameter lists and which are not defined in strict mode code.
 
@@ -113,7 +113,7 @@ FunctionDeclaration : function ( FormalParameters ) { FunctionBody }
 
 1. Return « "\*default\*" ».
 
-> NOTE
+> 注
 >
 > "\*default\*" is used within this specification as a synthetic name for hoistable anonymous functions that are defined using export declarations.
 
@@ -151,7 +151,7 @@ FunctionExpression : function BindingIdentifier ( FormalParameters ) { FunctionB
 
 1. Return false.
 
-> NOTE
+> 注
 >
 > Static semantic rules that depend upon substructure generally do not look into function definitions.
 
@@ -199,7 +199,7 @@ FormalParameters : FormalParameterList , FunctionRestParameter
 
 1. Return ExpectedArgumentCount of FormalParameterList.
 
-> NOTE
+> 注
 >
 > The ExpectedArgumentCount of a FormalParameterList is the number of FormalParameters to the left of either the rest parameter or the first FormalParameter with an Initializer. A FormalParameter without an initializer is allowed after the first parameter with an initializer but such parameters are considered to be optional with undefined as their default value
 
@@ -360,7 +360,7 @@ FunctionBody : FunctionStatementList
 With parameters iteratorRecord and environment.
 ```
 
-> NOTE 1
+> 注 1
 >
 > When undefined is passed for environment it indicates that a PutValue operation should be used to assign the initialization value. This is the case for formal parameter lists of non-strict functions. In that case the formal parameter bindings are preinitialized in order to deal with the possibility of multiple parameters with the same name.
 
@@ -401,7 +401,7 @@ FormalParameter : BindingElement
 11. Set the LexicalEnvironment of currentContext to originalEnv.
 12. Return result.
 
-> NOTE 2
+> 注 2
 >
 > The new Environment Record created in step 6 is only used if the BindingElement contains a direct eval.
 
@@ -422,7 +422,7 @@ FunctionRestParameter : BindingRestElement
 11. Set the LexicalEnvironment of currentContext to originalEnv.
 12. Return result.
 
-> NOTE 3
+> 注 3
 >
 > The new Environment Record created in step 6 is only used if the BindingRestElement contains a direct eval.
 
@@ -452,7 +452,7 @@ FunctionDeclaration : function ( FormalParameters ) { FunctionBody }
 4. Set F.[[SourceText]] to the source text matched by FunctionDeclaration.
 5. Return F
 
-> NOTE
+> 注
 >
 > An anonymous FunctionDeclaration can only occur as part of an export default declaration, and its function code is therefore always strict mode code.
 
@@ -476,7 +476,7 @@ FunctionDeclaration : function BindingIdentifier ( FormalParameters ) { Function
 
 1. Return NormalCompletion(empty).
 
-> NOTE 1
+> 注 1
 > An alternative semantics is provided in B.3.3
 
 ```
@@ -513,9 +513,9 @@ FunctionExpression : function BindingIdentifier ( FormalParameters ) { FunctionB
 11. Perform envRec.InitializeBinding(name, closure).
 12. Return closure
 
-> NOTE 2 The BindingIdentifier in a FunctionExpression can be referenced from inside the FunctionExpression's FunctionBody to allow the function to call itself recursively. However, unlike in a FunctionDeclaration, the BindingIdentifier in a FunctionExpression cannot be referenced from and does not affect the scope enclosing the FunctionExpression.
+> 注 2 The BindingIdentifier in a FunctionExpression can be referenced from inside the FunctionExpression's FunctionBody to allow the function to call itself recursively. However, unlike in a FunctionDeclaration, the BindingIdentifier in a FunctionExpression cannot be referenced from and does not affect the scope enclosing the FunctionExpression.
 
-> NOTE 3 A prototype property is automatically created for every function defined using a FunctionDeclaration or FunctionExpression, to allow for the possibility that the function will be used as a constructor.
+> 注 3 A prototype property is automatically created for every function defined using a FunctionDeclaration or FunctionExpression, to allow for the possibility that the function will be used as a constructor.
 
 ```
 FunctionStatementList : [empty]
@@ -598,7 +598,7 @@ ArrowFunction : ArrowParameters => ConciseBody
 2. If ArrowParameters Contains symbol is true, return true.
 3. Return ConciseBody Contains symbol.
 
-> NOTE Normally, Contains does not look inside most function forms. However, Contains is used to detect new.target, this, and super usage within an ArrowFunction.
+> 注 Normally, Contains does not look inside most function forms. However, Contains is used to detect new.target, this, and super usage within an ArrowFunction.
 
 ```
 ArrowParameters : CoverParenthesizedExpressionAndArrowParameterList
@@ -712,7 +712,7 @@ ConciseBody : AssignmentExpression
 
 With parameters iteratorRecord and environment.
 
-> NOTE
+> 注
 >
 > When undefined is passed for environment it indicates that a PutValue operation should be used to assign the initialization value. This is the case for formal parameter lists of non-strict functions. In that case the formal parameter bindings are preinitialized in order to deal with the possibility of multiple parameters with the same name.
 
@@ -770,7 +770,7 @@ ArrowFunction : ArrowParameters => ConciseBody
 5. Set closure.[[SourceText]] to the source text matched by ArrowFunction.
 6. Return closure.
 
-> NOTE An ArrowFunction does not define local bindings for arguments, super, this, or new.target. Any reference to arguments, super, this, or new.target within an ArrowFunction must resolve to a binding in a lexically enclosing environment. Typically this will be the Function Environment of an immediately enclosing function. Even though an ArrowFunction may contain references to super, the function object created in step 4 is not made into a method by performing MakeMethod. An ArrowFunction that references super is always contained within a nonArrowFunction and the necessary state to implement super is accessible via the scope that is captured by the function object of the ArrowFunction.
+> 注 An ArrowFunction does not define local bindings for arguments, super, this, or new.target. Any reference to arguments, super, this, or new.target within an ArrowFunction must resolve to a binding in a lexically enclosing environment. Typically this will be the Function Environment of an immediately enclosing function. Even though an ArrowFunction may contain references to super, the function object created in step 4 is not made into a method by performing MakeMethod. An ArrowFunction that references super is always contained within a nonArrowFunction and the necessary state to implement super is accessible via the scope that is captured by the function object of the ArrowFunction.
 
 ## 14.3 方法定义 <div id="sec-method-definitions"></div>
 
@@ -973,11 +973,11 @@ YieldExpression[In, Await] :
     yield [no LineTerminator here] * AssignmentExpression[?In, +Yield, ?Await]
 ```
 
-> NOTE 1 The syntactic context immediately following yield requires use of the InputElementRegExpOrTemplateTail lexical goal
+> 注 1 The syntactic context immediately following yield requires use of the InputElementRegExpOrTemplateTail lexical goal
 
-> NOTE 2 YieldExpression cannot be used within the FormalParameters of a generator function because any expressions that are part of FormalParameters are evaluated before the resulting generator object is in a resumable state.
+> 注 2 YieldExpression cannot be used within the FormalParameters of a generator function because any expressions that are part of FormalParameters are evaluated before the resulting generator object is in a resumable state.
 
-> NOTE 3 Abstract operations relating to generator objects are defined in 25.4.3.
+> 注 3 Abstract operations relating to generator objects are defined in 25.4.3.
 
 ### 14.4.1 SS: Early Errors <div id="sec-generator-function-definitions-static-semantics-early-errors"></div>
 
@@ -1022,7 +1022,7 @@ GeneratorDeclaration : function * ( FormalParameters ) { GeneratorBody }
 
 1. Return « "\*default\*" ».
 
-> NOTE "\*default\*" is used within this specification as a synthetic name for hoistable anonymous functions that are defined using export declarations.
+> 注 "\*default\*" is used within this specification as a synthetic name for hoistable anonymous functions that are defined using export declarations.
 
 ### 14.4.3 SS: ComputedPropertyContains <div id="sec-generator-function-definitions-static-semantics-computedpropertycontains"></div>
 
@@ -1046,7 +1046,7 @@ GeneratorExpression : function * BindingIdentifier ( FormalParameters ) { Genera
 
 1. Return false.
 
-> NOTE Static semantic rules that depend upon substructure generally do not look into function definitions.
+> 注 Static semantic rules that depend upon substructure generally do not look into function definitions.
 
 ### 14.4.5 SS: HasDirectSuper <div id="sec-generator-function-definitions-static-semantics-hasdirectsuper"></div>
 
@@ -1139,7 +1139,7 @@ true, [[Enumerable]]: false, [[Configurable]]: false }).
 5. Set F.[[SourceText]] to the source text matched by GeneratorDeclaration.
 6. Return F.
 
-> NOTE An anonymous GeneratorDeclaration can only occur as part of an export default declaration, and its function code is therefore always strict mode code.
+> 注 An anonymous GeneratorDeclaration can only occur as part of an export default declaration, and its function code is therefore always strict mode code.
 
 ### 14.4.12 RS: PropertyDefinitionEvaluation <div id="sec-generator-function-definitions-runtime-semantics-propertydefinitionevaluation"></div>
 
@@ -1211,7 +1211,7 @@ false.
 12. Set closure.[[SourceText]] to the source text matched by GeneratorExpression.
 13. Return closure.
 
-> NOTE The BindingIdentifier in a GeneratorExpression can be referenced from inside the GeneratorExpression's FunctionBody to allow the generator code to call itself recursively. However, unlike in a GeneratorDeclaration, the BindingIdentifier in a GeneratorExpression cannot be referenced from and does not affect the scope enclosing the GeneratorExpression.
+> 注 The BindingIdentifier in a GeneratorExpression can be referenced from inside the GeneratorExpression's FunctionBody to allow the generator code to call itself recursively. However, unlike in a GeneratorDeclaration, the BindingIdentifier in a GeneratorExpression cannot be referenced from and does not affect the scope enclosing the GeneratorExpression.
 
 ```
 YieldExpression : yield
@@ -1257,7 +1257,7 @@ i. Let throw be ? GetMethod(iterator, "throw").
 ii. If throw is not undefined, then
 1. Let innerResult be ? Call(throw, iterator, « received.[[Value]] »).
 2. If generatorKind is async, then set innerResult to ? Await(innerResult).
-3. NOTE: Exceptions from the inner iterator throw method are propagated. Normal completions
+3. 注: Exceptions from the inner iterator throw method are propagated. Normal completions
 from an inner throw method are processed similarly to an inner next.
 4. If Type(innerResult) is not Object, throw a TypeError exception.
 5. Let done be ? IteratorComplete(innerResult).
@@ -1267,12 +1267,12 @@ a. Return ? IteratorValue(innerResult).
 IteratorValue(innerResult)).
 8. Else, set received to GeneratorYield(innerResult).
 iii. Else,
-17. NOTE: If iterator does not have a throw method, this throw is going to terminate the yield*
+17. 注: If iterator does not have a throw method, this throw is going to terminate the yield*
       loop. But first we need to give iterator a chance to clean up.
 2. Let closeCompletion be Completion { [[Type]]: normal, [[Value]]: empty, [[Target]]: empty }.
 3. If generatorKind is async, perform ? AsyncIteratorClose(iteratorRecord, closeCompletion).
 4. Else, perform ? IteratorClose(iteratorRecord, closeCompletion).
-5. NOTE: The next step throws a TypeError to indicate that there was a yield* protocol violation:
+5. 注: The next step throws a TypeError to indicate that there was a yield* protocol violation:
 iterator does not have a throw method.
 6. Throw a TypeError exception.
 c. Else,
@@ -1308,9 +1308,9 @@ AsyncGeneratorBody :
 	FunctionBody[+Yield, +Await]
 ```
 
-> NOTE1 YieldExpression and AwaitExpression cannot be used within the FormalParameters of an async generator function because any expressions that are part of FormalParameters are evaluated before the resulting async generator object is in a resumable state.
+> 注1 YieldExpression and AwaitExpression cannot be used within the FormalParameters of an async generator function because any expressions that are part of FormalParameters are evaluated before the resulting async generator object is in a resumable state.
 
-> NOTE 2 Abstract operations relating to async generator objects are defined in 25.5.3
+> 注 2 Abstract operations relating to async generator objects are defined in 25.5.3
 
 ### 14.5.1 SS: Early Errors <div id="sec-async-generator-function-definitions-static-semantics-early-errors"></div>
 
@@ -1358,7 +1358,7 @@ AsyncGeneratorDeclaration : async function * ( FormalParameters ) { AsyncGenerat
 
 1. Return « "\*default\*" »
 
-> NOTE "\*default\*" is used within this specification as a synthetic name for hoistable anonymous functions that are defined using export declarations
+> 注 "\*default\*" is used within this specification as a synthetic name for hoistable anonymous functions that are defined using export declarations
 
 ### 14.5.3 SS: ComputedPropertyContains <div id="sec-async-generator-function-definitions-static-semantics-computedpropertycontains"></div>
 
@@ -1384,7 +1384,7 @@ AsyncGeneratorBody }
 
 1. Return false.
 
-> NOTE Static semantic rules that depend upon substructure generally do not look into function definitions.
+> 注 Static semantic rules that depend upon substructure generally do not look into function definitions.
 
 ### 14.5.5 SS: HasDirectSuper <div id="sec-async-generator-function-definitions-static-semantics-hasdirectsuper"></div>
 
@@ -1484,7 +1484,7 @@ AsyncGeneratorDeclaration : async function * ( FormalParameters ) { AsyncGenerat
 6. Set F.[[SourceText]] to the source text matched by AsyncGeneratorDeclaration.
 7. Return F
 
-> NOTE An anonymous AsyncGeneratorDeclaration can only occur as part of an export default declaration.
+> 注 An anonymous AsyncGeneratorDeclaration can only occur as part of an export default declaration.
 
 ### 14.5.12 RS: PropertyDefinitionEvaluation <div id="sec-asyncgenerator-definitions-propertydefinitionevaluation"></div>
 
@@ -1559,7 +1559,7 @@ false.
 12. Set closure.[[SourceText]] to the source text matched by AsyncGeneratorExpression.
 13. Return closure.
 
-> NOTE The BindingIdentifier in an AsyncGeneratorExpression can be referenced from inside the AsyncGeneratorExpression's AsyncGeneratorBody to allow the generator code to call itself recursively. However, unlike in an AsyncGeneratorDeclaration, the BindingIdentifier in an AsyncGeneratorExpression cannot be referenced from and does not affect the scope enclosing the AsyncGeneratorExpression.
+> 注 The BindingIdentifier in an AsyncGeneratorExpression can be referenced from inside the AsyncGeneratorExpression's AsyncGeneratorBody to allow the generator code to call itself recursively. However, unlike in an AsyncGeneratorDeclaration, the BindingIdentifier in an AsyncGeneratorExpression cannot be referenced from and does not affect the scope enclosing the AsyncGeneratorExpression.
 
 ## 14.6 Class 定义 <div id="sec-class-definitions"></div>
 
@@ -1586,7 +1586,7 @@ ClassElement[Yield, Await] :
     ;
 ```
 
-> NOTE A class definition is always strict mode code.
+> 注 A class definition is always strict mode code.
 
 ### 14.6.1 SS: Early Errors <div id="sec-class-definitions-static-semantics-early-errors"></div>
 
@@ -1657,7 +1657,7 @@ ClassElementList : ClassElementList ClassElement
 5. If PropName of ClassElement is not "constructor", return empty.
 6. Return ClassElement
 
-> NOTE Early Error rules ensure that there is only one method definition named "constructor" and that it is not an accessor property or generator definition.
+> 注 Early Error rules ensure that there is only one method definition named "constructor" and that it is not an accessor property or generator definition.
 
 ### 14.6.4 SS: Contains <div id="sec-class-definitions-static-semantics-contains"></div>
 
@@ -1674,7 +1674,7 @@ a. If ClassHeritage is present, return true; otherwise return false.
 4. If inHeritage is true, return true.
 5. Return the result of ComputedPropertyContains for ClassBody with argument symbol.
 
-> NOTE Static semantic rules that depend upon substructure generally do not look into class bodies except for PropertyNames
+> 注 Static semantic rules that depend upon substructure generally do not look into class bodies except for PropertyNames
 
 ### 14.6.5 SS: ComputedPropertyContains <div id="sec-class-definitions-static-semantics-computedpropertycontains"></div>
 
@@ -1834,6 +1834,7 @@ b. Let superclassRef be the result of evaluating ClassHeritage.
   8. If ClassBodyopt is not present, let constructor be empty.
   9. Else, let constructor be ConstructorMethod of ClassBody.
   10. If constructor is empty, then
+
     a. If ClassHeritageopt is present, then
     i. Set constructor to the result of parsing the source text
     constructor(... args){ super (...args);}
@@ -1844,6 +1845,7 @@ b. Let superclassRef be the result of evaluating ClassHeritage.
     using the syntactic grammar with the goal symbol MethodDefinition[~Yield, ~Await] .
   11. Set the running execution context's LexicalEnvironment to classScope.
   12. Let constructorInfo be the result of performing DefineMethod for constructor with arguments proto and
+
     constructorParent as the optional functionPrototype argument.
   13. Assert: constructorInfo is not an abrupt completion.
   14. Let F be constructorInfo.[[Closure]].
@@ -1851,11 +1853,13 @@ b. Let superclassRef be the result of evaluating ClassHeritage.
   16. Perform MakeConstructor(F, false, proto).
   17. Perform MakeClassConstructor(F).
   18. If className is not undefined, then
+
     a. Perform SetFunctionName(F, className).
   19. Perform CreateMethodProperty(proto, "constructor", F).
   20. If ClassBodyopt is not present, let methods be a new empty List.
   21. Else, let methods be NonConstructorMethodDefinitions of ClassBody.
   22. For each ClassElement m in order from methods, do
+
     a. If IsStatic of m is false, then
     i. Let status be the result of performing PropertyDefinitionEvaluation for m with arguments proto and
     false.
@@ -1892,7 +1896,7 @@ ClassDeclaration : class ClassTail
 3. Set value.[[SourceText]] to the source text matched by ClassDeclaration.
 4. Return value.
 
-> NOTE ClassDeclaration : class ClassTail only occurs as part of an ExportDeclaration and establishing its binding is handled as part of the evaluation action for that production. See 15.2.3.11.
+> 注 ClassDeclaration : class ClassTail only occurs as part of an ExportDeclaration and establishing its binding is handled as part of the evaluation action for that production. See 15.2.3.11.
 
 ### 14.6.15 RS: NamedEvaluation <div id="sec-class-definitions-runtime-semantics-namedevaluation"></div>
 
@@ -1913,7 +1917,7 @@ ClassDeclaration : class BindingIdentifier ClassTail
 1. Perform ? BindingClassDeclarationEvaluation of this ClassDeclaration.
 2. Return NormalCompletion(empty).
 
-> NOTE ClassDeclaration : class ClassTail only occurs as part of an ExportDeclaration and is never directly evaluated.
+> 注 ClassDeclaration : class ClassTail only occurs as part of an ExportDeclaration and is never directly evaluated.
 
 ```
 ClassExpression : class BindingIdentifier ClassTail
@@ -1948,7 +1952,7 @@ AwaitExpression[Yield] :
 	await UnaryExpression[?Yield, +Await]
 ```
 
-> NOTE 1 await is parsed as an AwaitExpression when the [Await] parameter is present. The [Await] parameter is present in the following contexts:
+> 注 1 await is parsed as an AwaitExpression when the [Await] parameter is present. The [Await] parameter is present in the following contexts:
 >
 > In an AsyncFunctionBody.
 > In the FormalParameters of an AsyncFunctionDeclaration, AsyncFunctionExpression, AsyncGeneratorDeclaration,
@@ -1960,7 +1964,7 @@ AwaitExpression[Yield] :
 > AsyncFunctionExpression, AsyncGeneratorDeclaration, or AsyncGeneratorExpression.
 > In the BindingIdentifier of a FunctionExpression, GeneratorExpression, or AsyncGeneratorExpression.
 
->NOTE 2
+>注 2
 >Unlike YieldExpression, it is a Syntax Error to omit the operand of an AwaitExpression. You must await something.
 
 ### 14.7.1 SS: Early Errors <div id="sec-async-function-definitions-static-semantics-early-errors"></div>
@@ -2010,7 +2014,7 @@ AsyncFunctionDeclaration : async function ( FormalParameters ) { AsyncFunctionBo
 
 1. Return « "\*default\*" ».
 
-> NOTE "\*default\*" is used within this specification as a synthetic name for hoistable anonymous functions that are defined using export declarations.
+> 注 "\*default\*" is used within this specification as a synthetic name for hoistable anonymous functions that are defined using export declarations.
 
 ### 14.7.3 SS: ComputedPropertyContains <div id="sec-async-function-definitions-static-semantics-ComputedPropertyContains"></div>
 
@@ -2292,7 +2296,7 @@ AsyncArrowFunction : CoverCallExpressionAndAsyncArrowHead => AsyncConciseBody
 3. If head Contains symbol is true, return true.
 4. Return AsyncConciseBody Contains symbol.
 
-> NOTE Normally, Contains does not look inside most function forms. However, Contains is used to detect new.target, this, and super usage within an AsyncArrowFunction.
+> 注 Normally, Contains does not look inside most function forms. However, Contains is used to detect new.target, this, and super usage within an AsyncArrowFunction.
 
 ### 14.8.5 SS: ContainsExpression <div id="sec-async-arrow-function-definitions-static-semantics-ContainsExpression"></div>
 
@@ -2462,13 +2466,13 @@ The abstract operation IsInTailPosition with argument call performs the followin
 8. If body is an AsyncConciseBody, return false.
 9. Return the result of HasCallInTailPosition of body with argument call.
 
-> NOTE Tail Position calls are only defined in strict mode code because of a common non-standard language extension (see 9.2.9) that enables observation of the chain of caller contexts.
+> 注 Tail Position calls are only defined in strict mode code because of a common non-standard language extension (see 9.2.9) that enables observation of the chain of caller contexts.
 
 ### 14.9.2 SS: HasCallInTailPosition <div id="sec-static-semantics-hascallintailposition"></div>
 
 With parameter call.
 
-> NOTE call is a Parse Node that represents a specific range of source text. When the following algorithms compare call to another Parse Node, it is a test of whether they represent the same source text.
+> 注 call is a Parse Node that represents a specific range of source text. When the following algorithms compare call to another Parse Node, it is a test of whether they represent the same source text.
 
 #### 14.9.2.1 Statement Rules <div id="sec-statement-rules"></div>
 
@@ -2604,7 +2608,7 @@ Catch : catch ( CatchParameter ) Block
 
 #### 14.9.2.2 Expression Rules <div id="sec-expression-rules"></div>
 
-> NOTE A potential tail position call that is immediately followed by return GetValue of the call result is also a possible tail position call. Function calls cannot return reference values, so such a GetValue operation will always return the same value as the actual function call result.
+> 注 A potential tail position call that is immediately followed by return GetValue of the call result is also a possible tail position call. Function calls cannot return reference values, so such a GetValue operation will always return the same value as the actual function call result.
 
 ```
 AssignmentExpression :
