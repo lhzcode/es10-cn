@@ -1,8 +1,7 @@
 # 14 ECMAScript语言：函数和类
 
-> 注
+> 注：各种ECMAScript语言元素导致创建ECMAScript函数对象（9.2）。对此类函数的运算始于其[[Call]]内部方法（9.2.1）的执行。
 >
-> Various ECMAScript language elements cause the creation of ECMAScript function objects (9.2). Evaluation of such functions starts with the execution of their [[Call]] internal method (9.2.1).
 
 ## 14.1 函数定义 <div id="sec-function-definitions"></div>
 
@@ -34,24 +33,23 @@ FormalParameter[Yield, Await] :
 FunctionBody[Yield, Await] :
 	FunctionStatementList[?Yield, ?Await]
 FunctionStatementList[Yield, Await] :
-	StatementList[?Yield, ?Await, +Return] opt
+	StatementList[?Yield, ?Await, +返回] opt
 ```
 
 
 
 ### 14.1.1 指令序言和严格使用指令 <div id="sec-directive-prologues-and-the-use-strict-directive"></div>
 
-A Directive Prologue is the longest sequence of ExpressionStatements occurring as the initial StatementListItems or ModuleItems of a FunctionBody, a ScriptBody, or a ModuleBody and where each ExpressionStatement in the sequence consists entirely of a StringLiteral token followed by a semicolon. The semicolon may appear explicitly or may be inserted by automatic semicolon insertion. A Directive Prologue may be an empty sequence.
+指令序言是最长的ExpressionStatements序列，出现在FunctionBody，ScriptBody或ModuleBody的初始StatementListItems或ModuleItems上，并且序列中的每个ExpressionStatement完全由StringLiteral标记后跟一个分号组成。分号可以显式显示，也可以通过自动分号插入来插入。指令序言可能是空序列。
 
-A Use Strict Directive is an ExpressionStatement in a Directive Prologue whose StringLiteral is either the exact code unit sequences "use strict" or 'use strict'. A Use Strict Directive may not contain an EscapeSequence or LineContinuation.
+使用严格指令是指令序言中的ExpressionStatement，其StringLiteral是 "use strict" 或 'use strict'的确切代码单元序列。使用严格指令可能不包含EscapeSequence或LineContinuation。
 
-A Directive Prologue may contain more than one Use Strict Directive. However, an implementation may issue a warning if this occurs.
+指令序言中可能包含多个严格使用指令。但是，如果发生这种情况，则实现可能会发出警告。
 
-> 注
+> 注：指令序言的ExpressionStatement语句通常在包含产生式的求值过程中进行计算。实现可以为ExpressionStatement定义实现特定的含义，这些含义不是“使用严格”指令，而是在指令序言中出现。如果存在适当的通知机制，则如果实现在指令序言中遇到不是Use Strict指令且没有实现定义的含义的ExpressionStatement，则该实现应发出警告。
 >
-> The ExpressionStatements of a Directive Prologue are evaluated normally during evaluation of the containing production. Implementations may define implementation specific meanings for ExpressionStatements which are not a Use Strict Directive and which occur in a Directive Prologue. If an appropriate notification mechanism exists, an implementation should issue a warning if it encounters in a Directive Prologue an ExpressionStatement that is not a Use Strict Directive and which does not have a meaning defined by the implementation.
 
-### 14.1.2 SS: Early Errors <div id="sec-function-definitions-static-semantics-early-errors"></div>
+### 14.1.2 静态语义：Early Errors <div id="sec-function-definitions-static-semantics-early-errors"></div>
 
 ```
 FunctionDeclaration : function BindingIdentifier ( FormalParameters ) { FunctionBody }
@@ -59,89 +57,86 @@ FunctionDeclaration : function ( FormalParameters ) { FunctionBody }
 FunctionExpression : function BindingIdentifier ( FormalParameters ) { FunctionBody }
 ```
 
-- If the source code matching this production is strict mode code, the Early Error rules for UniqueFormalParameters : FormalParameters are applied.
-- If the source code matching this production is strict mode code, it is a Syntax Error if BindingIdentifier is present and the StringValue of BindingIdentifier is "eval" or "arguments".
-- It is a Syntax Error if ContainsUseStrict of FunctionBody is true and IsSimpleParameterList of FormalParameters is false.
-- It is a Syntax Error if any element of the BoundNames of FormalParameters also occurs in the
-  LexicallyDeclaredNames of FunctionBody.
-- It is a Syntax Error if FormalParameters Contains SuperProperty is true.
-- It is a Syntax Error if FunctionBody Contains SuperProperty is true.
-- It is a Syntax Error if FormalParameters Contains SuperCall is true.
-- It is a Syntax Error if FunctionBody Contains SuperCall is true.
+- 如果与此产生式匹配的源代码是严格模式代码，则应用 UniqueFormalParameters: FormalParameters 的早期错误规则。
+- 如果与此产生式匹配的源代码是严格模式代码，那么如果BindingIdentifier是存在的，并且BindingIdentifier的StringValue是"eval"或"arguments"，那么这就是一个语法错误。
+- 如果FunctionBody的ContainsUseStrict为真，FormalParameters的IsSimpleParameterList为假，则为语法错误。
+- 如果FormalParameters的BoundNames的任何元素也出现在FunctionBody的LexicallyDeclaredNames中，这是一个语法错误。
+- 如果包含SuperProperty的FormalParameters为真，则为语法错误。
+- 如果包含SuperProperty的FunctionBody为真，则为语法错误。
+- 如果包含SuperCall的FormalParameters为真，则为语法错误。
+- 如果包含SuperCall的FunctionBody为真，则为语法错误。
 
-> 注 1
+> 注 1：FunctionBody的LexicallyDeclaredNames不包括使用var或函数声明绑定的标识符
 >
-> The LexicallyDeclaredNames of a FunctionBody does not include identifiers bound using var or function declarations
 
 ```
 UniqueFormalParameters : FormalParameters
 ```
 
-It is a Syntax Error if BoundNames of FormalParameters contains any duplicate elements.
+如果FormalParameters的BoundNames包含任何重复的元素，则是语法错误。
 
 ```
 FormalParameters : FormalParameterList
 ```
 
-It is a Syntax Error if IsSimpleParameterList of FormalParameterList is false and BoundNames of FormalParameterList contains any duplicate elements.
+如果FormalParameterList的IsSimpleParameterList为false，并且FormalParameterList的BoundNames包含任何重复元素，则是语法错误。
 
-> 注 2
+> 注 2：仅对于具有简单参数列表且未在严格模式代码中定义的函数，允许FormalParameterList中多次出现同一BindingIdentifier。
 >
-> Multiple occurrences of the same BindingIdentifier in a FormalParameterList is only allowed for functions which have simple parameter lists and which are not defined in strict mode code.
 
 ```
 FunctionBody : FunctionStatementList
 ```
 
-- It is a Syntax Error if the LexicallyDeclaredNames of FunctionStatementList contains any duplicate entries.
-- It is a Syntax Error if any element of the LexicallyDeclaredNames of FunctionStatementList also occurs in the VarDeclaredNames of FunctionStatementList. 
-- It is a Syntax Error if ContainsDuplicateLabels of FunctionStatementList with argument « » is true.
-- It is a Syntax Error if ContainsUndefinedBreakTarget of FunctionStatementList with argument « » is true.
-- It is a Syntax Error if ContainsUndefinedContinueTarget of FunctionStatementList with arguments « » and « » is true.
+- 如果FunctionStatementList的LexicallyDeclaredNames包含任何重复的条目，则是语法错误。
+- 如果FunctionStatementList的LexicallyDeclaredNames的任何元素也出现在FunctionStatementList的VarDeclaredNames中，则是语法错误。
+- 如果FunctionStatementList的ContainsDuplicateLabels和参数«»为true，则为语法错误。
+- 如果FunctionStatementList的ContainsUndefinedBreakTarget带有参数«»，则为语法错误。
+- 如果FunctionStatementList的ContainsUndefinedContinueTarget带有参数«»，并且«»为true，则为语法错误。
 
-### 14.1.3 SS: BoundNames <div id="sec-function-definitions-static-semantics-boundnames"></div>
+### 14.1.3 静态语义：BoundNames <div id="sec-function-definitions-static-semantics-boundnames"></div>
 
 ```
 FunctionDeclaration : function BindingIdentifier ( FormalParameters ) { FunctionBody }
 ```
 
-1. Return the BoundNames of BindingIdentifier.
+1. 返回 the BindingIdentifier 的 BoundNames
 
 ```
 FunctionDeclaration : function ( FormalParameters ) { FunctionBody }
 ```
 
-1. Return « "\*default\*" ».
+1. 返回 « "\*default\*" ».
 
 > 注
 >
-> "\*default\*" is used within this specification as a synthetic name for hoistable anonymous functions that are defined using export declarations.
+> "\*default\*"在本规范中用作使用导出声明定义的可提升匿名函数的合成名称。
 
 ```
 FormalParameters : [empty]
 ```
 
-1. Return a new empty List
+1. 返回一个新的空列表
 
 ```
 FormalParameters : FormalParameterList , FunctionRestParameter
 ```
 
-1. Let names be BoundNames of FormalParameterList.
-2. Append to names the BoundNames of FunctionRestParameter.
-3. Return names.
+1. 令 names 为 FormalParameterList 的 BoundNames
+2. 在 names 后追加 FunctionRestParameter 的 BoundNames。
+3. 返回 names.
 
 ```
 FormalParameterList : FormalParameterList , FormalParameter
 ```
 
-1. Let names be BoundNames of FormalParameterList.
-2. Append to names the BoundNames of FormalParameter.
-3. Return names.
+1. 令 names 为 FormalParameterList 的 BoundNames
+2. 在 names 后追加 FormalParameter 的 BoundNames
+3. 返回 names.
 
-### 14.1.4 SS: Contains <div id="sec-function-definitions-static-semantics-contains"></div>
+### 14.1.4 静态语义：Contains <div id="sec-function-definitions-static-semantics-contains"></div>
 
-With parameter symbol.
+带有参数 symbol.
 
 ```
 FunctionDeclaration : function BindingIdentifier ( FormalParameters ) { FunctionBody }
@@ -149,379 +144,370 @@ FunctionDeclaration : function ( FormalParameters ) { FunctionBody }
 FunctionExpression : function BindingIdentifier ( FormalParameters ) { FunctionBody }
 ```
 
-1. Return false.
+1. 返回 false.
 
-> 注
+> 注：依赖于子结构的静态语义规则通常不会考虑函数定义。
 >
-> Static semantic rules that depend upon substructure generally do not look into function definitions.
 
-### 14.1.5 SS: ContainsExpression <div id="sec-function-definitions-static-semantics-containsexpression"></div>
+### 14.1.5 静态语义：ContainsExpression <div id="sec-function-definitions-static-semantics-containsexpression"></div>
 
 ```
 FormalParameters : [empty]
 ```
 
-1. Return false.
+1. 返回 false.
 
 ```
 FormalParameters : FormalParameterList , FunctionRestParameter
 ```
 
-1. If ContainsExpression of FormalParameterList is true, return true.
-2. Return ContainsExpression of FunctionRestParameter.
+1. 若 FormalParameterList 的 ContainsExpression 是 true, 返回 true.
+2. 返回 FunctionRestParameter 的 ContainsExpression
 
 ```
 FormalParameterList : FormalParameterList , FormalParameter
 ```
 
-1. If ContainsExpression of FormalParameterList is true, return true.
-2. Return ContainsExpression of FormalParameter
+1. 若 FormalParameterList 的 ContainsExpression 是 true, 返回 true.
+2. 返回 FormalParameter 的 ContainsExpression
 
-### 14.1.6 SS: ContainsUseStrict <div id="sec-function-definitions-static-semantics-containsusestrict"></div>
+### 14.1.6 静态语义：ContainsUseStrict <div id="sec-function-definitions-static-semantics-containsusestrict"></div>
 
 ```
 FunctionBody : FunctionStatementList
 ```
 
-1. If the Directive Prologue of FunctionStatementList contains a Use Strict Directive, return true; otherwise, return false.
+1. 若 FunctionStatementList的指令序言包含一个使用严格的指令, 返回 true; 否则, 返回 false.
 
-### 14.1.7 SS: ExpectedArgumentCount <div id="sec-function-definitions-static-semantics-expectedargumentcount"></div>
+### 14.1.7 静态语义：ExpectedArgumentCount <div id="sec-function-definitions-static-semantics-expectedargumentcount"></div>
 
 ```
 FormalParameters : [empty]
 ```
 
-1. Return 0.
+1. 返回 0.
 
 ```
 FormalParameters : FormalParameterList , FunctionRestParameter
 ```
 
-1. Return ExpectedArgumentCount of FormalParameterList.
+1. 返回 FormalParameterList 的 ExpectedArgumentCount
 
-> 注
+> 注：FormalParameterList的ExpetedArgumentCount是REST参数左边的FormalParameters数，或者是带有初始化器的第一个FormalParameter数。在带有初始化器的第一个参数之后，允许使用没有初始化器的FormalParameters，但是这些参数被认为是可选的，undefined为它们的默认值。
 >
-> The ExpectedArgumentCount of a FormalParameterList is the number of FormalParameters to the left of either the rest parameter or the first FormalParameter with an Initializer. A FormalParameter without an initializer is allowed after the first parameter with an initializer but such parameters are considered to be optional with undefined as their default value
 
 ```
 FormalParameterList : FormalParameterList , FormalParameter
 ```
 
-1. Let count be ExpectedArgumentCount of FormalParameterList.
-2. If HasInitializer of FormalParameterList is true or HasInitializer of FormalParameter is true, return count.
-3. Return count + 1.
+1. 令 count 为 FormalParameterList 的 ExpectedArgumentCount
+2. 若FormAlParameterList的HasInitializer设定为true，或者FormAlParameter的HasInitializer设定为true, 返回 count.
+3. 返回 count + 1.
 
-### 14.1.8 SS: HasInitializer <div id="sec-function-definitions-static-semantics-hasinitializer"></div>
+### 14.1.8 静态语义：HasInitializer <div id="sec-function-definitions-static-semantics-hasinitializer"></div>
 
 ```
 FormalParameterList : FormalParameterList , FormalParameter
 ```
 
-1. If HasInitializer of FormalParameterList is true, return true.
-2. Return HasInitializer of FormalParameter.
+1. 若 FormalParameterList 的 HasInitializer 是 true, 返回 true.
+2. 返回 FormalParameter 的 HasInitializer
 
-### 14.1.9 SS: HasName <div id="sec-function-definitions-static-semantics-hasname"></div>
+### 14.1.9 静态语义：HasName <div id="sec-function-definitions-static-semantics-hasname"></div>
 
 ```
 FunctionExpression : function ( FormalParameters ) { FunctionBody }
 ```
 
-1. Return false.
+1. 返回 false.
 
 ```
 FunctionExpression : function BindingIdentifier ( FormalParameters ) { FunctionBody }
 ```
 
-1. Return true.
+1. 返回 true.
 
-### 14.1.10 SS: IsAnonymousFunctionDefinition ( expr ) <div id="sec-isanonymousfunctiondefinition"></div>
+### 14.1.10 静态语义：IsAnonymousFunctionDefinition ( expr ) <div id="sec-isanonymousfunctiondefinition"></div>
 
-The abstract operation IsAnonymousFunctionDefinition determines if its argument is a function definition that does not bind a name. The argument expr is the result of parsing an AssignmentExpression or Initializer. The following steps are taken:
+抽象操作IsAnonyousFunctionDefinition确定其参数是否是不绑定名称的函数定义。参数expr是AssignmentExpression或Initializer的结果。采取了以下步骤：
 
-1. If IsFunctionDefinition of expr is false, return false.
-2. Let hasName be the result of HasName of expr.
-3. If hasName is true, return false.
-4. Return true.
+1. 若 expr 的 IsFunctionDefinition 是 false, 返回 false.
+2. 令 hasName 为 expr 的 HasName 的结果
+3. 若 hasName 是 true, 返回 false.
+4. 返回 true.
 
-### 14.1.11 SS: IsConstantDeclaration <div id="sec-function-definitions-static-semantics-isconstantdeclaration"></div>
+### 14.1.11 静态语义：IsConstantDeclaration <div id="sec-function-definitions-static-semantics-isconstantdeclaration"></div>
 
 ```
 FunctionDeclaration : function BindingIdentifier ( FormalParameters ) { FunctionBody }
 FunctionDeclaration : function ( FormalParameters ) { FunctionBody }
 ```
 
-1. Return false.
+1. 返回 false.
 
-### 14.1.12 SS: IsFunctionDefinition <div id="sec-function-definitions-static-semantics-isfunctiondefinition"></div>
+### 14.1.12 静态语义：IsFunctionDefinition <div id="sec-function-definitions-static-semantics-isfunctiondefinition"></div>
 
 ```
 FunctionExpression : function BindingIdentifier ( FormalParameters ) { FunctionBody }
 ```
 
-1. Return true.
+1. 返回 true.
 
-### 14.1.13 SS: IsSimpleParameterList <div id="sec-function-definitions-static-semantics-issimpleparameterlist"></div>
+### 14.1.13 静态语义：IsSimpleParameterList <div id="sec-function-definitions-static-semantics-issimpleparameterlist"></div>
 
 ```
 FormalParameters : [empty]
 ```
 
-1. Return true.
+1. 返回 true.
 
 ```
 FormalParameters : FormalParameterList , FunctionRestParameter
 ```
 
-1. Return false
+1. 返回 false
 
 ```
 FormalParameterList : FormalParameterList , FormalParameter
 ```
 
-1. If IsSimpleParameterList of FormalParameterList is false, return false.
-2. Return IsSimpleParameterList of FormalParameter.
+1. 若 FormalParameterList 的 IsSimpleParameterList 是 false, 返回 false.
+2. 返回 FormalParameter 的 IsSimpleParameterList
 
 ```
 FormalParameter : BindingElement
 ```
 
-1. Return IsSimpleParameterList of BindingElement.
+1. 返回 BindingElement 的 IsSimpleParameterList
 
-### 14.1.14 SS: LexicallyDeclaredNames <div id="sec-function-definitions-static-semantics-lexicallydeclarednames"></div>
-
-```
-FunctionStatementList : [empty]
-```
-
-1. Return a new empty List
-
-```
-FunctionStatementList : StatementList
-```
-
-1. Return TopLevelLexicallyDeclaredNames of StatementList
-
-### 14.1.15 SS: LexicallyScopedDeclarations <div id="sec-function-definitions-static-semantics-lexicallyscopeddeclarations"></div>
+### 14.1.14 静态语义：LexicallyDeclaredNames <div id="sec-function-definitions-static-semantics-lexicallydeclarednames"></div>
 
 ```
 FunctionStatementList : [empty]
 ```
 
-1. Return a new empty List.
+1. 返回一个新的空列表
 
 ```
 FunctionStatementList : StatementList
 ```
 
-1. Return the TopLevelLexicallyScopedDeclarations of StatementList.
+1. 返回 TopLevelLexicallyDeclaredNames of StatementList
 
-### 14.1.16 SS: VarDeclaredNames <div id="sec-function-definitions-static-semantics-vardeclarednames"></div>
+### 14.1.15 静态语义：LexicallyScopedDeclarations <div id="sec-function-definitions-static-semantics-lexicallyscopeddeclarations"></div>
 
 ```
 FunctionStatementList : [empty]
 ```
 
-1. Return a new empty List.
+1. 返回一个新的空列表.
 
 ```
 FunctionStatementList : StatementList
 ```
 
-1. Return TopLevelVarDeclaredNames of StatementList.
+1. 返回 the StatementList 的 TopLevelLexicallyScopedDeclarations
 
-### 14.1.17 SS: VarScopedDeclarations <div id="sec-function-definitions-static-semantics-varscopeddeclarations"></div>
+### 14.1.16 静态语义：VarDeclaredNames <div id="sec-function-definitions-static-semantics-vardeclarednames"></div>
 
 ```
 FunctionStatementList : [empty]
 ```
 
-1. Return a new empty List.
+1. 返回一个新的空列表.
 
 ```
 FunctionStatementList : StatementList
 ```
 
-1. Return the TopLevelVarScopedDeclarations of StatementList.
+1. 返回 StatementList 的 TopLevelVarDeclaredNames
 
-### 14.1.18 RS: EvaluateBody <div id="sec-function-definitions-runtime-semantics-evaluatebody"></div>
+### 14.1.17 静态语义：VarScopedDeclarations <div id="sec-function-definitions-static-semantics-varscopeddeclarations"></div>
 
-With parameters functionObject and List argumentsList.
+```
+FunctionStatementList : [empty]
+```
+
+1. 返回一个新的空列表.
+
+```
+FunctionStatementList : StatementList
+```
+
+1. 返回 the StatementList 的 TopLevelVarScopedDeclarations
+
+### 14.1.18 运行时语义：EvaluateBody <div id="sec-function-definitions-runtime-semantics-evaluatebody"></div>
+
+带有参数 functionObject 和 argumentsList列表.
 
 ```
 FunctionBody : FunctionStatementList
 ```
 
-1. Perform ? FunctionDeclarationInstantiation(functionObject, argumentsList).
-2. Return the result of evaluating FunctionStatementList.
+1. 执行 ? FunctionDeclarationInstantiation(functionObject, argumentsList).
+2. 返回运算 FunctionStatementList 的结果
 
-### 14.1.19 RS: IteratorBindingInitialization <div id="sec-function-definitions-runtime-semantics-iteratorbindinginitialization"></div>
+### 14.1.19 运行时语义：IteratorBindingInitialization <div id="sec-function-definitions-runtime-semantics-iteratorbindinginitialization"></div>
 
-```
-With parameters iteratorRecord and environment.
-```
+带有参数 iteratorRecord 和 environment
 
-> 注 1
+> 注 1：当为环境传递undefined时，表明应该使用PutValue操作来分配初始化值。非严格函数的形式参数列表就是这种情况。在那种情况下，形式参数绑定是预先初始化的，以便处理多个具有相同名称的参数的可能性。
 >
-> When undefined is passed for environment it indicates that a PutValue operation should be used to assign the initialization value. This is the case for formal parameter lists of non-strict functions. In that case the formal parameter bindings are preinitialized in order to deal with the possibility of multiple parameters with the same name.
 
 ```
 FormalParameters : [empty]
 ```
 
-1. Return NormalCompletion(empty).
+1. 返回 NormalCompletion(empty).
 
 ```
 FormalParameters : FormalParameterList , FunctionRestParameter
 ```
 
-1. Perform ? IteratorBindingInitialization for FormalParameterList using iteratorRecord and environment as the arguments.
-2. Return the result of performing IteratorBindingInitialization for FunctionRestParameter using iteratorRecord and environment as the arguments.
+1. 执行 ? 使用iteratorRecord和环境作为参数的FormalParameterList的IteratorBindingInitialization
+2. 返回使用iteratorRecord和环境作为参数对FunctionRestParameter执行IteratorBindingInitialization的结果。
 
 ```
 FormalParameterList : FormalParameterList , FormalParameter
 ```
 
-1. Perform ? IteratorBindingInitialization for FormalParameterList using iteratorRecord and environment as the arguments.
-2. Return the result of performing IteratorBindingInitialization for FormalParameter using iteratorRecord and environment as the arguments.
+1. 执行 ? 使用iteratorRecord和环境作为参数的FormalParameterList的IteratorBindingInitialization。
+2. 返回使用iteratorRecord和环境作为参数对FormalParameter执行IteratorBindingInitialization的结果。
 
 ```
 FormalParameter : BindingElement
 ```
 
-1. If ContainsExpression of BindingElement is false, return the result of performing IteratorBindingInitialization for BindingElement using iteratorRecord and environment as the arguments.
-2. Let currentContext be the running execution context.
-3. Let originalEnv be the VariableEnvironment of currentContext.
-4. Assert: The VariableEnvironment and LexicalEnvironment of currentContext are the same.
-5. Assert: environment and originalEnv are the same.
-6. Let paramVarEnv be NewDeclarativeEnvironment(originalEnv).
-7. Set the VariableEnvironment of currentContext to paramVarEnv.
-8. Set the LexicalEnvironment of currentContext to paramVarEnv.
-9. Let result be the result of performing IteratorBindingInitialization for BindingElement using iteratorRecord and environment as the arguments.
-10. Set the VariableEnvironment of currentContext to originalEnv.
-11. Set the LexicalEnvironment of currentContext to originalEnv.
-12. Return result.
+1. 若 BindingElement 的 ContainsExpression 是 false, 返回使用iteratorRecord和环境作为参数对BindingElement执行IteratorBindingInitialization的结果。
+2. 令 currentContext 为运行时上下文.
+3. 令 originalEnv 为 currentContext 的 VariableEnvironment
+4. 断言: currentContext的VariableEnvironment和LexicalEnvironment相同。
+5. 断言: environment和originalEnv相同。
+6. 令 paramVarEnv 为 NewDeclarativeEnvironment(originalEnv).
+7. 设置currentContext的VariableEnvironment为paramVarEnv
+8. 设置currentContext的LexicalEnvironment为paramVarEnv
+9. 令 result 为使用iteratorRecord和environment作为参数对BindingElement执行IteratorBindingInitialization的结果。
+10. 设置currentContext的VariableEnvironment为originalEnv
+11. 设置currentContext的LexicalEnvironment为originalEnv
+12. 返回 result.
 
-> 注 2
+> 注 2 仅当BindingElement包含直接运算时，才使用在步骤6中创建的新环境记录。
 >
-> The new Environment Record created in step 6 is only used if the BindingElement contains a direct eval.
 
 ```
 FunctionRestParameter : BindingRestElement
 ```
 
-1. If ContainsExpression of BindingRestElement is false, return the result of performing IteratorBindingInitialization for BindingRestElement using iteratorRecord and environment as the arguments.
-2. Let currentContext be the running execution context.
-3. Let originalEnv be the VariableEnvironment of currentContext.
-4. Assert: The VariableEnvironment and LexicalEnvironment of currentContext are the same.
-5. Assert: environment and originalEnv are the same.
-6. Let paramVarEnv be NewDeclarativeEnvironment(originalEnv).
-7. Set the VariableEnvironment of currentContext to paramVarEnv.
-8. Set the LexicalEnvironment of currentContext to paramVarEnv.
-9. Let result be the result of performing IteratorBindingInitialization for BindingRestElement using iteratorRecord and environment as the arguments.
-10. Set the VariableEnvironment of currentContext to originalEnv.
-11. Set the LexicalEnvironment of currentContext to originalEnv.
-12. Return result.
+1. 若 BindingRestElement 的 ContainsExpression 是 false, 返回使用iteratorRecord和environment作为参数对BindingRestElement执行IteratorBindingInitialization的结果。
+2. 令 currentContext 为 运行时上下文.
+3. 令 originalEnv 为 currentContext 的 VariableEnvironment
+4. 断言: currentContext的VariableEnvironment和LexicalEnvironment相同。
+5. 断言: environment和originalEnv相同。
+6. 令 paramVarEnv 为 NewDeclarativeEnvironment(originalEnv).
+7. 设置currentContext的VariableEnvironment为paramVarEnv
+8. 设置currentContext的LexicalEnvironment为paramVarEnv
+9. 令 result 为使用iteratorRecord和environment作为参数对BindingRestElement执行IteratorBindingInitialization的结果。
+10. 设置currentContext的VariableEnvironment为originalEnv
+11. 设置currentContext的LexicalEnvironment为originalEnv
+12. 返回 result.
 
-> 注 3
+> 注 3：仅当BindingRestElement包含直接运算时，才使用在步骤6中创建的新环境记录。
 >
-> The new Environment Record created in step 6 is only used if the BindingRestElement contains a direct eval.
 
-### 14.1.20 RS: InstantiateFunctionObject <div id="sec-function-definitions-runtime-semantics-instantiatefunctionobject"></div>
+### 14.1.20 运行时语义：InstantiateFunctionObject <div id="sec-function-definitions-runtime-semantics-instantiatefunctionobject"></div>
 
-With parameter scope.
+带有参数 scope.
 
 ```
 FunctionDeclaration : function BindingIdentifier ( FormalParameters ) { FunctionBody }
 ```
 
-1. If the function code for FunctionDeclaration is strict mode code, let strict be true. Otherwise let strict be false.
-2. Let name be StringValue of BindingIdentifier.
-3. Let F be FunctionCreate(Normal, FormalParameters, FunctionBody, scope, strict).
-4. Perform MakeConstructor(F).
-5. Perform SetFunctionName(F, name).
-6. Set F.[[SourceText]] to the source text matched by FunctionDeclaration.
-7. Return F.
+1. 若 FunctionDeclaration 的函数代码是严格模式代码, 令 strict 为 true. 否则，令 strict 为 false.
+2. 令 name 为 BindingIdentifier 的 StringValue
+3. 令 F 为 FunctionCreate(Normal, FormalParameters, FunctionBody, scope, strict).
+4. 执行 MakeConstructor(F).
+5. 执行 SetFunctionName(F, name).
+6. 设置 F.[[SourceText]] 为由FunctionDeclaration匹配的源文本。
+7. 返回 F.
 
 ```
 FunctionDeclaration : function ( FormalParameters ) { FunctionBody }
 ```
 
-1. Let F be FunctionCreate(Normal, FormalParameters, FunctionBody, scope, true).
-2. Perform MakeConstructor(F).
-3. Perform SetFunctionName(F, "default").
-4. Set F.[[SourceText]] to the source text matched by FunctionDeclaration.
-5. Return F
+1. 令 F 为 FunctionCreate(Normal, FormalParameters, FunctionBody, scope, true).
+2. 执行 MakeConstructor(F).
+3. 执行 SetFunctionName(F, "default").
+4. 设置 F.[[SourceText]]由FunctionDeclaration匹配的源文本。
+5. 返回 F
 
-> 注
+> 注：匿名FunctionDeclaration只能作为 export default 声明的一部分出现，因此其函数代码始终是严格模式代码。
 >
-> An anonymous FunctionDeclaration can only occur as part of an export default declaration, and its function code is therefore always strict mode code.
 
-### 14.1.21 RS: NamedEvaluation <div id="sec-function-definitions-runtime-semantics-namedevaluation"></div>
+### 14.1.21 运行时语义：NamedEvaluation <div id="sec-function-definitions-runtime-semantics-namedevaluation"></div>
 
-With parameter name.
+带有参数 name.
 
 ```
 FunctionExpression : function ( FormalParameters ) { FunctionBody }
 ```
 
-1. Let closure be the result of evaluating this FunctionExpression.
-2. Perform SetFunctionName(closure, name).
-3. Return closure.
+1. 令 closure 为运算 this 的结果FunctionExpression.
+2. 执行 SetFunctionName(closure, name).
+3. 返回 closure.
 
-### 14.1.22 RS: Evaluation <div id="sec-function-definitions-runtime-semantics-evaluation"></div>
+### 14.1.22 运行时语义：Evaluation <div id="sec-function-definitions-runtime-semantics-evaluation"></div>
 
 ```
 FunctionDeclaration : function BindingIdentifier ( FormalParameters ) { FunctionBody }
 ```
 
-1. Return NormalCompletion(empty).
+1. 返回 NormalCompletion(empty).
 
-> 注 1
-> An alternative semantics is provided in B.3.3
+> 注 1：B.3.3中提供了另一种语义
 
 ```
 FunctionDeclaration : function ( FormalParameters ) { FunctionBody }
 ```
 
-1. Return NormalCompletion(empty).
+1. 返回 NormalCompletion(empty).
 
 ```
 FunctionExpression : function ( FormalParameters ) { FunctionBody }
 ```
 
-1. If the function code for FunctionExpression is strict mode code, let strict be true. Otherwise let strict be false.
-2. Let scope be the LexicalEnvironment of the running execution context.
-3. Let closure be FunctionCreate(Normal, FormalParameters, FunctionBody, scope, strict).
-4. Perform MakeConstructor(closure).
-5. Set closure.[[SourceText]] to the source text matched by FunctionExpression.
-6. Return closure.
+1. 若 FunctionExpression 的函数代码是严格模式代码， 令 strict 为 true. 否则，令 strict 为 false.
+2. 令 scope 为运行时上下文的 LexicalEnvironment。
+3. 令 closure 为 FunctionCreate(Normal, FormalParameters, FunctionBody, scope, strict).
+4. 执行 MakeConstructor(closure).
+5. 设置 closure.[[SourceText]] 为由 FunctionExpression 匹配的源文本。
+6. 返回 closure.
 
 ```
 FunctionExpression : function BindingIdentifier ( FormalParameters ) { FunctionBody }
 ```
 
-1. If the function code for FunctionExpression is strict mode code, let strict be true. Otherwise let strict be false.
-2. Let scope be the running execution context's LexicalEnvironment.
-3. Let funcEnv be NewDeclarativeEnvironment(scope).
-4. Let envRec be funcEnv's EnvironmentRecord.
-5. Let name be StringValue of BindingIdentifier.
-6. Perform envRec.CreateImmutableBinding(name, false).
-7. Let closure be FunctionCreate(Normal, FormalParameters, FunctionBody, funcEnv, strict).
-8. Perform MakeConstructor(closure).
-9. Perform SetFunctionName(closure, name).
-10. Set closure.[[SourceText]] to the source text matched by FunctionExpression.
-11. Perform envRec.InitializeBinding(name, closure).
-12. Return closure
+1. 若 FunctionExpression 的函数代码是严格模式代码, 令 strict 为 true. 否则，令 strict 为 false.
+2. 令 scope 为运行时上下文的 LexicalEnvironment.
+3. 令 funcEnv 为 NewDeclarativeEnvironment(scope).
+4. 令 envRec 为 funcEnv' 的环境记录项.
+5. 令 name 为 BindingIdentifier 的 StringValue
+6. 执行 envRec.CreateImmutableBinding(name, false).
+7. 令 closure 为 FunctionCreate(Normal, FormalParameters, FunctionBody, funcEnv, strict).
+8. 执行 MakeConstructor(closure).
+9. 执行 SetFunctionName(closure, name).
+10. 设置 closure.[[SourceText]] 为由FunctionExpression匹配的源文本。
+11. 执行 envRec.InitializeBinding(name, closure).
+12. 返回 closure
 
-> 注 2 The BindingIdentifier in a FunctionExpression can be referenced from inside the FunctionExpression's FunctionBody to allow the function to call itself recursively. However, unlike in a FunctionDeclaration, the BindingIdentifier in a FunctionExpression cannot be referenced from and does not affect the scope enclosing the FunctionExpression.
+> 注 2：可以从FunctionExpression的FunctionBody内部引用FunctionExpression中的BindingIdentifier，以允许该函数以递归方式调用其自身。但是，与FunctionDeclaration中的功能不同，FunctionExpression中的BindingIdentifier不能从其引用，也不影响包围FunctionExpression的作用域。
 
-> 注 3 A prototype property is automatically created for every function defined using a FunctionDeclaration or FunctionExpression, to allow for the possibility that the function will be used as a constructor.
+> 注 3：将为使用FunctionDeclaration或FunctionExpression定义的每个函数自动创建一个原型属性，以允许将该函数用作构造函数。
 
 ```
 FunctionStatementList : [empty]
 ```
 
-1. Return NormalCompletion(undefined).
+1. 返回 NormalCompletion(undefined).
 
 ## 14.2 箭头函数定义 <div id="sec-arrow-function-definitions"></div>
 
@@ -557,46 +543,46 @@ ArrowFormalParameters[Yield]:
 (StrictFormalParameters[?Yield])
 ```
 
-### 14.2.1 SS: Early Errors <div id="sec-arrow-function-definitions-static-semantics-early-errors"></div>
+### 14.2.1 静态语义：Early Errors <div id="sec-arrow-function-definitions-static-semantics-early-errors"></div>
 
 ```
 ArrowFunction : ArrowParameters => ConciseBody
 ```
 
-- It is a Syntax Error if ArrowParameters Contains YieldExpression is true.
-- It is a Syntax Error if ArrowParameters Contains AwaitExpression is true.
-- It is a Syntax Error if ContainsUseStrict of ConciseBody is true and IsSimpleParameterList of ArrowParameters is false.
-- It is a Syntax Error if any element of the BoundNames of ArrowParameters also occurs in the
-  LexicallyDeclaredNames of ConciseBody.
+- It is a Syntax Error 若 ArrowParameters Contains YieldExpression is true.
+- It is a Syntax Error 若 ArrowParameters Contains AwaitExpression is true.
+- It is a Syntax Error 若 ConciseBody 的 ContainsUseStrict 是 true and ArrowParameters 的 IsSimpleParameterList 是 false.
+- It is a Syntax Error 若 any element of the BoundNames of ArrowParameters also occurs in the
+  ConciseBody 的 LexicallyDeclaredNames
 
 ```
 ArrowParameters : CoverParenthesizedExpressionAndArrowParameterList
 ```
 
-- It is a Syntax Error if CoverParenthesizedExpressionAndArrowParameterList is not covering an
+- It is a Syntax Error 若 CoverParenthesizedExpressionAndArrowParameterList is not covering an
   ArrowFormalParameters.
 - All early error rules for ArrowFormalParameters and its derived productions also apply to CoveredFormalsList of CoverParenthesizedExpressionAndArrowParameterList
 
-### 14.2.2 SS: BoundNames <div id="sec-arrow-function-definitions-static-semantics-boundnames"></div>
+### 14.2.2 静态语义：BoundNames <div id="sec-arrow-function-definitions-static-semantics-boundnames"></div>
 
 ```
 ArrowParameters : CoverParenthesizedExpressionAndArrowParameterList
 ```
 
-1. Let formals be CoveredFormalsList of CoverParenthesizedExpressionAndArrowParameterList.
-2. Return the BoundNames of formals.
+1. 令 formals 为 CoverParenthesizedExpressionAndArrowParameterList 的 CoveredFormalsList
+2. 返回 the formals 的 BoundNames
 
-### 14.2.3 SS: Contains <div id="sec-arrow-function-definitions-static-semantics-contains"></div>
+### 14.2.3 静态语义：Contains <div id="sec-arrow-function-definitions-static-semantics-contains"></div>
 
-With parameter symbol
+带有参数 symbol
 
 ```
 ArrowFunction : ArrowParameters => ConciseBody
 ```
 
-1. If symbol is not one of NewTarget, SuperProperty, SuperCall, super or this, return false.
-2. If ArrowParameters Contains symbol is true, return true.
-3. Return ConciseBody Contains symbol.
+1. 若 symbol is not one of NewTarget, SuperProperty, SuperCall, super or this, 返回 false.
+2. 若 ArrowParameters Contains symbol is true, 返回 true.
+3. 返回 ConciseBody Contains symbol.
 
 > 注 Normally, Contains does not look inside most function forms. However, Contains is used to detect new.target, this, and super usage within an ArrowFunction.
 
@@ -604,62 +590,62 @@ ArrowFunction : ArrowParameters => ConciseBody
 ArrowParameters : CoverParenthesizedExpressionAndArrowParameterList
 ```
 
-1. Let formals be CoveredFormalsList of CoverParenthesizedExpressionAndArrowParameterList.
-2. Return formals Contains symbol.
+1. 令 formals 为 CoverParenthesizedExpressionAndArrowParameterList 的 CoveredFormalsList
+2. 返回 formals Contains symbol.
 
-### 14.2.4 SS: ContainsExpression <div id="sec-arrow-function-definitions-static-semantics-containsexpression"></div>
+### 14.2.4 静态语义：ContainsExpression <div id="sec-arrow-function-definitions-static-semantics-containsexpression"></div>
 
 ```
 ArrowParameters : BindingIdentifier
 ```
 
-1. Return false.
+1. 返回 false.
 
-### 14.2.5 SS: ContainsUseStrict <div id="sec-arrow-function-definitions-static-semantics-containsusestrict"></div>
+### 14.2.5 静态语义：ContainsUseStrict <div id="sec-arrow-function-definitions-static-semantics-containsusestrict"></div>
 ```
 ConciseBody : AssignmentExpression
 ```
 
-1. Return false.
+1. 返回 false.
 
-### 14.2.6 SS: ExpectedArgumentCount <div id="sec-arrow-function-definitions-static-semantics-expectedargumentcount"></div>
+### 14.2.6 静态语义：ExpectedArgumentCount <div id="sec-arrow-function-definitions-static-semantics-expectedargumentcount"></div>
 
 ```
 ArrowParameters : BindingIdentifier
 ```
 
-1. Return 1.
+1. 返回 1.
 
-### 14.2.7 SS: HasName <div id="sec-arrow-function-definitions-static-semantics-hasname"></div>
+### 14.2.7 静态语义：HasName <div id="sec-arrow-function-definitions-static-semantics-hasname"></div>
 
 ```
 ArrowFunction : ArrowParameters => ConciseBody
 ```
 
-1. Return false.
+1. 返回 false.
 
-### 14.2.8 SS: IsSimpleParameterList <div id="sec-arrow-function-definitions-static-semantics-issimpleparameterlist"></div>
+### 14.2.8 静态语义：IsSimpleParameterList <div id="sec-arrow-function-definitions-static-semantics-issimpleparameterlist"></div>
 
 ```
 ArrowParameters : BindingIdentifier
 ```
 
-1. Return true.
+1. 返回 true.
 
 ```
 ArrowParameters : CoverParenthesizedExpressionAndArrowParameterList
 ```
 
-1. Let formals be CoveredFormalsList of CoverParenthesizedExpressionAndArrowParameterList.
-2. Return IsSimpleParameterList of formals.
+1. 令 formals 为 CoverParenthesizedExpressionAndArrowParameterList 的 CoveredFormalsList
+2. 返回 formals 的 IsSimpleParameterList
 
-### 14.2.9 SS: CoveredFormalsList <div id="sec-static-semantics-coveredformalslist"></div>
+### 14.2.9 静态语义：CoveredFormalsList <div id="sec-static-semantics-coveredformalslist"></div>
 
 ```
 ArrowParameters : BindingIdentifier
 ```
 
-1. Return this ArrowParameters.
+1. 返回 this ArrowParameters.
 
    ```
    CoverParenthesizedExpressionAndArrowParameterList :
@@ -672,45 +658,45 @@ ArrowParameters : BindingIdentifier
    
    ```
 
-   1. Return the ArrowFormalParameters that is covered by CoverParenthesizedExpressionAndArrowParameterList.
+   1. 返回 the ArrowFormalParameters that is covered by CoverParenthesizedExpressionAndArrowParameterList.
 
 
 
-### 14.2.10 SS: LexicallyDeclaredNames <div id="sec-arrow-function-definitions-static-semantics-lexicallydeclarednames"></div>
-
-```
-ConciseBody : AssignmentExpression
-```
-
-1. Return a new empty List.
-
-### 14.2.11 SS: LexicallyScopedDeclarations <div id="sec-arrow-function-definitions-static-semantics-lexicallyscopeddeclarations"></div>
+### 14.2.10 静态语义：LexicallyDeclaredNames <div id="sec-arrow-function-definitions-static-semantics-lexicallydeclarednames"></div>
 
 ```
 ConciseBody : AssignmentExpression
 ```
 
-1. Return a new empty List.
+1. 返回一个新的空列表.
 
-### 14.2.12 SS: VarDeclaredNames <div id="sec-arrow-function-definitions-static-semantics-vardeclarednames"></div>
-
-```
-ConciseBody : AssignmentExpression
-```
-
-1. Return a new empty List.
-
-### 14.2.13 SS: VarScopedDeclarations <div id="sec-arrow-function-definitions-static-semantics-varscopeddeclarations"></div>
+### 14.2.11 静态语义：LexicallyScopedDeclarations <div id="sec-arrow-function-definitions-static-semantics-lexicallyscopeddeclarations"></div>
 
 ```
 ConciseBody : AssignmentExpression
 ```
 
-1. Return a new empty List.
+1. 返回一个新的空列表.
 
-### 14.2.14 RS: IteratorBindingInitialization <div id="sec-arrow-function-definitions-runtime-semantics-iteratorbindinginitialization"></div>
+### 14.2.12 静态语义：VarDeclaredNames <div id="sec-arrow-function-definitions-static-semantics-vardeclarednames"></div>
 
-With parameters iteratorRecord and environment.
+```
+ConciseBody : AssignmentExpression
+```
+
+1. 返回一个新的空列表.
+
+### 14.2.13 静态语义：VarScopedDeclarations <div id="sec-arrow-function-definitions-static-semantics-varscopeddeclarations"></div>
+
+```
+ConciseBody : AssignmentExpression
+```
+
+1. 返回一个新的空列表.
+
+### 14.2.14 运行时语义：IteratorBindingInitialization <div id="sec-arrow-function-definitions-runtime-semantics-iteratorbindinginitialization"></div>
+
+带有参数 iteratorRecord 和 environment.
 
 > 注
 >
@@ -720,55 +706,55 @@ With parameters iteratorRecord and environment.
 ArrowParameters : BindingIdentifier
 ```
 
-1. Assert: iteratorRecord.[[Done]] is false.
-2. Let next be IteratorStep(iteratorRecord).
-3. If next is an abrupt completion, set iteratorRecord.[[Done]] to true.
+1. 断言: iteratorRecord.[[Done]] is false.
+2. 令 next 为 IteratorStep(iteratorRecord).
+3. 若 next is an abrupt completion, 设置 iteratorRecord.[[Done]] to true.
 4. ReturnIfAbrupt(next).
-5. If next is false, set iteratorRecord.[[Done]] to true.
+5. 若 next is false, 设置 iteratorRecord.[[Done]] to true.
 6. Else,
-a. Let v be IteratorValue(next).
-b. If v is an abrupt completion, set iteratorRecord.[[Done]] to true.
+a. 令 v 为 IteratorValue(next).
+b. 若 v is an abrupt completion, 设置 iteratorRecord.[[Done]] to true.
 c. ReturnIfAbrupt(v).
-7. If iteratorRecord.[[Done]] is true, let v be undefined.
-8. Return the result of performing BindingInitialization for BindingIdentifier using v and environment as the arguments.
+7. 若 iteratorRecord.[[Done]] is true, 令 v 为 undefined.
+8. 返回使用v和environment作为参数对BindingIdentifier执行BindingInitialization的结果。
 
-### 14.2.15 RS: EvaluateBody <div id="sec-arrow-function-definitions-runtime-semantics-evaluatebody"></div>
+### 14.2.15 运行时语义：EvaluateBody <div id="sec-arrow-function-definitions-runtime-semantics-evaluatebody"></div>
 
-With parameters functionObject and List argumentsList.
+带有参数 functionObject 和 argumentsList列表.
 
 ```
 ConciseBody : AssignmentExpression
 ```
 
-1. Perform ? FunctionDeclarationInstantiation(functionObject, argumentsList).
-2. Let exprRef be the result of evaluating AssignmentExpression.
-3. Let exprValue be ? GetValue(exprRef).
-4. Return Completion { [[Type]]: return, [[Value]]: exprValue, [[Target]]: empty }.
+1. 执行 ? FunctionDeclarationInstantiation(functionObject, argumentsList).
+2. 令 exprRef 为运算 AssignmentExpression 的结果
+3. 令 exprValue 为 ? GetValue(exprRef).
+4. 返回 Completion { [[Type]]: 返回, [[Value]]: exprValue, [[Target]]: empty }.
 
-### 14.2.16 RS: NamedEvaluation <div id="sec-arrow-function-definitions-runtime-semantics-namedevaluation"></div>
+### 14.2.16 运行时语义：NamedEvaluation <div id="sec-arrow-function-definitions-runtime-semantics-namedevaluation"></div>
 
-With parameter name.
-
-```
-ArrowFunction : ArrowParameters => ConciseBody
-```
-
-1. Let closure be the result of evaluating this ArrowFunction.
-2. Perform SetFunctionName(closure, name).
-3. Return closure.
-
-### 14.2.17 RS: Evaluation <div id="sec-arrow-function-definitions-runtime-semantics-evaluation"></div>
+带有参数 name.
 
 ```
 ArrowFunction : ArrowParameters => ConciseBody
 ```
 
-1. If the function code for this ArrowFunction is strict mode code, let strict be true. Otherwise let strict be false.
-2. Let scope be the LexicalEnvironment of the running execution context.
-3. Let parameters be CoveredFormalsList of ArrowParameters.
-4. Let closure be FunctionCreate(Arrow, parameters, ConciseBody, scope, strict).
-5. Set closure.[[SourceText]] to the source text matched by ArrowFunction.
-6. Return closure.
+1. 令 closure 为运算 this 的结果ArrowFunction.
+2. 执行 SetFunctionName(closure, name).
+3. 返回 closure.
+
+### 14.2.17 运行时语义：Evaluation <div id="sec-arrow-function-definitions-runtime-semantics-evaluation"></div>
+
+```
+ArrowFunction : ArrowParameters => ConciseBody
+```
+
+1. 若 the function code for this ArrowFunction is strict mode code, 令 strict be true. 否则，令 strict 为 false.
+2. 令 scope 为 the LexicalEnvironment of 运行时上下文.
+3. 令 parameters 为 ArrowParameters 的 CoveredFormalsList
+4. 令 closure 为 FunctionCreate(Arrow, parameters, ConciseBody, scope, strict).
+5. 设置 closure.[[SourceText]] to the source text matched by ArrowFunction.
+6. 返回 closure.
 
 > 注 An ArrowFunction does not define local bindings for arguments, super, this, or new.target. Any reference to arguments, super, this, or new.target within an ArrowFunction must resolve to a binding in a lexically enclosing environment. Typically this will be the Function Environment of an immediately enclosing function. Even though an ArrowFunction may contain references to super, the function object created in step 4 is not made into a method by performing MakeMethod. An ArrowFunction that references super is always contained within a nonArrowFunction and the necessary state to implement super is accessible via the scope that is captured by the function object of the ArrowFunction.
 
@@ -784,95 +770,95 @@ MethodDefinition[Yield, Await] :
     AsyncMethod[?Yield, ?Await]
     AsyncGeneratorMethod[?Yield, ?Await]
     get PropertyName[?Yield, ?Await] ( ) { FunctionBody[~Yield, ~Await] }
-    set PropertyName[?Yield, ?Await] ( PropertySetParameterList ) {
+    设置 PropertyName[?Yield, ?Await] ( PropertySetParameterList ) {
     FunctionBody[~Yield, ~Await] }
 PropertySetParameterList :
 	FormalParameter[~Yield, ~Await]
 ```
 
-### 14.3.1 SS: Early Errors <div id="sec-method-definitions-static-semantics-early-errors"></div>
+### 14.3.1 静态语义：Early Errors <div id="sec-method-definitions-static-semantics-early-errors"></div>
 
 ```
 MethodDefinition : PropertyName ( UniqueFormalParameters ) { FunctionBody }
 ```
 
-- It is a Syntax Error if ContainsUseStrict of FunctionBody is true and IsSimpleParameterList of
+- It is a Syntax Error 若 FunctionBody 的 ContainsUseStrict 是 true and IsSimpleParameterList of
   UniqueFormalParameters is false.
-- It is a Syntax Error if any element of the BoundNames of UniqueFormalParameters also occurs in the
+- It is a Syntax Error 若 any element of the BoundNames of UniqueFormalParameters also occurs in the
   LexicallyDeclaredNames of FunctionBody
 
 ```
-MethodDefinition : set PropertyName ( PropertySetParameterList ) { FunctionBody }
+MethodDefinition : 设置 PropertyName ( PropertySetParameterList ) { FunctionBody }
 ```
 
-- It is a Syntax Error if BoundNames of PropertySetParameterList contains any duplicate elements.
-- It is a Syntax Error if ContainsUseStrict of FunctionBody is true and IsSimpleParameterList of
+- It is a Syntax Error 若 BoundNames of PropertySetParameterList contains any duplicate elements.
+- It is a Syntax Error 若 FunctionBody 的 ContainsUseStrict 是 true and IsSimpleParameterList of
   PropertySetParameterList is false.
-- It is a Syntax Error if any element of the BoundNames of PropertySetParameterList also occurs in the
-  LexicallyDeclaredNames of FunctionBody.
+- It is a Syntax Error 若 any element of the BoundNames of PropertySetParameterList also occurs in the
+  FunctionBody 的 LexicallyDeclaredNames
 
-### 14.3.2 SS: ComputedPropertyContains <div id="sec-method-definitions-static-semantics-computedpropertycontains"></div>
+### 14.3.2 静态语义：ComputedPropertyContains <div id="sec-method-definitions-static-semantics-computedpropertycontains"></div>
 
-With parameter symbol.
+带有参数 symbol.
 
 ```
 MethodDefinition :
     PropertyName ( UniqueFormalParameters ) { FunctionBody }
     get PropertyName ( ) { FunctionBody }
-    set PropertyName ( PropertySetParameterList ) { FunctionBody }
+    设置 PropertyName ( PropertySetParameterList ) { FunctionBody }
 ```
 
-1. Return the result of ComputedPropertyContains for PropertyName with argument symbol.
+1. 返回 the result of ComputedPropertyContains for PropertyName with argument symbol.
 
-### 14.3.3 SS: ExpectedArgumentCount <div id="sec-method-definitions-static-semantics-expectedargumentcount"></div>
+### 14.3.3 静态语义：ExpectedArgumentCount <div id="sec-method-definitions-static-semantics-expectedargumentcount"></div>
 
 ```
 PropertySetParameterList : FormalParameter
 ```
 
-1. If HasInitializer of FormalParameter is true, return 0.
-2. Return 1.
+1. 若 FormalParameter 的 HasInitializer 是 true, 返回 0.
+2. 返回 1.
 
-### 14.3.4 SS: HasDirectSuper <div id="sec-method-definitions-static-semantics-hasdirectsuper"></div>
+### 14.3.4 静态语义：HasDirectSuper <div id="sec-method-definitions-static-semantics-hasdirectsuper"></div>
 
 ```
 MethodDefinition : PropertyName ( UniqueFormalParameters ) { FunctionBody }
 ```
 
-1. If UniqueFormalParameters Contains SuperCall is true, return true.
-2. Return FunctionBody Contains SuperCall.
+1. 若 UniqueFormalParameters Contains SuperCall is true, 返回 true.
+2. 返回 FunctionBody Contains SuperCall.
 
 ```
 MethodDefinition : get PropertyName ( ) { FunctionBody }
 ```
 
-1. Return FunctionBody Contains SuperCall
+1. 返回 FunctionBody Contains SuperCall
 
 ```
-MethodDefinition : set PropertyName ( PropertySetParameterList ) { FunctionBody }
+MethodDefinition : 设置 PropertyName ( PropertySetParameterList ) { FunctionBody }
 ```
 
-1. If PropertySetParameterList Contains SuperCall is true, return true.
-2. Return FunctionBody Contains SuperCall.
+1. 若 PropertySetParameterList Contains SuperCall is true, 返回 true.
+2. 返回 FunctionBody Contains SuperCall.
 
-### 14.3.5 SS: PropName <div id="sec-method-definitions-static-semantics-propname"></div>
+### 14.3.5 静态语义：PropName <div id="sec-method-definitions-static-semantics-propname"></div>
 
 ```
 MethodDefinition :
     PropertyName ( UniqueFormalParameters ) { FunctionBody }
     get PropertyName ( ) { FunctionBody }
-    set PropertyName ( PropertySetParameterList ) { FunctionBody }
+    设置 PropertyName ( PropertySetParameterList ) { FunctionBody }
 ```
 
-1. Return PropName of PropertyName.
+1. 返回 PropertyName 的 PropName
 
-### 14.3.6 SS: SpecialMethod <div id="sec-static-semantics-specialmethod"></div>
+### 14.3.6 静态语义：SpecialMethod <div id="sec-static-semantics-specialmethod"></div>
 
 ```
 MethodDefinition : PropertyName ( UniqueFormalParameters ) { FunctionBody }
 ```
 
-1. Return false.
+1. 返回 false.
 
    ```
    MethodDefinition :
@@ -880,79 +866,79 @@ MethodDefinition : PropertyName ( UniqueFormalParameters ) { FunctionBody }
        AsyncMethod
        AsyncGeneratorMethod
        get PropertyName ( ) { FunctionBody }
-       set PropertyName ( PropertySetParameterList ) { FunctionBody }
+       设置 PropertyName ( PropertySetParameterList ) { FunctionBody }
    ```
 
-   1. Return true.
+   1. 返回 true.
 
-### 14.3.7 RS: DefineMethod <div id="sec-runtime-semantics-definemethod"></div>
+### 14.3.7 运行时语义：DefineMethod <div id="sec-runtime-semantics-definemethod"></div>
 
-With parameters object and optional parameter functionPrototype.
+带有参数 object 和 optional parameter functionPrototype.
 
 ```
 MethodDefinition : PropertyName ( UniqueFormalParameters ) { FunctionBody }
 ```
 
-1. Let propKey be the result of evaluating PropertyName.
+1. 令 propKey 为运算 PropertyName 的结果
 2. ReturnIfAbrupt(propKey).
-3. If the function code for this MethodDefinition is strict mode code, let strict be true. Otherwise let strict be false.
-4. Let scope be the running execution context's LexicalEnvironment.
-5. If functionPrototype is present as a parameter, then
-a. Let kind be Normal.
-b. Let prototype be functionPrototype.
+3. 若 the function code for this MethodDefinition is strict mode code, 令 strict be true. 否则，令 strict 为 false.
+4. 令 scope 为 运行时上下文's LexicalEnvironment.
+5. 若 functionPrototype is present as a parameter, then
+a. 令 kind 为 Normal.
+b. 令 prototype 为 functionPrototype.
 6. Else,
-a. Let kind be Method.
-b. Let prototype be the intrinsic object %FunctionPrototype%.
-7. Let closure be FunctionCreate(kind, UniqueFormalParameters, FunctionBody, scope, strict, prototype).
-8. Perform MakeMethod(closure, object).
-9. Set closure.[[SourceText]] to the source text matched by MethodDefinition.
-10. Return the Record { [[Key]]: propKey, [[Closure]]: closure }.
+a. 令 kind 为 Method.
+b. 令 prototype 为 the intrinsic object %FunctionPrototype%.
+7. 令 closure 为 FunctionCreate(kind, UniqueFormalParameters, FunctionBody, scope, strict, prototype).
+8. 执行 MakeMethod(closure, object).
+9. 设置 closure.[[SourceText]] to the source text matched by MethodDefinition.
+10. 返回 the Record { [[Key]]: propKey, [[Closure]]: closure }.
 
-### 14.3.8 RS: PropertyDefinitionEvaluation <div id="sec-method-definitions-runtime-semantics-propertydefinitionevaluation"></div>
+### 14.3.8 运行时语义：PropertyDefinitionEvaluation <div id="sec-method-definitions-runtime-semantics-propertydefinitionevaluation"></div>
 
-With parameters object and enumerable.
+带有参数 object 和 enumerable.
 
 ```
 MethodDefinition : PropertyName ( UniqueFormalParameters ) { FunctionBody }
 ```
 
-1. Let methodDef be DefineMethod of MethodDefinition with argument object.
+1. 令 methodDef 为 DefineMethod of MethodDefinition with argument object.
 2. ReturnIfAbrupt(methodDef).
-3. Perform SetFunctionName(methodDef.[[Closure]], methodDef.[[Key]]).
-4. Let desc be the PropertyDescriptor { [[Value]]: methodDef.[[Closure]], [[Writable]]: true, [[Enumerable]]:
+3. 执行 SetFunctionName(methodDef.[[Closure]], methodDef.[[Key]]).
+4. 令 desc 为 the PropertyDescriptor { [[Value]]: methodDef.[[Closure]], [[Writable]]: true, [[Enumerable]]:
 enumerable, [[Configurable]]: true }.
-5. Return ? DefinePropertyOrThrow(object, methodDef.[[Key]], desc)
+5. 返回 ? DefinePropertyOrThrow(object, methodDef.[[Key]], desc)
 
 ```
 MethodDefinition : get PropertyName ( ) { FunctionBody }
 ```
 
-1. Let propKey be the result of evaluating PropertyName.
+1. 令 propKey 为运算 PropertyName 的结果
 2. ReturnIfAbrupt(propKey).
-3. If the function code for this MethodDefinition is strict mode code, let strict be true. Otherwise let strict be false.
-4. Let scope be the running execution context's LexicalEnvironment.
-5. Let formalParameterList be an instance of the production FormalParameters : [empty] .
-6. Let closure be FunctionCreate(Method, formalParameterList, FunctionBody, scope, strict).
-7. Perform MakeMethod(closure, object).
-8. Perform SetFunctionName(closure, propKey, "get").
-9. Set closure.[[SourceText]] to the source text matched by MethodDefinition.
-10. Let desc be the PropertyDescriptor { [[Get]]: closure, [[Enumerable]]: enumerable, [[Configurable]]: true }.
-11. Return ? DefinePropertyOrThrow(object, propKey, desc).
+3. 若 the function code for this MethodDefinition is strict mode code, 令 strict be true. 否则，令 strict 为 false.
+4. 令 scope 为 运行时上下文's LexicalEnvironment.
+5. 令 formalParameterList 为 an instance of the production FormalParameters : [empty] .
+6. 令 closure 为 FunctionCreate(Method, formalParameterList, FunctionBody, scope, strict).
+7. 执行 MakeMethod(closure, object).
+8. 执行 SetFunctionName(closure, propKey, "get").
+9. 设置 closure.[[SourceText]] to the source text matched by MethodDefinition.
+10. 令 desc 为 the PropertyDescriptor { [[Get]]: closure, [[Enumerable]]: enumerable, [[Configurable]]: true }.
+11. 返回 ? DefinePropertyOrThrow(object, propKey, desc).
 
 ```
-MethodDefinition : set PropertyName ( PropertySetParameterList ) { FunctionBody }
+MethodDefinition : 设置 PropertyName ( PropertySetParameterList ) { FunctionBody }
 ```
 
-1. Let propKey be the result of evaluating PropertyName.
+1. 令 propKey 为运算 PropertyName 的结果
 2. ReturnIfAbrupt(propKey).
-3. If the function code for this MethodDefinition is strict mode code, let strict be true. Otherwise let strict be false.
-4. Let scope be the running execution context's LexicalEnvironment.
-5. Let closure be FunctionCreate(Method, PropertySetParameterList, FunctionBody, scope, strict).
-6. Perform MakeMethod(closure, object).
-7. Perform SetFunctionName(closure, propKey, "set").
-8. Set closure.[[SourceText]] to the source text matched by MethodDefinition.
-9. Let desc be the PropertyDescriptor { [[Set]]: closure, [[Enumerable]]: enumerable, [[Configurable]]: true }.
-10. Return ? DefinePropertyOrThrow(object, propKey, desc).
+3. 若 the function code for this MethodDefinition is strict mode code, 令 strict be true. 否则，令 strict 为 false.
+4. 令 scope 为 运行时上下文's LexicalEnvironment.
+5. 令 closure 为 FunctionCreate(Method, PropertySetParameterList, FunctionBody, scope, strict).
+6. 执行 MakeMethod(closure, object).
+7. 执行 SetFunctionName(closure, propKey, "set").
+8. 设置 closure.[[SourceText]] to the source text matched by MethodDefinition.
+9. 令 desc 为 the PropertyDescriptor { [[Set]]: closure, [[Enumerable]]: enumerable, [[Configurable]]: true }.
+10. 返回 ? DefinePropertyOrThrow(object, propKey, desc).
 
 ## 14.4 Generator 函数定义 <div id="sec-generator-function-definitions"></div>
 
@@ -979,18 +965,18 @@ YieldExpression[In, Await] :
 
 > 注 3 Abstract operations relating to generator objects are defined in 25.4.3.
 
-### 14.4.1 SS: Early Errors <div id="sec-generator-function-definitions-static-semantics-early-errors"></div>
+### 14.4.1 静态语义：Early Errors <div id="sec-generator-function-definitions-static-semantics-early-errors"></div>
 
 ```
 GeneratorMethod : * PropertyName ( UniqueFormalParameters ) { GeneratorBody }
 ```
 
-- It is a Syntax Error if HasDirectSuper of GeneratorMethod is true.
-- It is a Syntax Error if UniqueFormalParameters Contains YieldExpression is true.
-- It is a Syntax Error if ContainsUseStrict of GeneratorBody is true and IsSimpleParameterList of
+- It is a Syntax Error 若 GeneratorMethod 的 HasDirectSuper 是 true.
+- It is a Syntax Error 若 UniqueFormalParameters Contains YieldExpression is true.
+- It is a Syntax Error 若 GeneratorBody 的 ContainsUseStrict 是 true and IsSimpleParameterList of
   UniqueFormalParameters is false.
-- It is a Syntax Error if any element of the BoundNames of UniqueFormalParameters also occurs in the
-  LexicallyDeclaredNames of GeneratorBody.
+- It is a Syntax Error 若 any element of the BoundNames of UniqueFormalParameters also occurs in the
+  GeneratorBody 的 LexicallyDeclaredNames
 
 ```
 GeneratorDeclaration : function * BindingIdentifier ( FormalParameters ) { GeneratorBody }
@@ -998,45 +984,45 @@ GeneratorDeclaration : function * ( FormalParameters ) { GeneratorBody }
 GeneratorExpression : function * BindingIdentifier ( FormalParameters ) { GeneratorBody }
 ```
 
-- If the source code matching this production is strict mode code, the Early Error rules for UniqueFormalParameters : FormalParameters are applied.
-- If the source code matching this production is strict mode code, it is a Syntax Error if BindingIdentifier is present and the StringValue of BindingIdentifier is "eval" or "arguments".
-- It is a Syntax Error if ContainsUseStrict of GeneratorBody is true and IsSimpleParameterList of FormalParameters is false.
-- It is a Syntax Error if any element of the BoundNames of FormalParameters also occurs in the LexicallyDeclaredNames of GeneratorBody.
-- It is a Syntax Error if FormalParameters Contains YieldExpression is true.
-- It is a Syntax Error if FormalParameters Contains SuperProperty is true.
-- It is a Syntax Error if GeneratorBody Contains SuperProperty is true.
-- It is a Syntax Error if FormalParameters Contains SuperCall is true.
-- It is a Syntax Error if GeneratorBody Contains SuperCall is true.
+- 若 the source code matching this production is strict mode code, the Early Error rules for UniqueFormalParameters : FormalParameters are applied.
+- 若 the source code matching this production is strict mode code, it is a Syntax Error 若 BindingIdentifier is present and the BindingIdentifier 的 StringValue 是 "eval" or "arguments".
+- It is a Syntax Error 若 GeneratorBody 的 ContainsUseStrict 是 true and FormalParameters 的 IsSimpleParameterList 是 false.
+- It is a Syntax Error 若 any element of the BoundNames of FormalParameters also occurs in the GeneratorBody 的 LexicallyDeclaredNames
+- It is a Syntax Error 若 FormalParameters Contains YieldExpression is true.
+- It is a Syntax Error 若 FormalParameters Contains SuperProperty is true.
+- It is a Syntax Error 若 GeneratorBody Contains SuperProperty is true.
+- It is a Syntax Error 若 FormalParameters Contains SuperCall is true.
+- It is a Syntax Error 若 GeneratorBody Contains SuperCall is true.
 
-### 14.4.2 SS: BoundNames <div id="sec-generator-function-definitions-static-semantics-boundnames"></div>
+### 14.4.2 静态语义：BoundNames <div id="sec-generator-function-definitions-static-semantics-boundnames"></div>
 
 ```
 GeneratorDeclaration : function * BindingIdentifier ( FormalParameters ) { GeneratorBody }
 ```
 
-1. Return the BoundNames of BindingIdentifier
+1. 返回 the BoundNames of BindingIdentifier
 
 ```
 GeneratorDeclaration : function * ( FormalParameters ) { GeneratorBody }
 ```
 
-1. Return « "\*default\*" ».
+1. 返回 « "\*default\*" ».
 
-> 注 "\*default\*" is used within this specification as a synthetic name for hoistable anonymous functions that are defined using export declarations.
+> 注 "\*default\*"在本规范中用作使用导出声明定义的可提升匿名函数的合成名称。.
 
-### 14.4.3 SS: ComputedPropertyContains <div id="sec-generator-function-definitions-static-semantics-computedpropertycontains"></div>
+### 14.4.3 静态语义：ComputedPropertyContains <div id="sec-generator-function-definitions-static-semantics-computedpropertycontains"></div>
 
-With parameter symbol.
+带有参数 symbol.
 
 ```
 GeneratorMethod : * PropertyName ( UniqueFormalParameters ) { GeneratorBody }
 ```
 
-1. Return the result of ComputedPropertyContains for PropertyName with argument symbol.
+1. 返回 the result of ComputedPropertyContains for PropertyName with argument symbol.
 
-### 14.4.4 SS: Contains <div id="sec-generator-function-definitions-static-semantics-contains"></div>
+### 14.4.4 静态语义：Contains <div id="sec-generator-function-definitions-static-semantics-contains"></div>
 
-With parameter symbol.
+带有参数 symbol.
 
 ```
 GeneratorDeclaration : function * BindingIdentifier ( FormalParameters ) { GeneratorBody }
@@ -1044,172 +1030,172 @@ GeneratorDeclaration : function * ( FormalParameters ) { GeneratorBody }
 GeneratorExpression : function * BindingIdentifier ( FormalParameters ) { GeneratorBody }
 ```
 
-1. Return false.
+1. 返回 false.
 
 > 注 Static semantic rules that depend upon substructure generally do not look into function definitions.
 
-### 14.4.5 SS: HasDirectSuper <div id="sec-generator-function-definitions-static-semantics-hasdirectsuper"></div>
+### 14.4.5 静态语义：HasDirectSuper <div id="sec-generator-function-definitions-static-semantics-hasdirectsuper"></div>
 
 ```
 GeneratorMethod : * PropertyName ( UniqueFormalParameters ) { GeneratorBody }
 ```
 
-1. If UniqueFormalParameters Contains SuperCall is true, return true.
-2. Return GeneratorBody Contains SuperCall.
+1. 若 UniqueFormalParameters Contains SuperCall is true, 返回 true.
+2. 返回 GeneratorBody Contains SuperCall.
 
-### 14.4.6 SS: HasName <div id="sec-generator-function-definitions-static-semantics-hasname"></div>
+### 14.4.6 静态语义：HasName <div id="sec-generator-function-definitions-static-semantics-hasname"></div>
 
 ```
 GeneratorExpression : function * ( FormalParameters ) { GeneratorBody }
 ```
 
-1. Return false.
+1. 返回 false.
 
 ```
 GeneratorExpression : function * BindingIdentifier ( FormalParameters ) { GeneratorBody }
 ```
 
-1. Return true
+1. 返回 true
 
-### 14.4.7 SS: IsConstantDeclaration <div id="sec-generator-function-definitions-static-semantics-isconstantdeclaration"></div>
+### 14.4.7 静态语义：IsConstantDeclaration <div id="sec-generator-function-definitions-static-semantics-isconstantdeclaration"></div>
 
 ```
 GeneratorDeclaration : function * BindingIdentifier ( FormalParameters ) { GeneratorBody }
 GeneratorDeclaration : function * ( FormalParameters ) { GeneratorBody }
 ```
 
-1. Return false
+1. 返回 false
 
-### 14.4.8 SS: IsFunctionDefinition <div id="sec-generator-function-definitions-static-semantics-isfunctiondefinition"></div>
+### 14.4.8 静态语义：IsFunctionDefinition <div id="sec-generator-function-definitions-static-semantics-isfunctiondefinition"></div>
 
 ```
 GeneratorExpression : function * BindingIdentifier ( FormalParameters ) { GeneratorBody }
 ```
 
-1. Return true.
+1. 返回 true.
 
-### 14.4.9 SS: PropName <div id="sec-generator-function-definitions-static-semantics-propname"></div>
+### 14.4.9 静态语义：PropName <div id="sec-generator-function-definitions-static-semantics-propname"></div>
 
 ```
 GeneratorMethod : * PropertyName ( UniqueFormalParameters ) { GeneratorBody }
 ```
 
-1. Return PropName of PropertyName.
+1. 返回 PropertyName 的 PropName
 
-### 14.4.10 RS: EvaluateBody <div id="sec-generator-function-definitions-runtime-semantics-evaluatebody"></div>
+### 14.4.10 运行时语义：EvaluateBody <div id="sec-generator-function-definitions-runtime-semantics-evaluatebody"></div>
 
-With parameters functionObject and List argumentsList.
+带有参数 functionObject 和 argumentsList列表.
 
 ```
 GeneratorBody : FunctionBody
 ```
 
-1. Perform ? FunctionDeclarationInstantiation(functionObject, argumentsList).
-2. Let G be ? OrdinaryCreateFromConstructor(functionObject, "%GeneratorPrototype%", « [[GeneratorState]], [[GeneratorContext]] »)
-3. Perform GeneratorStart(G, FunctionBody).
-4. Return Completion { [[Type]]: return, [[Value]]: G, [[Target]]: empty }.
+1. 执行 ? FunctionDeclarationInstantiation(functionObject, argumentsList).
+2. 令 G 为 ? OrdinaryCreateFromConstructor(functionObject, "%GeneratorPrototype%", « [[GeneratorState]], [[GeneratorContext]] »)
+3. 执行 GeneratorStart(G, FunctionBody).
+4. 返回 Completion { [[Type]]: 返回, [[Value]]: G, [[Target]]: empty }.
 
-### 14.4.11 RS: InstantiateFunctionObject <div id="sec-generator-function-definitions-runtime-semantics-instantiatefunctionobject"></div>
+### 14.4.11 运行时语义：InstantiateFunctionObject <div id="sec-generator-function-definitions-runtime-semantics-instantiatefunctionobject"></div>
 
-With parameter scope.
+带有参数 scope.
 
 ```
 GeneratorDeclaration : function * BindingIdentifier ( FormalParameters ) { GeneratorBody }
 ```
 
-1. If the function code for GeneratorDeclaration is strict mode code, let strict be true. Otherwise let strict be false.
-2. Let name be StringValue of BindingIdentifier.
-3. Let F be GeneratorFunctionCreate(Normal, FormalParameters, GeneratorBody, scope, strict).
-4. Let prototype be ObjectCreate(%GeneratorPrototype%).
-5. Perform DefinePropertyOrThrow(F, "prototype", PropertyDescriptor { [[Value]]: prototype, [[Writable]]:
+1. 若 the function code for GeneratorDeclaration is strict mode code, 令 strict be true. 否则，令 strict 为 false.
+2. 令 name 为 BindingIdentifier 的 StringValue
+3. 令 F 为 GeneratorFunctionCreate(Normal, FormalParameters, GeneratorBody, scope, strict).
+4. 令 prototype 为 ObjectCreate(%GeneratorPrototype%).
+5. 执行 DefinePropertyOrThrow(F, "prototype", PropertyDescriptor { [[Value]]: prototype, [[Writable]]:
 true, [[Enumerable]]: false, [[Configurable]]: false }).
-6. Perform SetFunctionName(F, name).
-7. Set F.[[SourceText]] to the source text matched by GeneratorDeclaration.
-8. Return F
+6. 执行 SetFunctionName(F, name).
+7. 设置 F.[[SourceText]] to the source text matched by GeneratorDeclaration.
+8. 返回 F
 
 ```
 GeneratorDeclaration : function * ( FormalParameters ) { GeneratorBody }
 ```
 
-1. Let F be GeneratorFunctionCreate(Normal, FormalParameters, GeneratorBody, scope, true).
-2. Let prototype be ObjectCreate(%GeneratorPrototype%).
-3. Perform DefinePropertyOrThrow(F, "prototype", PropertyDescriptor { [[Value]]: prototype, [[Writable]]:
+1. 令 F 为 GeneratorFunctionCreate(Normal, FormalParameters, GeneratorBody, scope, true).
+2. 令 prototype 为 ObjectCreate(%GeneratorPrototype%).
+3. 执行 DefinePropertyOrThrow(F, "prototype", PropertyDescriptor { [[Value]]: prototype, [[Writable]]:
 true, [[Enumerable]]: false, [[Configurable]]: false }).
-4. Perform SetFunctionName(F, "default").
-5. Set F.[[SourceText]] to the source text matched by GeneratorDeclaration.
-6. Return F.
+4. 执行 SetFunctionName(F, "default").
+5. 设置 F.[[SourceText]] to the source text matched by GeneratorDeclaration.
+6. 返回 F.
 
 > 注 An anonymous GeneratorDeclaration can only occur as part of an export default declaration, and its function code is therefore always strict mode code.
 
-### 14.4.12 RS: PropertyDefinitionEvaluation <div id="sec-generator-function-definitions-runtime-semantics-propertydefinitionevaluation"></div>
+### 14.4.12 运行时语义：PropertyDefinitionEvaluation <div id="sec-generator-function-definitions-runtime-semantics-propertydefinitionevaluation"></div>
 
-With parameters object and enumerable.
+带有参数 object 和 enumerable.
 
 ```
 GeneratorMethod : * PropertyName ( UniqueFormalParameters ) { GeneratorBody }
 ```
 
-1. Let propKey be the result of evaluating PropertyName.
+1. 令 propKey 为运算 PropertyName 的结果
 2. ReturnIfAbrupt(propKey).
-3. If the function code for this GeneratorMethod is strict mode code, let strict be true. Otherwise let strict be false.
-4. Let scope be the running execution context's LexicalEnvironment.
-5. Let closure be GeneratorFunctionCreate(Method, UniqueFormalParameters, GeneratorBody, scope, strict).
-6. Perform MakeMethod(closure, object).
-7. Let prototype be ObjectCreate(%GeneratorPrototype%).
-8. Perform DefinePropertyOrThrow(closure, "prototype", PropertyDescriptor { [[Value]]: prototype,
+3. 若 the function code for this GeneratorMethod is strict mode code, 令 strict be true. 否则，令 strict 为 false.
+4. 令 scope 为 运行时上下文's LexicalEnvironment.
+5. 令 closure 为 GeneratorFunctionCreate(Method, UniqueFormalParameters, GeneratorBody, scope, strict).
+6. 执行 MakeMethod(closure, object).
+7. 令 prototype 为 ObjectCreate(%GeneratorPrototype%).
+8. 执行 DefinePropertyOrThrow(closure, "prototype", PropertyDescriptor { [[Value]]: prototype,
 [[Writable]]: true, [[Enumerable]]: false, [[Configurable]]: false }).
-9. Perform SetFunctionName(closure, propKey).
-10. Set closure.[[SourceText]] to the source text matched by GeneratorMethod.
-11. Let desc be the PropertyDescriptor { [[Value]]: closure, [[Writable]]: true, [[Enumerable]]: enumerable,
+9. 执行 SetFunctionName(closure, propKey).
+10. 设置 closure.[[SourceText]] to the source text matched by GeneratorMethod.
+11. 令 desc 为 the PropertyDescriptor { [[Value]]: closure, [[Writable]]: true, [[Enumerable]]: enumerable,
 [[Configurable]]: true }.
-12. Return ? DefinePropertyOrThrow(object, propKey, desc).
+12. 返回 ? DefinePropertyOrThrow(object, propKey, desc).
 
-### 14.4.13 RS: NamedEvaluation <div id="sec-generator-function-definitions-runtime-semantics-namedevaluation"></div>
+### 14.4.13 运行时语义：NamedEvaluation <div id="sec-generator-function-definitions-runtime-semantics-namedevaluation"></div>
 
-With parameter name.
-
-```
-GeneratorExpression : function * ( FormalParameters ) { GeneratorBody }
-```
-
-1. Let closure be the result of evaluating this GeneratorExpression.
-2. Perform SetFunctionName(closure, name).
-3. Return closure.
-
-### 14.4.14 RS: Evaluation <div id="sec-generator-function-definitions-runtime-semantics-evaluation"></div>
+带有参数 name.
 
 ```
 GeneratorExpression : function * ( FormalParameters ) { GeneratorBody }
 ```
 
-1. If the function code for this GeneratorExpression is strict mode code, let strict be true. Otherwise let strict be false.
-2. Let scope be the LexicalEnvironment of the running execution context.
-3. Let closure be GeneratorFunctionCreate(Normal, FormalParameters, GeneratorBody, scope, strict).
-4. Let prototype be ObjectCreate(%GeneratorPrototype%).
-5. Perform DefinePropertyOrThrow(closure, "prototype", PropertyDescriptor { [[Value]]: prototype,
+1. 令 closure 为运算 this 的结果GeneratorExpression.
+2. 执行 SetFunctionName(closure, name).
+3. 返回 closure.
+
+### 14.4.14 运行时语义：Evaluation <div id="sec-generator-function-definitions-runtime-semantics-evaluation"></div>
+
+```
+GeneratorExpression : function * ( FormalParameters ) { GeneratorBody }
+```
+
+1. 若 the function code for this GeneratorExpression is strict mode code, 令 strict be true. 否则，令 strict 为 false.
+2. 令 scope 为 the LexicalEnvironment of 运行时上下文.
+3. 令 closure 为 GeneratorFunctionCreate(Normal, FormalParameters, GeneratorBody, scope, strict).
+4. 令 prototype 为 ObjectCreate(%GeneratorPrototype%).
+5. 执行 DefinePropertyOrThrow(closure, "prototype", PropertyDescriptor { [[Value]]: prototype,
 [[Writable]]: true, [[Enumerable]]: false, [[Configurable]]: false }).
-6. Set closure.[[SourceText]] to the source text matched by GeneratorExpression.
-7. Return closure
+6. 设置 closure.[[SourceText]] to the source text matched by GeneratorExpression.
+7. 返回 closure
 
 ```
 GeneratorExpression : function * BindingIdentifier ( FormalParameters ) { GeneratorBody }
 ```
 
-1. If the function code for this GeneratorExpression is strict mode code, let strict be true. Otherwise let strict be
+1. 若 the function code for this GeneratorExpression is strict mode code, 令 strict be true. 否则，令 strict 为
 false.
-2. Let scope be the running execution context's LexicalEnvironment.
-3. Let funcEnv be NewDeclarativeEnvironment(scope).
-4. Let envRec be funcEnv's EnvironmentRecord.
-5. Let name be StringValue of BindingIdentifier.
-6. Perform envRec.CreateImmutableBinding(name, false).
-7. Let closure be GeneratorFunctionCreate(Normal, FormalParameters, GeneratorBody, funcEnv, strict).
-8. Let prototype be ObjectCreate(%GeneratorPrototype%).
-9. Perform DefinePropertyOrThrow(closure, "prototype", PropertyDescriptor { [[Value]]: prototype,
+2. 令 scope 为 运行时上下文's LexicalEnvironment.
+3. 令 funcEnv 为 NewDeclarativeEnvironment(scope).
+4. 令 envRec 为 funcEnv's EnvironmentRecord.
+5. 令 name 为 BindingIdentifier 的 StringValue
+6. 执行 envRec.CreateImmutableBinding(name, false).
+7. 令 closure 为 GeneratorFunctionCreate(Normal, FormalParameters, GeneratorBody, funcEnv, strict).
+8. 令 prototype 为 ObjectCreate(%GeneratorPrototype%).
+9. 执行 DefinePropertyOrThrow(closure, "prototype", PropertyDescriptor { [[Value]]: prototype,
 [[Writable]]: true, [[Enumerable]]: false, [[Configurable]]: false }).
-10. Perform SetFunctionName(closure, name).
-11. Perform envRec.InitializeBinding(name, closure).
-12. Set closure.[[SourceText]] to the source text matched by GeneratorExpression.
-13. Return closure.
+10. 执行 SetFunctionName(closure, name).
+11. 执行 envRec.InitializeBinding(name, closure).
+12. 设置 closure.[[SourceText]] to the source text matched by GeneratorExpression.
+13. 返回 closure.
 
 > 注 The BindingIdentifier in a GeneratorExpression can be referenced from inside the GeneratorExpression's FunctionBody to allow the generator code to call itself recursively. However, unlike in a GeneratorDeclaration, the BindingIdentifier in a GeneratorExpression cannot be referenced from and does not affect the scope enclosing the GeneratorExpression.
 
@@ -1217,80 +1203,80 @@ false.
 YieldExpression : yield
 ```
 
-1. Let generatorKind be ! GetGeneratorKind().
-2. If generatorKind is async, then return ? AsyncGeneratorYield(undefined).
-3. Otherwise, return ? GeneratorYield(CreateIterResultObject(undefined, false)).
+1. 令 generatorKind 为 ! GetGeneratorKind().
+2. 若 generatorKind is async, then 返回 ? AsyncGeneratorYield(undefined).
+3. 否则, 返回 ? GeneratorYield(CreateIterResultObject(undefined, false)).
 
 ```
 YieldExpression : yield AssignmentExpression
 ```
 
-1. Let generatorKind be ! GetGeneratorKind().
-2. Let exprRef be the result of evaluating AssignmentExpression.
-3. Let value be ? GetValue(exprRef).
-4. If generatorKind is async, then return ? AsyncGeneratorYield(value).
-5. Otherwise, return ? GeneratorYield(CreateIterResultObject(value, false)).
+1. 令 generatorKind 为 ! GetGeneratorKind().
+2. 令 exprRef 为运算 AssignmentExpression 的结果
+3. 令 value 为 ? GetValue(exprRef).
+4. 若 generatorKind is async, then 返回 ? AsyncGeneratorYield(value).
+5. 否则, 返回 ? GeneratorYield(CreateIterResultObject(value, false)).
 
 ```
 YieldExpression : yield * AssignmentExpression
 ```
 
-1. Let generatorKind be ! GetGeneratorKind().
-2. Let exprRef be the result of evaluating AssignmentExpression.
-3. Let value be ? GetValue(exprRef).
-4. Let iteratorRecord be ? GetIterator(value, generatorKind).
-5. Let iterator be iteratorRecord.[[Iterator]].
-6. Let received be NormalCompletion(undefined).
+1. 令 generatorKind 为 ! GetGeneratorKind().
+2. 令 exprRef 为运算 AssignmentExpression 的结果
+3. 令 value 为 ? GetValue(exprRef).
+4. 令 iteratorRecord 为 ? GetIterator(value, generatorKind).
+5. 令 iterator 为 iteratorRecord.[[Iterator]].
+6. 令 received 为 NormalCompletion(undefined).
 7. Repeat,
-a. If received.[[Type]] is normal, then
-i. Let innerResult be ? Call(iteratorRecord.[[NextMethod]], iteratorRecord.[[Iterator]], « received.
+a. 若 received.[[Type]] is normal, then
+i. 令 innerResult 为 ? Call(iteratorRecord.[[NextMethod]], iteratorRecord.[[Iterator]], « received.
 [[Value]] »).
-ii. If generatorKind is async, then set innerResult to ? Await(innerResult).
-iii. If Type(innerResult) is not Object, throw a TypeError exception.
-iv. Let done be ? IteratorComplete(innerResult).
-v. If done is true, then
-1. Return ? IteratorValue(innerResult).
-vi. If generatorKind is async, then set received to AsyncGeneratorYield(? IteratorValue(innerResult)).
-vii. Else, set received to GeneratorYield(innerResult).
-b. Else if received.[[Type]] is throw, then
-i. Let throw be ? GetMethod(iterator, "throw").
-ii. If throw is not undefined, then
-1. Let innerResult be ? Call(throw, iterator, « received.[[Value]] »).
-2. If generatorKind is async, then set innerResult to ? Await(innerResult).
+ii. 若 generatorKind is async, then 设置 innerResult to ? Await(innerResult).
+iii. 若 Type(innerResult) is not Object, throw a TypeError exception.
+iv. 令 done 为 ? IteratorComplete(innerResult).
+v. 若 done is true, then
+1. 返回 ? IteratorValue(innerResult).
+vi. 若 generatorKind is async, then 设置 received to AsyncGeneratorYield(? IteratorValue(innerResult)).
+vii. Else, 设置 received to GeneratorYield(innerResult).
+b. Else 若 received.[[Type]] is throw, then
+i. 令 throw 为 ? GetMethod(iterator, "throw").
+ii. 若 throw is not undefined, then
+1. 令 innerResult 为 ? Call(throw, iterator, « received.[[Value]] »).
+2. 若 generatorKind is async, then 设置 innerResult to ? Await(innerResult).
 3. 注: Exceptions from the inner iterator throw method are propagated. Normal completions
 from an inner throw method are processed similarly to an inner next.
-4. If Type(innerResult) is not Object, throw a TypeError exception.
-5. Let done be ? IteratorComplete(innerResult).
-6. If done is true, then
-a. Return ? IteratorValue(innerResult).
-7. If generatorKind is async, then set received to AsyncGeneratorYield(?
+4. 若 Type(innerResult) is not Object, throw a TypeError exception.
+5. 令 done 为 ? IteratorComplete(innerResult).
+6. 若 done is true, then
+a. 返回 ? IteratorValue(innerResult).
+7. 若 generatorKind is async, then 设置 received to AsyncGeneratorYield(?
 IteratorValue(innerResult)).
-8. Else, set received to GeneratorYield(innerResult).
+8. Else, 设置 received to GeneratorYield(innerResult).
 iii. Else,
-17. 注: If iterator does not have a throw method, this throw is going to terminate the yield*
+17. 注: 若 iterator does not have a throw method, this throw is going to terminate the yield*
       loop. But first we need to give iterator a chance to clean up.
-2. Let closeCompletion be Completion { [[Type]]: normal, [[Value]]: empty, [[Target]]: empty }.
-3. If generatorKind is async, perform ? AsyncIteratorClose(iteratorRecord, closeCompletion).
-4. Else, perform ? IteratorClose(iteratorRecord, closeCompletion).
+2. 令 closeCompletion 为 Completion { [[Type]]: normal, [[Value]]: empty, [[Target]]: empty }.
+3. 若 generatorKind is async, 执行 ? AsyncIteratorClose(iteratorRecord, closeCompletion).
+4. Else, 执行 ? IteratorClose(iteratorRecord, closeCompletion).
 5. 注: The next step throws a TypeError to indicate that there was a yield* protocol violation:
 iterator does not have a throw method.
 6. Throw a TypeError exception.
 c. Else,
-i. Assert: received.[[Type]] is return.
-ii. Let return be ? GetMethod(iterator, "return").
-iii. If return is undefined, then
-1. If generatorKind is async, then set received.[[Value]] to ? Await(received.[[Value]]).
-2. Return Completion(received).
-iv. Let innerReturnResult be ? Call(return, iterator, « received.[[Value]] »).
-v. If generatorKind is async, then set innerReturnResult to ? Await(innerReturnResult).
-vi. If Type(innerReturnResult) is not Object, throw a TypeError exception.
-vii. Let done be ? IteratorComplete(innerReturnResult).
-viii. If done is true, then
-1. Let value be ? IteratorValue(innerReturnResult).
-2. Return Completion { [[Type]]: return, [[Value]]: value, [[Target]]: empty }.
-ix. If generatorKind is async, then set received to AsyncGeneratorYield(?
+i. 断言: received.[[Type]] is 返回.
+ii. 令 返回 为 ? GetMethod(iterator, "返回").
+iii. 若 返回 is undefined, then
+1. 若 generatorKind is async, then 设置 received.[[Value]] to ? Await(received.[[Value]]).
+2. 返回 Completion(received).
+iv. 令 innerReturnResult 为 ? Call(返回, iterator, « received.[[Value]] »).
+v. 若 generatorKind is async, then 设置 innerReturnResult to ? Await(innerReturnResult).
+vi. 若 Type(innerReturnResult) is not Object, throw a TypeError exception.
+vii. 令 done 为 ? IteratorComplete(innerReturnResult).
+viii. 若 done is true, then
+1. 令 value 为 ? IteratorValue(innerReturnResult).
+2. 返回 Completion { [[Type]]: 返回, [[Value]]: value, [[Target]]: empty }.
+ix. 若 generatorKind is async, then 设置 received to AsyncGeneratorYield(?
 IteratorValue(innerReturnResult)).
-x. Else, set received to GeneratorYield(innerReturnResult).
+x. Else, 设置 received to GeneratorYield(innerReturnResult).
 
 ## 14.5 异步 Generator 函数定义 <div id="sec-async-generator-function-definitions"></div>
 
@@ -1312,17 +1298,17 @@ AsyncGeneratorBody :
 
 > 注 2 Abstract operations relating to async generator objects are defined in 25.5.3
 
-### 14.5.1 SS: Early Errors <div id="sec-async-generator-function-definitions-static-semantics-early-errors"></div>
+### 14.5.1 静态语义：Early Errors <div id="sec-async-generator-function-definitions-static-semantics-early-errors"></div>
 
 ```
 AsyncGeneratorMethod : async * PropertyName ( UniqueFormalParameters ) { AsyncGeneratorBody }
 ```
 
-- It is a Syntax Error if HasDirectSuper of AsyncGeneratorMethod is true.
-- It is a Syntax Error if UniqueFormalParameters Contains YieldExpression is true.
-- It is a Syntax Error if UniqueFormalParameters Contains AwaitExpression is true.
-- It is a Syntax Error if ContainsUseStrict of AsyncGeneratorBody is true and IsSimpleParameterList of UniqueFormalParameters is false.
-- It is a Syntax Error if any element of the BoundNames of UniqueFormalParameters also occurs in the LexicallyDeclaredNames of AsyncGeneratorBody.
+- It is a Syntax Error 若 AsyncGeneratorMethod 的 HasDirectSuper 是 true.
+- It is a Syntax Error 若 UniqueFormalParameters Contains YieldExpression is true.
+- It is a Syntax Error 若 UniqueFormalParameters Contains AwaitExpression is true.
+- It is a Syntax Error 若 AsyncGeneratorBody 的 ContainsUseStrict 是 true and UniqueFormalParameters 的 IsSimpleParameterList 是 false.
+- It is a Syntax Error 若 any element of the BoundNames of UniqueFormalParameters also occurs in the AsyncGeneratorBody 的 LexicallyDeclaredNames
 
 ```
 AsyncGeneratorDeclaration : async function * BindingIdentifier ( FormalParameters ) { AsyncGeneratorBody }
@@ -1330,49 +1316,49 @@ AsyncGeneratorDeclaration : async function * ( FormalParameters ) { AsyncGenerat
 AsyncGeneratorExpression : async function * BindingIdentifier ( FormalParameters ) { AsyncGeneratorBody }
 ```
 
-- If the source code matching this production is strict mode code, the Early Error rules for UniqueFormalParameters : FormalParameters are applied.
-- If the source code matching this production is strict mode code, it is a Syntax Error if BindingIdentifier is the IdentifierName eval or the IdentifierName arguments.
-- It is a Syntax Error if ContainsUseStrict of AsyncGeneratorBody is true and IsSimpleParameterList of
+- 若 the source code matching this production is strict mode code, the Early Error rules for UniqueFormalParameters : FormalParameters are applied.
+- 若 the source code matching this production is strict mode code, it is a Syntax Error 若 BindingIdentifier is the IdentifierName eval or the IdentifierName arguments.
+- It is a Syntax Error 若 AsyncGeneratorBody 的 ContainsUseStrict 是 true and IsSimpleParameterList of
   FormalParameters is false.
-- It is a Syntax Error if any element of the BoundNames of FormalParameters also occurs in the
-  LexicallyDeclaredNames of AsyncGeneratorBody.
-- It is a Syntax Error if FormalParameters Contains YieldExpression is true.
-- It is a Syntax Error if FormalParameters Contains AwaitExpression is true.
-- It is a Syntax Error if FormalParameters Contains SuperProperty is true.
-- It is a Syntax Error if AsyncGeneratorBody Contains SuperProperty is true.
-- It is a Syntax Error if FormalParameters Contains SuperCall is true.
-- It is a Syntax Error if AsyncGeneratorBody Contains SuperCall is true
+- It is a Syntax Error 若 any element of the BoundNames of FormalParameters also occurs in the
+  AsyncGeneratorBody 的 LexicallyDeclaredNames
+- It is a Syntax Error 若 FormalParameters Contains YieldExpression is true.
+- It is a Syntax Error 若 FormalParameters Contains AwaitExpression is true.
+- It is a Syntax Error 若 FormalParameters Contains SuperProperty is true.
+- It is a Syntax Error 若 AsyncGeneratorBody Contains SuperProperty is true.
+- It is a Syntax Error 若 FormalParameters Contains SuperCall is true.
+- It is a Syntax Error 若 AsyncGeneratorBody Contains SuperCall is true
 
-### 14.5.2 SS: BoundNames <div id="sec-async-generator-function-definitions-static-semantics-boundnames"></div>
+### 14.5.2 静态语义：BoundNames <div id="sec-async-generator-function-definitions-static-semantics-boundnames"></div>
 
 ```
 AsyncGeneratorDeclaration : async function * BindingIdentifier ( FormalParameters ) {
 AsyncGeneratorBody }
 ```
 
-1. Return the BoundNames of BindingIdentifier.
+1. 返回 the BindingIdentifier 的 BoundNames
 
 ```
 AsyncGeneratorDeclaration : async function * ( FormalParameters ) { AsyncGeneratorBody }
 ```
 
-1. Return « "\*default\*" »
+1. 返回 « "\*default\*" »
 
-> 注 "\*default\*" is used within this specification as a synthetic name for hoistable anonymous functions that are defined using export declarations
+> 注 "\*default\*"在本规范中用作使用导出声明定义的可提升匿名函数的合成名称。
 
-### 14.5.3 SS: ComputedPropertyContains <div id="sec-async-generator-function-definitions-static-semantics-computedpropertycontains"></div>
+### 14.5.3 静态语义：ComputedPropertyContains <div id="sec-async-generator-function-definitions-static-semantics-computedpropertycontains"></div>
 
-With parameter symbol.
+带有参数 symbol.
 
 ```
 AsyncGeneratorMethod : async * PropertyName ( UniqueFormalParameters ) { AsyncGeneratorBody }
 ```
 
-1. Return the result of ComputedPropertyContains for PropertyName with argument symbol.
+1. 返回 the result of ComputedPropertyContains for PropertyName with argument symbol.
 
-### 14.5.4 SS: Contains <div id="sec-async-generator-function-definitions-static-semantics-contains"></div>
+### 14.5.4 静态语义：Contains <div id="sec-async-generator-function-definitions-static-semantics-contains"></div>
 
-With parameter symbol.
+带有参数 symbol.
 
 ```
 AsyncGeneratorDeclaration : async function * BindingIdentifier ( FormalParameters ) {
@@ -1382,35 +1368,35 @@ AsyncGeneratorExpression : async function * BindingIdentifier ( FormalParameters
 AsyncGeneratorBody }
 ```
 
-1. Return false.
+1. 返回 false.
 
 > 注 Static semantic rules that depend upon substructure generally do not look into function definitions.
 
-### 14.5.5 SS: HasDirectSuper <div id="sec-async-generator-function-definitions-static-semantics-hasdirectsuper"></div>
+### 14.5.5 静态语义：HasDirectSuper <div id="sec-async-generator-function-definitions-static-semantics-hasdirectsuper"></div>
 
 ```
 AsyncGeneratorMethod : async * PropertyName ( UniqueFormalParameters ) { AsyncGeneratorBody }
 ```
 
-1. If UniqueFormalParameters Contains SuperCall is true, return true.
-2. Return AsyncGeneratorBody Contains SuperCall.
+1. 若 UniqueFormalParameters Contains SuperCall is true, 返回 true.
+2. 返回 AsyncGeneratorBody Contains SuperCall.
 
-### 14.5.6 SS: HasName <div id="sec-async-generator-function-definitions-static-semantics-hasname"></div>
+### 14.5.6 静态语义：HasName <div id="sec-async-generator-function-definitions-static-semantics-hasname"></div>
 
 ```
 AsyncGeneratorExpression : async function * ( FormalParameters ) { AsyncGeneratorBody }
 ```
 
-1. Return false.
+1. 返回 false.
 
 ```
 AsyncGeneratorExpression : async function * BindingIdentifier ( FormalParameters ) {
 AsyncGeneratorBody }
 ```
 
-1. Return true.
+1. 返回 true.
 
-### 14.5.7 SS: IsConstantDeclaration <div id="sec-async-generator-function-definitions-static-semantics-isconstantdeclaration"></div>
+### 14.5.7 静态语义：IsConstantDeclaration <div id="sec-async-generator-function-definitions-static-semantics-isconstantdeclaration"></div>
 
 ```
 AsyncGeneratorDeclaration : async function * BindingIdentifier ( FormalParameters ) {
@@ -1418,146 +1404,146 @@ AsyncGeneratorBody }
 AsyncGeneratorDeclaration : async function * ( FormalParameters ) { AsyncGeneratorBody }
 ```
 
-1. Return false.
+1. 返回 false.
 
-### 14.5.8 SS: IsFunctionDefinition <div id="sec-async-generator-function-definitions-static-semantics-isfunctiondefinition"></div>
+### 14.5.8 静态语义：IsFunctionDefinition <div id="sec-async-generator-function-definitions-static-semantics-isfunctiondefinition"></div>
 
 ```
 AsyncGeneratorExpression : async function * BindingIdentifier ( FormalParameters ) {
 AsyncGeneratorBody }
 ```
 
-1. Return true.
+1. 返回 true.
 
-### 14.5.9 SS: PropName <div id="sec-async-generator-function-definitions-static-semantics-propname"></div>
+### 14.5.9 静态语义：PropName <div id="sec-async-generator-function-definitions-static-semantics-propname"></div>
 
 ```
 AsyncGeneratorMethod : async * PropertyName ( UniqueFormalParameters ) { AsyncGeneratorBody }
 ```
 
-1. Return PropName of PropertyName.
+1. 返回 PropertyName 的 PropName
 
-### 14.5.10 RS: EvaluateBody <div id="sec-asyncgenerator-definitions-evaluatebody"></div>
+### 14.5.10 运行时语义：EvaluateBody <div id="sec-asyncgenerator-definitions-evaluatebody"></div>
 
-With parameters functionObject and List argumentsList.
+带有参数 functionObject 和 argumentsList列表.
 
 ```
 AsyncGeneratorBody : FunctionBody
 ```
 
-1. Perform ? FunctionDeclarationInstantiation(functionObject, argumentsList).
-2. Let generator be ? OrdinaryCreateFromConstructor(functionObject, "%AsyncGeneratorPrototype%", «
+1. 执行 ? FunctionDeclarationInstantiation(functionObject, argumentsList).
+2. 令 generator 为 ? OrdinaryCreateFromConstructor(functionObject, "%AsyncGeneratorPrototype%", «
 [[AsyncGeneratorState]], [[AsyncGeneratorContext]], [[AsyncGeneratorQueue]] »).
-3. Perform ! AsyncGeneratorStart(generator, FunctionBody).
-4. Return Completion { [[Type]]: return, [[Value]]: generator, [[Target]]: empty }.
+3. 执行 ! AsyncGeneratorStart(generator, FunctionBody).
+4. 返回 Completion { [[Type]]: 返回, [[Value]]: generator, [[Target]]: empty }.
 
-### 14.5.11 RS: InstantiateFunctionObject <div id="sec-asyncgenerator-definitions-instantiatefunctionobject"></div>
+### 14.5.11 运行时语义：InstantiateFunctionObject <div id="sec-asyncgenerator-definitions-instantiatefunctionobject"></div>
 
-With parameter scope.
+带有参数 scope.
 
 ```
 AsyncGeneratorDeclaration : async function * BindingIdentifier ( FormalParameters ) {
 AsyncGeneratorBody }
 ```
 
-1. If the function code for AsyncGeneratorDeclaration is strict mode code, let strict be true. Otherwise let strict be
+1. 若 the function code for AsyncGeneratorDeclaration is strict mode code, 令 strict be true. 否则，令 strict 为
 false.
-2. Let name be StringValue of BindingIdentifier.
-3. Let F be ! AsyncGeneratorFunctionCreate(Normal, FormalParameters, AsyncGeneratorBody, scope, strict).
-4. Let prototype be ! ObjectCreate(%AsyncGeneratorPrototype%).
-5. Perform ! DefinePropertyOrThrow(F, "prototype", PropertyDescriptor { [[Value]]: prototype, [[Writable]]:
+2. 令 name 为 BindingIdentifier 的 StringValue
+3. 令 F 为 ! AsyncGeneratorFunctionCreate(Normal, FormalParameters, AsyncGeneratorBody, scope, strict).
+4. 令 prototype 为 ! ObjectCreate(%AsyncGeneratorPrototype%).
+5. 执行 ! DefinePropertyOrThrow(F, "prototype", PropertyDescriptor { [[Value]]: prototype, [[Writable]]:
 true, [[Enumerable]]: false, [[Configurable]]: false }).
-6. Perform ! SetFunctionName(F, name).
-7. Set F.[[SourceText]] to the source text matched by AsyncGeneratorDeclaration.
-8. Return F.
+6. 执行 ! SetFunctionName(F, name).
+7. 设置 F.[[SourceText]] to the source text matched by AsyncGeneratorDeclaration.
+8. 返回 F.
 
 ```
 AsyncGeneratorDeclaration : async function * ( FormalParameters ) { AsyncGeneratorBody }
 ```
 
-1. If the function code for AsyncGeneratorDeclaration is strict mode code, let strict be true. Otherwise let strict be false.
-2. Let F be AsyncGeneratorFunctionCreate(Normal, FormalParameters, AsyncGeneratorBody, scope, strict).
-3. Let prototype be ObjectCreate(%AsyncGeneratorPrototype%).
-4. Perform DefinePropertyOrThrow(F, "prototype", PropertyDescriptor { [[Value]]: prototype, [[Writable]]:
+1. 若 the function code for AsyncGeneratorDeclaration is strict mode code, 令 strict be true. 否则，令 strict 为 false.
+2. 令 F 为 AsyncGeneratorFunctionCreate(Normal, FormalParameters, AsyncGeneratorBody, scope, strict).
+3. 令 prototype 为 ObjectCreate(%AsyncGeneratorPrototype%).
+4. 执行 DefinePropertyOrThrow(F, "prototype", PropertyDescriptor { [[Value]]: prototype, [[Writable]]:
    true, [[Enumerable]]: false, [[Configurable]]: false }).
-5. Perform SetFunctionName(F, "default").
-6. Set F.[[SourceText]] to the source text matched by AsyncGeneratorDeclaration.
-7. Return F
+5. 执行 SetFunctionName(F, "default").
+6. 设置 F.[[SourceText]] to the source text matched by AsyncGeneratorDeclaration.
+7. 返回 F
 
 > 注 An anonymous AsyncGeneratorDeclaration can only occur as part of an export default declaration.
 
-### 14.5.12 RS: PropertyDefinitionEvaluation <div id="sec-asyncgenerator-definitions-propertydefinitionevaluation"></div>
+### 14.5.12 运行时语义：PropertyDefinitionEvaluation <div id="sec-asyncgenerator-definitions-propertydefinitionevaluation"></div>
 
-With parameter object and enumerable.
+带有参数 object and enumerable.
 
 ```
 AsyncGeneratorMethod : async * PropertyName ( UniqueFormalParameters ) { AsyncGeneratorBody }
 ```
 
-1. Let propKey be the result of evaluating PropertyName.
+1. 令 propKey 为运算 PropertyName 的结果
 2. ReturnIfAbrupt(propKey).
-3. If the function code for this AsyncGeneratorMethod is strict mode code, let strict be true. Otherwise let strict be
+3. 若 the function code for this AsyncGeneratorMethod is strict mode code, 令 strict be true. 否则，令 strict 为
 false.
-4. Let scope be the running execution context's LexicalEnvironment.
-5. Let closure be ! AsyncGeneratorFunctionCreate(Method, UniqueFormalParameters, AsyncGeneratorBody, scope,
+4. 令 scope 为 运行时上下文's LexicalEnvironment.
+5. 令 closure 为 ! AsyncGeneratorFunctionCreate(Method, UniqueFormalParameters, AsyncGeneratorBody, scope,
 strict).
-6. Perform ! MakeMethod(closure, object).
-7. Let prototype be ! ObjectCreate(%AsyncGeneratorPrototype%).
-8. Perform ! DefinePropertyOrThrow(closure, "prototype", PropertyDescriptor { [[Value]]: prototype,
+6. 执行 ! MakeMethod(closure, object).
+7. 令 prototype 为 ! ObjectCreate(%AsyncGeneratorPrototype%).
+8. 执行 ! DefinePropertyOrThrow(closure, "prototype", PropertyDescriptor { [[Value]]: prototype,
 [[Writable]]: true, [[Enumerable]]: false, [[Configurable]]: false }).
-9. Perform ! SetFunctionName(closure, propKey).
-10. Set closure.[[SourceText]] to the source text matched by AsyncGeneratorMethod.
-11. Let desc be PropertyDescriptor { [[Value]]: closure, [[Writable]]: true, [[Enumerable]]: enumerable,
+9. 执行 ! SetFunctionName(closure, propKey).
+10. 设置 closure.[[SourceText]] to the source text matched by AsyncGeneratorMethod.
+11. 令 desc 为 PropertyDescriptor { [[Value]]: closure, [[Writable]]: true, [[Enumerable]]: enumerable,
 [[Configurable]]: true }.
-12. Return ? DefinePropertyOrThrow(object, propKey, desc).
+12. 返回 ? DefinePropertyOrThrow(object, propKey, desc).
 
-### 14.5.13 RS: NamedEvaluation <div id="sec-asyncgenerator-definitions-namedevaluation"></div>
+### 14.5.13 运行时语义：NamedEvaluation <div id="sec-asyncgenerator-definitions-namedevaluation"></div>
 
-With parameter name.
-
-```
-AsyncGeneratorExpression : async function * ( FormalParameters ) { AsyncGeneratorBody }
-```
-
-1. Let closure be the result of evaluating this AsyncGeneratorExpression.
-2. Perform SetFunctionName(closure, name).
-3. Return closure.
-
-### 14.5.14 RS: Evaluation <div id="sec-asyncgenerator-definitions-evaluation"></div>
+带有参数 name.
 
 ```
 AsyncGeneratorExpression : async function * ( FormalParameters ) { AsyncGeneratorBody }
 ```
 
-1. If the function code for this AsyncGeneratorExpression is strict mode code, let strict be true. Otherwise let strict be false.
-2. Let scope be the LexicalEnvironment of the running execution context.
-3. Let closure be ! AsyncGeneratorFunctionCreate(Normal, FormalParameters, AsyncGeneratorBody, scope, strict).
-4. Let prototype be ! ObjectCreate(%AsyncGeneratorPrototype%).
-5. Perform ! DefinePropertyOrThrow(closure, "prototype", PropertyDescriptor { [[Value]]: prototype,
+1. 令 closure 为运算 this 的结果AsyncGeneratorExpression.
+2. 执行 SetFunctionName(closure, name).
+3. 返回 closure.
+
+### 14.5.14 运行时语义：Evaluation <div id="sec-asyncgenerator-definitions-evaluation"></div>
+
+```
+AsyncGeneratorExpression : async function * ( FormalParameters ) { AsyncGeneratorBody }
+```
+
+1. 若 the function code for this AsyncGeneratorExpression is strict mode code, 令 strict be true. 否则，令 strict 为 false.
+2. 令 scope 为 the LexicalEnvironment of 运行时上下文.
+3. 令 closure 为 ! AsyncGeneratorFunctionCreate(Normal, FormalParameters, AsyncGeneratorBody, scope, strict).
+4. 令 prototype 为 ! ObjectCreate(%AsyncGeneratorPrototype%).
+5. 执行 ! DefinePropertyOrThrow(closure, "prototype", PropertyDescriptor { [[Value]]: prototype,
 [[Writable]]: true, [[Enumerable]]: false, [[Configurable]]: false }).
-6. Set closure.[[SourceText]] to the source text matched by AsyncGeneratorExpression.
-7. Return closure.
+6. 设置 closure.[[SourceText]] to the source text matched by AsyncGeneratorExpression.
+7. 返回 closure.
 
 ```
 AsyncGeneratorExpression : async function * BindingIdentifier ( FormalParameters ) {
 AsyncGeneratorBody }
 ```
 
-1. If the function code for this AsyncGeneratorExpression is strict mode code, let strict be true. Otherwise let strict be
+1. 若 the function code for this AsyncGeneratorExpression is strict mode code, 令 strict be true. 否则，令 strict 为
 false.
-2. Let scope be the running execution context's LexicalEnvironment.
-3. Let funcEnv be ! NewDeclarativeEnvironment(scope).
-4. Let envRec be funcEnv's EnvironmentRecord.
-5. Let name be StringValue of BindingIdentifier.
-6. Perform ! envRec.CreateImmutableBinding(name).
-7. Let closure be ! AsyncGeneratorFunctionCreate(Normal, FormalParameters, AsyncGeneratorBody, funcEnv, strict).
-8. Let prototype be ! ObjectCreate(%AsyncGeneratorPrototype%).
-9. Perform ! DefinePropertyOrThrow(closure, "prototype", PropertyDescriptor { [[Value]]: prototype,
+2. 令 scope 为 运行时上下文's LexicalEnvironment.
+3. 令 funcEnv 为 ! NewDeclarativeEnvironment(scope).
+4. 令 envRec 为 funcEnv's EnvironmentRecord.
+5. 令 name 为 BindingIdentifier 的 StringValue
+6. 执行 ! envRec.CreateImmutableBinding(name).
+7. 令 closure 为 ! AsyncGeneratorFunctionCreate(Normal, FormalParameters, AsyncGeneratorBody, funcEnv, strict).
+8. 令 prototype 为 ! ObjectCreate(%AsyncGeneratorPrototype%).
+9. 执行 ! DefinePropertyOrThrow(closure, "prototype", PropertyDescriptor { [[Value]]: prototype,
 [[Writable]]: true, [[Enumerable]]: false, [[Configurable]]: false }).
-10. Perform ! SetFunctionName(closure, name).
-11. Perform ! envRec.InitializeBinding(name, closure).
-12. Set closure.[[SourceText]] to the source text matched by AsyncGeneratorExpression.
-13. Return closure.
+10. 执行 ! SetFunctionName(closure, name).
+11. 执行 ! envRec.InitializeBinding(name, closure).
+12. 设置 closure.[[SourceText]] to the source text matched by AsyncGeneratorExpression.
+13. 返回 closure.
 
 > 注 The BindingIdentifier in an AsyncGeneratorExpression can be referenced from inside the AsyncGeneratorExpression's AsyncGeneratorBody to allow the generator code to call itself recursively. However, unlike in an AsyncGeneratorDeclaration, the BindingIdentifier in an AsyncGeneratorExpression cannot be referenced from and does not affect the scope enclosing the AsyncGeneratorExpression.
 
@@ -1588,334 +1574,334 @@ ClassElement[Yield, Await] :
 
 > 注 A class definition is always strict mode code.
 
-### 14.6.1 SS: Early Errors <div id="sec-class-definitions-static-semantics-early-errors"></div>
+### 14.6.1 静态语义：Early Errors <div id="sec-class-definitions-static-semantics-early-errors"></div>
 
 ```
 ClassTail : ClassHeritage { ClassBody }
 ```
 
-- It is a Syntax Error if ClassHeritage is not present and the following algorithm evaluates to true:
-  1. Let constructor be ConstructorMethod of ClassBody.
-  2. If constructor is empty, return false.
-  3. Return HasDirectSuper of constructor.
+- It is a Syntax Error 若 ClassHeritage is not present and the following algorithm evaluates to true:
+  1. 令 constructor 为 ClassBody 的 ConstructorMethod
+  2. 若 constructor is empty, 返回 false.
+  3. 返回 constructor 的 HasDirectSuper
 
 ```
 ClassBody : ClassElementList
 ```
 
-- It is a Syntax Error if PrototypePropertyNameList of ClassElementList contains more than one occurrence of "constructor".
+- It is a Syntax Error 若 PrototypePropertyNameList of ClassElementList contains more than one occurrence of "constructor".
 
 ```
 ClassElement : MethodDefinition
 ```
 
-- It is a Syntax Error if PropName of MethodDefinition is not "constructor" and HasDirectSuper of
+- It is a Syntax Error 若 MethodDefinition 的 PropName 是 not "constructor" and HasDirectSuper of
   MethodDefinition is true.
-- It is a Syntax Error if PropName of MethodDefinition is "constructor" and SpecialMethod of
+- It is a Syntax Error 若 MethodDefinition 的 PropName 是 "constructor" and SpecialMethod of
   MethodDefinition is true.
 
 ```
 ClassElement : static MethodDefinition
 ```
 
-- It is a Syntax Error if HasDirectSuper of MethodDefinition is true.
-- It is a Syntax Error if PropName of MethodDefinition is "prototype".
+- It is a Syntax Error 若 MethodDefinition 的 HasDirectSuper 是 true.
+- It is a Syntax Error 若 MethodDefinition 的 PropName 是 "prototype".
 
-### 14.6.2 SS: BoundNames <div id="sec-class-definitions-static-semantics-boundnames"></div>
+### 14.6.2 静态语义：BoundNames <div id="sec-class-definitions-static-semantics-boundnames"></div>
 
 ```
 ClassDeclaration : class BindingIdentifier ClassTail
 ```
 
-1. Return the BoundNames of BindingIdentifier
+1. 返回 the BoundNames of BindingIdentifier
 
 ```
 ClassDeclaration : class ClassTail
 ```
 
-1. Return « "\*default\*" ».
+1. 返回 « "\*default\*" ».
 
-### 14.6.3 SS: ConstructorMethod <div id="sec-static-semantics-constructormethod"></div>
+### 14.6.3 静态语义：ConstructorMethod <div id="sec-static-semantics-constructormethod"></div>
 
 ```
 ClassElementList : ClassElement
 ```
 
-1. If ClassElement is ClassElement : ; , return empty.
-2. If IsStatic of ClassElement is true, return empty.
-3. If PropName of ClassElement is not "constructor", return empty.
-4. Return ClassElement.
+1. 若 ClassElement is ClassElement : ; , 返回 empty.
+2. 若 ClassElement 的 IsStatic 是 true, 返回 empty.
+3. 若 ClassElement 的 PropName 是 not "constructor", 返回 empty.
+4. 返回 ClassElement.
 
 ```
 ClassElementList : ClassElementList ClassElement
 ```
 
-1. Let head be ConstructorMethod of ClassElementList.
-2. If head is not empty, return head.
-3. If ClassElement is ClassElement : ; , return empty.
-4. If IsStatic of ClassElement is true, return empty.
-5. If PropName of ClassElement is not "constructor", return empty.
-6. Return ClassElement
+1. 令 head 为 ClassElementList 的 ConstructorMethod
+2. 若 head is not empty, 返回 head.
+3. 若 ClassElement is ClassElement : ; , 返回 empty.
+4. 若 ClassElement 的 IsStatic 是 true, 返回 empty.
+5. 若 ClassElement 的 PropName 是 not "constructor", 返回 empty.
+6. 返回 ClassElement
 
 > 注 Early Error rules ensure that there is only one method definition named "constructor" and that it is not an accessor property or generator definition.
 
-### 14.6.4 SS: Contains <div id="sec-class-definitions-static-semantics-contains"></div>
+### 14.6.4 静态语义：Contains <div id="sec-class-definitions-static-semantics-contains"></div>
 
-With parameter symbol.
+带有参数 symbol.
 
 ```
 ClassTail : ClassHeritage { ClassBody }
 ```
 
-1. If symbol is ClassBody, return true.
-2. If symbol is ClassHeritage, then
-a. If ClassHeritage is present, return true; otherwise return false.
-3. Let inHeritage be ClassHeritage Contains symbol.
-4. If inHeritage is true, return true.
-5. Return the result of ComputedPropertyContains for ClassBody with argument symbol.
+1. 若 symbol is ClassBody, 返回 true.
+2. 若 symbol is ClassHeritage, then
+a. 若 ClassHeritage is present, 返回 true; 否则 返回 false.
+3. 令 inHeritage 为 ClassHeritage Contains symbol.
+4. 若 inHeritage is true, 返回 true.
+5. 返回 the result of ComputedPropertyContains for ClassBody with argument symbol.
 
 > 注 Static semantic rules that depend upon substructure generally do not look into class bodies except for PropertyNames
 
-### 14.6.5 SS: ComputedPropertyContains <div id="sec-class-definitions-static-semantics-computedpropertycontains"></div>
+### 14.6.5 静态语义：ComputedPropertyContains <div id="sec-class-definitions-static-semantics-computedpropertycontains"></div>
 
-With parameter symbol.
+带有参数 symbol.
 
 ```
 ClassElementList : ClassElementList ClassElement
 ```
 
-1. Let inList be the result of ComputedPropertyContains for ClassElementList with argument symbol.
-2. If inList is true, return true.
-3. Return the result of ComputedPropertyContains for ClassElement with argument symbol.
+1. 令 inList 为 the result of ComputedPropertyContains for ClassElementList with argument symbol.
+2. 若 inList is true, 返回 true.
+3. 返回 the result of ComputedPropertyContains for ClassElement with argument symbol.
 
 ```
 ClassElement : MethodDefinition
 ```
 
-1. Return the result of ComputedPropertyContains for MethodDefinition with argument symbol
+1. 返回 the result of ComputedPropertyContains for MethodDefinition with argument symbol
 
 ```
 ClassElement : static MethodDefinition
 ```
 
-1. Return the result of ComputedPropertyContains for MethodDefinition with argument symbol.
+1. 返回 the result of ComputedPropertyContains for MethodDefinition with argument symbol.
 
 ```
 ClassElement : ;
 ```
 
-1. Return false.
+1. 返回 false.
 
-### 14.6.6 SS: HasName <div id="sec-class-definitions-static-semantics-hasname"></div>
+### 14.6.6 静态语义：HasName <div id="sec-class-definitions-static-semantics-hasname"></div>
 
 ```
 ClassExpression : class ClassTail
 ```
 
-1. Return false.
+1. 返回 false.
 
 ```
 ClassExpression : class BindingIdentifier ClassTail
 ```
 
-1. Return true.
+1. 返回 true.
 
-### 14.6.7 SS: IsConstantDeclaration <div id="sec-class-definitions-static-semantics-isconstantdeclaration"></div>
+### 14.6.7 静态语义：IsConstantDeclaration <div id="sec-class-definitions-static-semantics-isconstantdeclaration"></div>
 
 ```
 ClassDeclaration : class BindingIdentifier ClassTail
 ClassDeclaration : class ClassTail
 ```
 
-1. Return false.
+1. 返回 false.
 
-### 14.6.8 SS: IsFunctionDefinition <div id="sec-class-definitions-static-semantics-isfunctiondefinition"></div>
+### 14.6.8 静态语义：IsFunctionDefinition <div id="sec-class-definitions-static-semantics-isfunctiondefinition"></div>
 
 ```
 ClassExpression : class BindingIdentifier ClassTail
 ```
 
-1. Return true.
+1. 返回 true.
 
-### 14.6.9 SS: IsStatic <div id="sec-static-semantics-isstatic"></div>
+### 14.6.9 静态语义：IsStatic <div id="sec-static-semantics-isstatic"></div>
 
 ```
 ClassElement : MethodDefinition
 ```
 
-1. Return false.
+1. 返回 false.
 
 ```
 ClassElement : static MethodDefinition
 ```
 
-1. Return true.
+1. 返回 true.
 
 ```
 ClassElement : ;
 ```
 
-1. Return false.
+1. 返回 false.
 
-### 14.6.10 SS: NonConstructorMethodDefinitions <div id="sec-static-semantics-nonconstructormethoddefinitions"></div>
-
-```
-ClassElementList : ClassElement
-```
-
-1. If ClassElement is ClassElement : ; , return a new empty List.
-2. If IsStatic of ClassElement is false and PropName of ClassElement is "constructor", return a new empty List.
-3. Return a List containing ClassElement.
-
-```
-ClassElementList : ClassElementList ClassElement
-```
-
-1. Let list be NonConstructorMethodDefinitions of ClassElementList.
-2. If ClassElement is ClassElement : ; , return list.
-3. If IsStatic of ClassElement is false and PropName of ClassElement is "constructor", return list.
-4. Append ClassElement to the end of list.
-5. Return list.
-
-### 14.6.11 SS: PrototypePropertyNameList <div id="sec-static-semantics-prototypepropertynamelist"></div>
+### 14.6.10 静态语义：NonConstructorMethodDefinitions <div id="sec-static-semantics-nonconstructormethoddefinitions"></div>
 
 ```
 ClassElementList : ClassElement
 ```
 
-1. If PropName of ClassElement is empty, return a new empty List.
-2. If IsStatic of ClassElement is true, return a new empty List.
-3. Return a List containing PropName of ClassElement.
+1. 若 ClassElement is ClassElement : ; , 返回一个新的空列表.
+2. 若 ClassElement 的 IsStatic 是 false and ClassElement 的 PropName 是 "constructor", 返回一个新的空列表.
+3. 返回 a List containing ClassElement.
 
 ```
 ClassElementList : ClassElementList ClassElement
 ```
 
-1. Let list be PrototypePropertyNameList of ClassElementList.
-2. If PropName of ClassElement is empty, return list.
-3. If IsStatic of ClassElement is true, return list.
-4. Append PropName of ClassElement to the end of list.
-5. Return list.
+1. 令 list 为 ClassElementList 的 NonConstructorMethodDefinitions
+2. 若 ClassElement is ClassElement : ; , 返回 list.
+3. 若 ClassElement 的 IsStatic 是 false and ClassElement 的 PropName 是 "constructor", 返回 list.
+4. Append ClassElement to the list 的 end
+5. 返回 list.
 
-### 14.6.12 SS: PropName <div id="sec-class-definitions-static-semantics-propname"></div>
+### 14.6.11 静态语义：PrototypePropertyNameList <div id="sec-static-semantics-prototypepropertynamelist"></div>
+
+```
+ClassElementList : ClassElement
+```
+
+1. 若 ClassElement 的 PropName 是 empty, 返回一个新的空列表.
+2. 若 ClassElement 的 IsStatic 是 true, 返回一个新的空列表.
+3. 返回 a List containing ClassElement 的 PropName
+
+```
+ClassElementList : ClassElementList ClassElement
+```
+
+1. 令 list 为 ClassElementList 的 PrototypePropertyNameList
+2. 若 ClassElement 的 PropName 是 empty, 返回 list.
+3. 若 ClassElement 的 IsStatic 是 true, 返回 list.
+4. Append PropName of ClassElement to the list 的 end
+5. 返回 list.
+
+### 14.6.12 静态语义：PropName <div id="sec-class-definitions-static-semantics-propname"></div>
 
 ```
 ClassElement : ;
 ```
 
-1. Return empty.
+1. 返回 empty.
 
-### 14.6.13 RS: ClassDefinitionEvaluation <div id="sec-runtime-semantics-classdefinitionevaluation"></div>
+### 14.6.13 运行时语义：ClassDefinitionEvaluation <div id="sec-runtime-semantics-classdefinitionevaluation"></div>
 
-With parameters classBinding and className
+带有参数 classBinding 和 className
 
-1. Let lex be the LexicalEnvironment of the running execution context.
-2. Let classScope be NewDeclarativeEnvironment(lex).
-3. Let classScopeEnvRec be classScope's EnvironmentRecord.
-4. If classBinding is not undefined, then
-a. Perform classScopeEnvRec.CreateImmutableBinding(classBinding, true).
-5. If ClassHeritageopt is not present, then
-a. Let protoParent be the intrinsic object %ObjectPrototype%.
-b. Let constructorParent be the intrinsic object %FunctionPrototype%.
+1. 令 lex 为 the LexicalEnvironment of 运行时上下文.
+2. 令 classScope 为 NewDeclarativeEnvironment(lex).
+3. 令 classScopeEnvRec 为 classScope's EnvironmentRecord.
+4. 若 classBinding is not undefined, then
+a. 执行 classScopeEnvRec.CreateImmutableBinding(classBinding, true).
+5. 若 ClassHeritageopt is not present, then
+a. 令 protoParent 为 the intrinsic object %ObjectPrototype%.
+b. 令 constructorParent 为 the intrinsic object %FunctionPrototype%.
 6. Else,
-a. Set the running execution context's LexicalEnvironment to classScope.
-b. Let superclassRef be the result of evaluating ClassHeritage.
-7. c. Set the running execution context's LexicalEnvironment to lex.
-    d. Let superclass be ? GetValue(superclassRef).
-    e. If superclass is null, then
-    i. Let protoParent be null.
-    ii. Let constructorParent be the intrinsic object %FunctionPrototype%.
-    f. Else if IsConstructor(superclass) is false, throw a TypeError exception.
+a. 设置 运行时上下文's LexicalEnvironment to classScope.
+b. 令 superclassRef 为运算 ClassHeritage 的结果
+7. c. 设置 运行时上下文's LexicalEnvironment to lex.
+    d. 令 superclass 为 ? GetValue(superclassRef).
+    e. 若 superclass is null, then
+    i. 令 protoParent 为 null.
+    ii. 令 constructorParent 为 the intrinsic object %FunctionPrototype%.
+    f. Else 若 IsConstructor(superclass) is false, throw a TypeError exception.
     g. Else,
-    i. Let protoParent be ? Get(superclass, "prototype").
-    ii. If Type(protoParent) is neither Object nor Null, throw a TypeError exception.
-    iii. Let constructorParent be superclass.
-  7. Let proto be ObjectCreate(protoParent).
-  8. If ClassBodyopt is not present, let constructor be empty.
-  9. Else, let constructor be ConstructorMethod of ClassBody.
-  10. If constructor is empty, then
+    i. 令 protoParent 为 ? Get(superclass, "prototype").
+    ii. 若 Type(protoParent) is neither Object nor Null, throw a TypeError exception.
+    iii. 令 constructorParent 为 superclass.
+  7. 令 proto 为 ObjectCreate(protoParent).
+  8. 若 ClassBodyopt is not present, 令 constructor 为 empty.
+  9. Else, 令 constructor 为 ClassBody 的 ConstructorMethod
+  10. 若 constructor is empty, then
 
-    a. If ClassHeritageopt is present, then
-    i. Set constructor to the result of parsing the source text
+    a. 若 ClassHeritageopt is present, then
+    i. 设置 constructor to the result of parsing the source text
     constructor(... args){ super (...args);}
     using the syntactic grammar with the goal symbol MethodDefinition[~Yield, ~Await] .
     b. Else,
-    i. Set constructor to the result of parsing the source text
+    i. 设置 constructor to the result of parsing the source text
     constructor(){ }
     using the syntactic grammar with the goal symbol MethodDefinition[~Yield, ~Await] .
-  11. Set the running execution context's LexicalEnvironment to classScope.
-  12. Let constructorInfo be the result of performing DefineMethod for constructor with arguments proto and
+  11. 设置 运行时上下文's LexicalEnvironment to classScope.
+  12. 令 constructorInfo 为 the result of performing DefineMethod for constructor with arguments proto and
 
     constructorParent as the optional functionPrototype argument.
-  13. Assert: constructorInfo is not an abrupt completion.
-  14. Let F be constructorInfo.[[Closure]].
-  15. If ClassHeritageopt is present, set F.[[ConstructorKind]] to "derived".
-  16. Perform MakeConstructor(F, false, proto).
-  17. Perform MakeClassConstructor(F).
-  18. If className is not undefined, then
+  13. 断言: constructorInfo is not an abrupt completion.
+  14. 令 F 为 constructorInfo.[[Closure]].
+  15. 若 ClassHeritageopt is present, 设置 F.[[ConstructorKind]] to "derived".
+  16. 执行 MakeConstructor(F, false, proto).
+  17. 执行 MakeClassConstructor(F).
+  18. 若 className is not undefined, then
 
-    a. Perform SetFunctionName(F, className).
-  19. Perform CreateMethodProperty(proto, "constructor", F).
-  20. If ClassBodyopt is not present, let methods be a new empty List.
-  21. Else, let methods be NonConstructorMethodDefinitions of ClassBody.
+    a. 执行 SetFunctionName(F, className).
+  19. 执行 CreateMethodProperty(proto, "constructor", F).
+  20. 若 ClassBodyopt is not present, 令 methods 为一个新的空列表.
+  21. Else, 令 methods 为 ClassBody 的 NonConstructorMethodDefinitions
   22. For each ClassElement m in order from methods, do
 
-    a. If IsStatic of m is false, then
-    i. Let status be the result of performing PropertyDefinitionEvaluation for m with arguments proto and
+    a. 若 m 的 IsStatic 是 false, then
+    i. 令 status 为 the result of performing PropertyDefinitionEvaluation for m with arguments proto and
     false.
     b. Else,
-    i. Let status be the result of performing PropertyDefinitionEvaluation for m with arguments F and false.
-    c. If status is an abrupt completion, then
-    i. Set the running execution context's LexicalEnvironment to lex.
-    ii. Return Completion(status).
-  23. Set the running execution context's LexicalEnvironment to lex.
-  24. If classBinding is not undefined, then
-      a. Perform classScopeEnvRec.InitializeBinding(classBinding, F).
-  25. Return F.
+    i. 令 status 为 the result of performing PropertyDefinitionEvaluation for m with arguments F and false.
+    c. 若 status is an abrupt completion, then
+    i. 设置 运行时上下文's LexicalEnvironment to lex.
+    ii. 返回 Completion(status).
+  23. 设置 运行时上下文's LexicalEnvironment to lex.
+  24. 若 classBinding is not undefined, then
+      a. 执行 classScopeEnvRec.InitializeBinding(classBinding, F).
+  25. 返回 F.
 
-### 14.6.14 RS: BindingClassDeclarationEvaluation <div id="sec-runtime-semantics-bindingclassdeclarationevaluation"></div>
+### 14.6.14 运行时语义：BindingClassDeclarationEvaluation <div id="sec-runtime-semantics-bindingclassdeclarationevaluation"></div>
 
 ```
 ClassDeclaration : class BindingIdentifier ClassTail
 ```
 
-1. Let className be StringValue of BindingIdentifier.
-2. Let value be the result of ClassDefinitionEvaluation of ClassTail with arguments className and className.
+1. 令 className 为 BindingIdentifier 的 StringValue
+2. 令 value 为 the result of ClassDefinitionEvaluation of ClassTail with arguments className and className.
 3. ReturnIfAbrupt(value).
-4. Set value.[[SourceText]] to the source text matched by ClassDeclaration.
-5. Let env be the running execution context's LexicalEnvironment.
-6. Perform ? InitializeBoundName(className, value, env).
-7. Return value.
+4. 设置 value.[[SourceText]] to the source text matched by ClassDeclaration.
+5. 令 env 为 运行时上下文's LexicalEnvironment.
+6. 执行 ? InitializeBoundName(className, value, env).
+7. 返回 value.
 
 ```
 ClassDeclaration : class ClassTail
 ```
 
-1. Let value be the result of ClassDefinitionEvaluation of ClassTail with arguments undefined and "default".
+1. 令 value 为 the result of ClassDefinitionEvaluation of ClassTail with arguments undefined and "default".
 2. ReturnIfAbrupt(value).
-3. Set value.[[SourceText]] to the source text matched by ClassDeclaration.
-4. Return value.
+3. 设置 value.[[SourceText]] to the source text matched by ClassDeclaration.
+4. 返回 value.
 
 > 注 ClassDeclaration : class ClassTail only occurs as part of an ExportDeclaration and establishing its binding is handled as part of the evaluation action for that production. See 15.2.3.11.
 
-### 14.6.15 RS: NamedEvaluation <div id="sec-class-definitions-runtime-semantics-namedevaluation"></div>
+### 14.6.15 运行时语义：NamedEvaluation <div id="sec-class-definitions-runtime-semantics-namedevaluation"></div>
 
-With parameter name.
+带有参数 name.
 
 ```
 ClassExpression : class ClassTail
 ```
 
-1. Return the result of ClassDefinitionEvaluation of ClassTail with arguments undefined and name.
+1. 返回 the result of ClassDefinitionEvaluation of ClassTail with arguments undefined and name.
 
-### 14.6.16 RS: Evaluation <div id="sec-class-definitions-runtime-semantics-evaluation"></div>
+### 14.6.16 运行时语义：Evaluation <div id="sec-class-definitions-runtime-semantics-evaluation"></div>
 
 ```
 ClassDeclaration : class BindingIdentifier ClassTail
 ```
 
-1. Perform ? BindingClassDeclarationEvaluation of this ClassDeclaration.
-2. Return NormalCompletion(empty).
+1. 执行 ? BindingClassDeclarationEvaluation of this ClassDeclaration.
+2. 返回 NormalCompletion(empty).
 
 > 注 ClassDeclaration : class ClassTail only occurs as part of an ExportDeclaration and is never directly evaluated.
 
@@ -1923,13 +1909,13 @@ ClassDeclaration : class BindingIdentifier ClassTail
 ClassExpression : class BindingIdentifier ClassTail
 ```
 
-1. If BindingIdentifieropt is not present, let className be undefined.
-2. Else, let className be StringValue of BindingIdentifier.
-3. Let value be the result of ClassDefinitionEvaluation of ClassTail with arguments className and className.
+1. 若 BindingIdentifieropt is not present, 令 className 为 undefined.
+2. Else, 令 className 为 BindingIdentifier 的 StringValue
+3. 令 value 为 the result of ClassDefinitionEvaluation of ClassTail with arguments className and className.
 4. ReturnIfAbrupt(value).
 
-5. Set value.[[SourceText]] to the source text matched by ClassExpression.
-6. Return value.
+5. 设置 value.[[SourceText]] to the source text matched by ClassExpression.
+6. 返回 value.
 
 ## 14.7 Async 函数定义 <div id="sec-async-function-definitions"></div>
 
@@ -1967,18 +1953,18 @@ AwaitExpression[Yield] :
 >注 2
 >Unlike YieldExpression, it is a Syntax Error to omit the operand of an AwaitExpression. You must await something.
 
-### 14.7.1 SS: Early Errors <div id="sec-async-function-definitions-static-semantics-early-errors"></div>
+### 14.7.1 静态语义：Early Errors <div id="sec-async-function-definitions-static-semantics-early-errors"></div>
 
 ```
 AsyncMethod : async PropertyName ( UniqueFormalParameters ) { AsyncFunctionBody }
 ```
 
-- It is a Syntax Error if ContainsUseStrict of AsyncFunctionBody is true and IsSimpleParameterList of
+- It is a Syntax Error 若 AsyncFunctionBody 的 ContainsUseStrict 是 true and IsSimpleParameterList of
   UniqueFormalParameters is false.
-- It is a Syntax Error if HasDirectSuper of AsyncMethod is true.
-- It is a Syntax Error if UniqueFormalParameters Contains AwaitExpression is true.
-- It is a Syntax Error if any element of the BoundNames of UniqueFormalParameters also occurs in the
-  LexicallyDeclaredNames of AsyncFunctionBody.
+- It is a Syntax Error 若 AsyncMethod 的 HasDirectSuper 是 true.
+- It is a Syntax Error 若 UniqueFormalParameters Contains AwaitExpression is true.
+- It is a Syntax Error 若 any element of the BoundNames of UniqueFormalParameters also occurs in the
+  AsyncFunctionBody 的 LexicallyDeclaredNames
 
 ```
 AsyncFunctionDeclaration : async function BindingIdentifier ( FormalParameters ) { AsyncFunctionBody }
@@ -1987,48 +1973,48 @@ AsyncFunctionExpression : async function ( FormalParameters ) { AsyncFunctionBod
 AsyncFunctionExpression : async function BindingIdentifier ( FormalParameters ) { AsyncFunctionBody }
 ```
 
-- It is a Syntax Error if ContainsUseStrict of AsyncFunctionBody is true and IsSimpleParameterList of
+- It is a Syntax Error 若 AsyncFunctionBody 的 ContainsUseStrict 是 true and IsSimpleParameterList of
   FormalParameters is false.
-- It is a Syntax Error if FormalParameters Contains AwaitExpression is true.
-- If the source code matching this production is strict code, the Early Error rules for UniqueFormalParameters :
+- It is a Syntax Error 若 FormalParameters Contains AwaitExpression is true.
+- 若 the source code matching this production is strict code, the Early Error rules for UniqueFormalParameters :
   FormalParameters are applied.
-- If the source code matching this production is strict code, it is a Syntax Error if BindingIdentifier is present and the StringValue of BindingIdentifier is "eval" or "arguments".
-- It is a Syntax Error if any element of the BoundNames of FormalParameters also occurs in the
-  LexicallyDeclaredNames of AsyncFunctionBody.
-- It is a Syntax Error if FormalParameters Contains SuperProperty is true.
-- It is a Syntax Error if AsyncFunctionBody Contains SuperProperty is true.
-- It is a Syntax Error if FormalParameters Contains SuperCall is true.
-- It is a Syntax Error if AsyncFunctionBody Contains SuperCall is true.
+- 若 the source code matching this production is strict code, it is a Syntax Error 若 BindingIdentifier is present and the BindingIdentifier 的 StringValue 是 "eval" or "arguments".
+- It is a Syntax Error 若 any element of the BoundNames of FormalParameters also occurs in the
+  AsyncFunctionBody 的 LexicallyDeclaredNames
+- It is a Syntax Error 若 FormalParameters Contains SuperProperty is true.
+- It is a Syntax Error 若 AsyncFunctionBody Contains SuperProperty is true.
+- It is a Syntax Error 若 FormalParameters Contains SuperCall is true.
+- It is a Syntax Error 若 AsyncFunctionBody Contains SuperCall is true.
 
-### 14.7.2 SS: BoundNames <div id="sec-async-function-definitions-static-semantics-BoundNames"></div>
+### 14.7.2 静态语义：BoundNames <div id="sec-async-function-definitions-static-semantics-BoundNames"></div>
 
 ```
 AsyncFunctionDeclaration : async function BindingIdentifier ( FormalParameters ) { AsyncFunctionBody }
 ```
 
-1. Return the BoundNames of BindingIdentifier
+1. 返回 the BoundNames of BindingIdentifier
 
 ```
 AsyncFunctionDeclaration : async function ( FormalParameters ) { AsyncFunctionBody }
 ```
 
-1. Return « "\*default\*" ».
+1. 返回 « "\*default\*" ».
 
-> 注 "\*default\*" is used within this specification as a synthetic name for hoistable anonymous functions that are defined using export declarations.
+> 注 "\*default\*"在本规范中用作使用导出声明定义的可提升匿名函数的合成名称。.
 
-### 14.7.3 SS: ComputedPropertyContains <div id="sec-async-function-definitions-static-semantics-ComputedPropertyContains"></div>
+### 14.7.3 静态语义：ComputedPropertyContains <div id="sec-async-function-definitions-static-semantics-ComputedPropertyContains"></div>
 
-With parameter symbol.
+带有参数 symbol.
 
 ```
 AsyncMethod : async PropertyName ( UniqueFormalParameters ) { AsyncFunctionBody }
 ```
 
-1. Return the result of ComputedPropertyContains for PropertyName with argument symbol.
+1. 返回 the result of ComputedPropertyContains for PropertyName with argument symbol.
 
-### 14.7.4 SS: Contains <div id="sec-async-function-definitions-static-semantics-Contains"></div>
+### 14.7.4 静态语义：Contains <div id="sec-async-function-definitions-static-semantics-Contains"></div>
 
-With parameter symbol.
+带有参数 symbol.
 
 ```
 AsyncFunctionDeclaration : async function BindingIdentifier ( FormalParameters ) { AsyncFunctionBody }
@@ -2037,179 +2023,179 @@ AsyncFunctionExpression : async function ( FormalParameters ) { AsyncFunctionBod
 AsyncFunctionExpression : async function BindingIdentifier ( FormalParameters ) { AsyncFunctionBody }
 ```
 
-1. Return false.
+1. 返回 false.
 
-### 14.7.5 SS: HasDirectSuper <div id="sec-async-function-definitions-static-semantics-HasDirectSuper"></div>
+### 14.7.5 静态语义：HasDirectSuper <div id="sec-async-function-definitions-static-semantics-HasDirectSuper"></div>
 
 ```
 AsyncMethod : async PropertyName ( UniqueFormalParameters ) { AsyncFunctionBody }
 ```
 
-1. If UniqueFormalParameters Contains SuperCall is true, return true.
-2. Return AsyncFunctionBody Contains SuperCall.
+1. 若 UniqueFormalParameters Contains SuperCall is true, 返回 true.
+2. 返回 AsyncFunctionBody Contains SuperCall.
 
-### 14.7.6 SS: HasName <div id="sec-async-function-definitions-static-semantics-HasName"></div>
+### 14.7.6 静态语义：HasName <div id="sec-async-function-definitions-static-semantics-HasName"></div>
 
 ```
 AsyncFunctionExpression : async function ( FormalParameters ) { AsyncFunctionBody }
 ```
 
-1. Return false
+1. 返回 false
 
 ```
 AsyncFunctionExpression : async function BindingIdentifier ( FormalParameters ) { AsyncFunctionBody }
 ```
 
-1. Return true.
+1. 返回 true.
 
-### 14.7.7 SS: IsConstantDeclaration <div id="sec-async-function-definitions-static-semantics-IsConstantDeclaration"></div>
+### 14.7.7 静态语义：IsConstantDeclaration <div id="sec-async-function-definitions-static-semantics-IsConstantDeclaration"></div>
 
 ```
 AsyncFunctionDeclaration : async function BindingIdentifier ( FormalParameters ) { AsyncFunctionBody }
 AsyncFunctionDeclaration : async function ( FormalParameters ) { AsyncFunctionBody }
 ```
 
-1. Return false.
+1. 返回 false.
 
-### 14.7.8 SS: IsFunctionDefinition <div id="sec-async-function-definitions-static-semantics-IsFunctionDefinition"></div>
+### 14.7.8 静态语义：IsFunctionDefinition <div id="sec-async-function-definitions-static-semantics-IsFunctionDefinition"></div>
 
 ```
 AsyncFunctionExpression : async function ( FormalParameters ) { AsyncFunctionBody }
 AsyncFunctionExpression : async function BindingIdentifier ( FormalParameters ) { AsyncFunctionBody }
 ```
 
-1. Return true.
+1. 返回 true.
 
-### 14.7.9 SS: PropName <div id="sec-async-function-definitions-static-semantics-PropName"></div>
+### 14.7.9 静态语义：PropName <div id="sec-async-function-definitions-static-semantics-PropName"></div>
 
 ```
 AsyncMethod : async PropertyName ( UniqueFormalParameters ) { AsyncFunctionBody }
 ```
 
-1. Return PropName of PropertyName.
+1. 返回 PropertyName 的 PropName
 
-### 14.7.10 RS: InstantiateFunctionObject <div id="sec-async-function-definitions-InstantiateFunctionObject"></div>
+### 14.7.10 运行时语义：InstantiateFunctionObject <div id="sec-async-function-definitions-InstantiateFunctionObject"></div>
 
-With parameter scope.
+带有参数 scope.
 
 ```
 AsyncFunctionDeclaration : async function BindingIdentifier ( FormalParameters ) { AsyncFunctionBody }
 ```
 
-1. If the function code for AsyncFunctionDeclaration is strict mode code, let strict be true. Otherwise, let strict be false.
-2. Let name be StringValue of BindingIdentifier.
-3. Let F be ! AsyncFunctionCreate(Normal, FormalParameters, AsyncFunctionBody, scope, strict).
-4. Perform ! SetFunctionName(F, name).
-5. Set F.[[SourceText]] to the source text matched by AsyncFunctionDeclaration.
-6. Return F
+1. 若 the function code for AsyncFunctionDeclaration is strict mode code, 令 strict be true. 否则,，令 strict 为 false.
+2. 令 name 为 BindingIdentifier 的 StringValue
+3. 令 F 为 ! AsyncFunctionCreate(Normal, FormalParameters, AsyncFunctionBody, scope, strict).
+4. 执行 ! SetFunctionName(F, name).
+5. 设置 F.[[SourceText]] to the source text matched by AsyncFunctionDeclaration.
+6. 返回 F
 
 ```
 AsyncFunctionDeclaration : async function ( FormalParameters ) { AsyncFunctionBody }
 ```
 
-1. If the function code for AsyncFunctionDeclaration is strict mode code, let strict be true. Otherwise, let strict be false.
-2. Let F be ! AsyncFunctionCreate(Normal, FormalParameters, AsyncFunctionBody, scope, strict).
-3. Perform ! SetFunctionName(F, "default").
-4. Set F.[[SourceText]] to the source text matched by AsyncFunctionDeclaration.
-5. Return F.
+1. 若 the function code for AsyncFunctionDeclaration is strict mode code, 令 strict be true. 否则,，令 strict 为 false.
+2. 令 F 为 ! AsyncFunctionCreate(Normal, FormalParameters, AsyncFunctionBody, scope, strict).
+3. 执行 ! SetFunctionName(F, "default").
+4. 设置 F.[[SourceText]] to the source text matched by AsyncFunctionDeclaration.
+5. 返回 F.
 
-### 14.7.11 RS: EvaluateBody <div id="sec-async-function-definitions-EvaluateBody"></div>
+### 14.7.11 运行时语义：EvaluateBody <div id="sec-async-function-definitions-EvaluateBody"></div>
 
-With parameters functionObject and List argumentsList.
+带有参数 functionObject 和 argumentsList列表.
 
 ```
 AsyncFunctionBody : FunctionBody
 ```
 
-1. Let promiseCapability be ! NewPromiseCapability(%Promise%).
-2. Let declResult be FunctionDeclarationInstantiation(functionObject, argumentsList).
-3. If declResult is not an abrupt completion, then
-a. Perform ! AsyncFunctionStart(promiseCapability, FunctionBody).
+1. 令 promiseCapability 为 ! NewPromiseCapability(%Promise%).
+2. 令 declResult 为 FunctionDeclarationInstantiation(functionObject, argumentsList).
+3. 若 declResult is not an abrupt completion, then
+a. 执行 ! AsyncFunctionStart(promiseCapability, FunctionBody).
 4. Else declResult is an abrupt completion,
-a. Perform ! Call(promiseCapability.[[Reject]], undefined, « declResult.[[Value]] »).
-5. Return Completion { [[Type]]: return, [[Value]]: promiseCapability.[[Promise]], [[Target]]: empty }.
+a. 执行 ! Call(promiseCapability.[[Reject]], undefined, « declResult.[[Value]] »).
+5. 返回 Completion { [[Type]]: 返回, [[Value]]: promiseCapability.[[Promise]], [[Target]]: empty }.
 
-### 14.7.12 RS: PropertyDefinitionEvaluation <div id="sec-async-function-definitions-PropertyDefinitionEvaluation"></div>
+### 14.7.12 运行时语义：PropertyDefinitionEvaluation <div id="sec-async-function-definitions-PropertyDefinitionEvaluation"></div>
 
-With parameters object and enumerable.
+带有参数 object 和 enumerable.
 
 ```
 AsyncMethod : async PropertyName ( UniqueFormalParameters ) { AsyncFunctionBody }
 ```
 
-1. Let propKey be the result of evaluating PropertyName.
+1. 令 propKey 为运算 PropertyName 的结果
 2. ReturnIfAbrupt(propKey).
-3. If the function code for this AsyncMethod is strict mode code, let strict be true. Otherwise let strict be false.
-4. Let scope be the LexicalEnvironment of the running execution context.
-5. Let closure be ! AsyncFunctionCreate(Method, UniqueFormalParameters, AsyncFunctionBody, scope, strict).
-6. Perform ! MakeMethod(closure, object).
-7. Perform ! SetFunctionName(closure, propKey).
-8. Set closure.[[SourceText]] to the source text matched by AsyncMethod.
-9. Let desc be the PropertyDescriptor { [[Value]]: closure, [[Writable]]: true, [[Enumerable]]: enumerable,
+3. 若 the function code for this AsyncMethod is strict mode code, 令 strict be true. 否则，令 strict 为 false.
+4. 令 scope 为 the LexicalEnvironment of 运行时上下文.
+5. 令 closure 为 ! AsyncFunctionCreate(Method, UniqueFormalParameters, AsyncFunctionBody, scope, strict).
+6. 执行 ! MakeMethod(closure, object).
+7. 执行 ! SetFunctionName(closure, propKey).
+8. 设置 closure.[[SourceText]] to the source text matched by AsyncMethod.
+9. 令 desc 为 the PropertyDescriptor { [[Value]]: closure, [[Writable]]: true, [[Enumerable]]: enumerable,
 [[Configurable]]: true }.
-10. Return ? DefinePropertyOrThrow(object, propKey, desc).
+10. 返回 ? DefinePropertyOrThrow(object, propKey, desc).
 
-### 14.7.13 RS: NamedEvaluation <div id="sec-async-function-definitions-runtime-semantics-namedevaluation"></div>
+### 14.7.13 运行时语义：NamedEvaluation <div id="sec-async-function-definitions-runtime-semantics-namedevaluation"></div>
 
-With parameter name.
+带有参数 name.
 
 ```
 AsyncFunctionExpression : async function ( FormalParameters ) { AsyncFunctionBody }
 ```
 
-1. Let closure be the result of evaluating this AsyncFunctionExpression.
-2. Perform SetFunctionName(closure, name).
-3. Return closure
+1. 令 closure 为运算 this 的结果AsyncFunctionExpression.
+2. 执行 SetFunctionName(closure, name).
+3. 返回 closure
 
-### 14.7.14 RS: Evaluation <div id="sec-async-function-definitions-runtime-semantics-evaluation"></div>
+### 14.7.14 运行时语义：Evaluation <div id="sec-async-function-definitions-runtime-semantics-evaluation"></div>
 
 ```
 AsyncFunctionDeclaration : async function BindingIdentifier ( FormalParameters ) { AsyncFunctionBody }
 ```
 
-1. Return NormalCompletion(empty) 
+1. 返回 NormalCompletion(empty) 
 
 ```
 AsyncFunctionDeclaration : async function ( FormalParameters ) { AsyncFunctionBody }
 ```
 
-1. Return NormalCompletion(empty).
+1. 返回 NormalCompletion(empty).
 
 ```
 AsyncFunctionExpression : async function ( FormalParameters ) { AsyncFunctionBody }
 ```
 
-1. If the function code for AsyncFunctionExpression is strict mode code, let strict be true. Otherwise let strict be
+1. 若 the function code for AsyncFunctionExpression is strict mode code, 令 strict be true. 否则，令 strict 为
 false.
-2. Let scope be the LexicalEnvironment of the running execution context.
-3. Let closure be ! AsyncFunctionCreate(Normal, FormalParameters, AsyncFunctionBody, scope, strict).
-4. Set closure.[[SourceText]] to the source text matched by AsyncFunctionExpression.
-5. Return closure.
+2. 令 scope 为 the LexicalEnvironment of 运行时上下文.
+3. 令 closure 为 ! AsyncFunctionCreate(Normal, FormalParameters, AsyncFunctionBody, scope, strict).
+4. 设置 closure.[[SourceText]] to the source text matched by AsyncFunctionExpression.
+5. 返回 closure.
 
 ```
 AsyncFunctionExpression : async function BindingIdentifier ( FormalParameters ) { AsyncFunctionBody }
 ```
 
-1. If the function code for AsyncFunctionExpression is strict mode code, let strict be true. Otherwise let strict be
+1. 若 the function code for AsyncFunctionExpression is strict mode code, 令 strict be true. 否则，令 strict 为
 false.
-2. Let scope be the LexicalEnvironment of the running execution context.
-3. Let funcEnv be ! NewDeclarativeEnvironment(scope).
-4. Let envRec be funcEnv's EnvironmentRecord.
-5. Let name be StringValue of BindingIdentifier.
-6. Perform ! envRec.CreateImmutableBinding(name).
-7. Let closure be ! AsyncFunctionCreate(Normal, FormalParameters, AsyncFunctionBody, funcEnv, strict).
-8. Perform ! SetFunctionName(closure, name).
-9. Perform ! envRec.InitializeBinding(name, closure).
-10. Set closure.[[SourceText]] to the source text matched by AsyncFunctionExpression.
-11. Return closure.
+2. 令 scope 为 the LexicalEnvironment of 运行时上下文.
+3. 令 funcEnv 为 ! NewDeclarativeEnvironment(scope).
+4. 令 envRec 为 funcEnv's EnvironmentRecord.
+5. 令 name 为 BindingIdentifier 的 StringValue
+6. 执行 ! envRec.CreateImmutableBinding(name).
+7. 令 closure 为 ! AsyncFunctionCreate(Normal, FormalParameters, AsyncFunctionBody, funcEnv, strict).
+8. 执行 ! SetFunctionName(closure, name).
+9. 执行 ! envRec.InitializeBinding(name, closure).
+10. 设置 closure.[[SourceText]] to the source text matched by AsyncFunctionExpression.
+11. 返回 closure.
 
 ```
 AwaitExpression : await UnaryExpression
 ```
 
-1. Let exprRef be the result of evaluating UnaryExpression.
-2. Let value be ? GetValue(exprRef).
-3. Return ? Await(value)
+1. 令 exprRef 为运算 UnaryExpression 的结果
+2. 令 value 为 ? GetValue(exprRef).
+3. 返回 ? Await(value)
 
 ## 14.8 Async 箭头函数 <div id="sec-async-arrow-function-definitions"></div>
 
@@ -2232,245 +2218,245 @@ CoverCallExpressionAndAsyncArrowHead[Yield, Await] :
 
 **Supplemental Syntax**
 
-When processing an instance of the production AsyncArrowFunction : CoverCallExpressionAndAsyncArrowHead => AsyncConciseBody the interpretation of CoverCallExpressionAndAsyncArrowHead is refined using the following grammar:
+When processing an instance of the production AsyncArrowFunction : CoverCallExpressionAndAsyncArrowHead => AsyncConciseBody the CoverCallExpressionAndAsyncArrowHead 的 interpretation 是 refined using the following grammar:
 
 ```
 AsyncArrowHead :
 	async [no LineTerminator here] ArrowFormalParameters[~Yield, +Await]
 ```
 
-### 14.8.1 SS: Early Errors <div id="sec-async-arrow-function-definitions-static-semantics-early-errors"></div>
+### 14.8.1 静态语义：Early Errors <div id="sec-async-arrow-function-definitions-static-semantics-early-errors"></div>
 
 ```
 AsyncArrowFunction : async AsyncArrowBindingIdentifier => AsyncConciseBody
 ```
 
-- It is a Syntax Error if any element of the BoundNames of AsyncArrowBindingIdentifier also occurs in the LexicallyDeclaredNames of AsyncConciseBody.
+- It is a Syntax Error 若 any element of the BoundNames of AsyncArrowBindingIdentifier also occurs in the AsyncConciseBody 的 LexicallyDeclaredNames
 
 ```
 AsyncArrowFunction : CoverCallExpressionAndAsyncArrowHead => AsyncConciseBody
 ```
 
-- It is a Syntax Error if CoverCallExpressionAndAsyncArrowHead Contains YieldExpression is true.
-- It is a Syntax Error if CoverCallExpressionAndAsyncArrowHead Contains AwaitExpression is true.
-- It is a Syntax Error if CoverCallExpressionAndAsyncArrowHead is not covering an AsyncArrowHead.
-- It is a Syntax Error if any element of the BoundNames of CoverCallExpressionAndAsyncArrowHead also occurs in the LexicallyDeclaredNames of AsyncConciseBody.
-- It is a Syntax Error if ContainsUseStrict of AsyncConciseBody is true and IsSimpleParameterList of
+- It is a Syntax Error 若 CoverCallExpressionAndAsyncArrowHead Contains YieldExpression is true.
+- It is a Syntax Error 若 CoverCallExpressionAndAsyncArrowHead Contains AwaitExpression is true.
+- It is a Syntax Error 若 CoverCallExpressionAndAsyncArrowHead is not covering an AsyncArrowHead.
+- It is a Syntax Error 若 any element of the BoundNames of CoverCallExpressionAndAsyncArrowHead also occurs in the AsyncConciseBody 的 LexicallyDeclaredNames
+- It is a Syntax Error 若 AsyncConciseBody 的 ContainsUseStrict 是 true and IsSimpleParameterList of
   CoverCallExpressionAndAsyncArrowHead is false.
-- All Early Error rules for AsyncArrowHead and its derived productions apply to CoveredAsyncArrowHead of CoverCallExpressionAndAsyncArrowHead.
+- All Early Error rules for AsyncArrowHead and its derived productions apply to CoverCallExpressionAndAsyncArrowHead 的 CoveredAsyncArrowHead
 
-### 14.8.2 SS: CoveredAsyncArrowHead <div id="sec-async-arrow-function-definitions-static-semantics-CoveredAsyncArrowHead"></div>
-
-```
-CoverCallExpressionAndAsyncArrowHead : MemberExpression Arguments
-```
-
-1. Return the AsyncArrowHead that is covered by CoverCallExpressionAndAsyncArrowHead
-
-### 14.8.3 SS: BoundNames <div id="sec-async-arrow-function-definitions-static-semantics-BoundNames"></div>
+### 14.8.2 静态语义：CoveredAsyncArrowHead <div id="sec-async-arrow-function-definitions-static-semantics-CoveredAsyncArrowHead"></div>
 
 ```
 CoverCallExpressionAndAsyncArrowHead : MemberExpression Arguments
 ```
 
-1. Let head be CoveredAsyncArrowHead of CoverCallExpressionAndAsyncArrowHead.
-2. Return the BoundNames of head.
+1. 返回 the AsyncArrowHead that is covered by CoverCallExpressionAndAsyncArrowHead
 
-### 14.8.4 SS: Contains <div id="sec-async-arrow-function-definitions-static-semantics-Contains"></div>
+### 14.8.3 静态语义：BoundNames <div id="sec-async-arrow-function-definitions-static-semantics-BoundNames"></div>
 
-With parameter symbol.
+```
+CoverCallExpressionAndAsyncArrowHead : MemberExpression Arguments
+```
+
+1. 令 head 为 CoverCallExpressionAndAsyncArrowHead 的 CoveredAsyncArrowHead
+2. 返回 the head 的 BoundNames
+
+### 14.8.4 静态语义：Contains <div id="sec-async-arrow-function-definitions-static-semantics-Contains"></div>
+
+带有参数 symbol.
 
 ```
 AsyncArrowFunction : async AsyncArrowBindingIdentifier => AsyncConciseBody
 ```
 
-1. If symbol is not one of NewTarget, SuperProperty, SuperCall, super, or this, return false.
-2. Return AsyncConciseBody Contains symbol.
+1. 若 symbol is not one of NewTarget, SuperProperty, SuperCall, super, or this, 返回 false.
+2. 返回 AsyncConciseBody Contains symbol.
 
 ```
 AsyncArrowFunction : CoverCallExpressionAndAsyncArrowHead => AsyncConciseBody
 ```
 
-1. If symbol is not one of NewTarget, SuperProperty, SuperCall, super, or this, return false.
-2. Let head be CoveredAsyncArrowHead of CoverCallExpressionAndAsyncArrowHead.
-3. If head Contains symbol is true, return true.
-4. Return AsyncConciseBody Contains symbol.
+1. 若 symbol is not one of NewTarget, SuperProperty, SuperCall, super, or this, 返回 false.
+2. 令 head 为 CoverCallExpressionAndAsyncArrowHead 的 CoveredAsyncArrowHead
+3. 若 head Contains symbol is true, 返回 true.
+4. 返回 AsyncConciseBody Contains symbol.
 
 > 注 Normally, Contains does not look inside most function forms. However, Contains is used to detect new.target, this, and super usage within an AsyncArrowFunction.
 
-### 14.8.5 SS: ContainsExpression <div id="sec-async-arrow-function-definitions-static-semantics-ContainsExpression"></div>
+### 14.8.5 静态语义：ContainsExpression <div id="sec-async-arrow-function-definitions-static-semantics-ContainsExpression"></div>
 
 ```
 AsyncArrowBindingIdentifier : BindingIdentifier
 ```
 
-1. Return false.
+1. 返回 false.
 
-### 14.8.6 SS: ExpectedArgumentCount <div id="sec-async-arrow-function-definitions-static-semantics-ExpectedArgumentCount"></div>
+### 14.8.6 静态语义：ExpectedArgumentCount <div id="sec-async-arrow-function-definitions-static-semantics-ExpectedArgumentCount"></div>
 
 ```
 AsyncArrowBindingIdentifier : BindingIdentifier
 ```
 
-1. Return 1.
+1. 返回 1.
 
-### 14.8.7 SS: HasName <div id="sec-async-arrow-function-definitions-static-semantics-HasName"></div>
+### 14.8.7 静态语义：HasName <div id="sec-async-arrow-function-definitions-static-semantics-HasName"></div>
 
 ```
 AsyncArrowFunction : async AsyncArrowBindingIdentifier => AsyncConciseBody
 AsyncArrowFunction : CoverCallExpressionAndAsyncArrowHead => AsyncConciseBody
 ```
 
-1. Return false.
+1. 返回 false.
 
-### 14.8.8 SS: IsSimpleParameterList <div id="sec-async-arrow-function-definitions-static-semantics-IsSimpleParameterList"></div>
+### 14.8.8 静态语义：IsSimpleParameterList <div id="sec-async-arrow-function-definitions-static-semantics-IsSimpleParameterList"></div>
 
 ```
 AsyncArrowBindingIdentifier : BindingIdentifier
 ```
 
-1. Return true.
+1. 返回 true.
 
 ```
 CoverCallExpressionAndAsyncArrowHead : MemberExpression Arguments
 ```
 
-1. Let head be CoveredAsyncArrowHead of CoverCallExpressionAndAsyncArrowHead.
-2. Return IsSimpleParameterList of head.
+1. 令 head 为 CoverCallExpressionAndAsyncArrowHead 的 CoveredAsyncArrowHead
+2. 返回 head 的 IsSimpleParameterList
 
-### 14.8.9 SS: LexicallyDeclaredNames <div id="sec-async-arrow-function-definitions-static-semantics-LexicallyDeclaredNames"></div>
-
-```
-AsyncConciseBody : AssignmentExpression
-```
-
-1. Return a new empty List.
-
-### 14.8.10 SS: LexicallyScopedDeclarations <div id="sec-async-arrow-function-definitions-static-semantics-LexicallyScopedDeclarations"></div>
+### 14.8.9 静态语义：LexicallyDeclaredNames <div id="sec-async-arrow-function-definitions-static-semantics-LexicallyDeclaredNames"></div>
 
 ```
 AsyncConciseBody : AssignmentExpression
 ```
 
-1. Return a new empty List.
+1. 返回一个新的空列表.
 
-### 14.8.11 SS: VarDeclaredNames <div id="sec-async-arrow-function-definitions-static-semantics-VarDeclaredNames"></div>
-
-```
-AsyncConciseBody : AssignmentExpression
-```
-
-1. Return a new empty List.
-
-### 14.8.12 SS: VarScopedDeclarations <div id="sec-async-arrow-function-definitions-static-semantics-VarScopedDeclarations"></div>
+### 14.8.10 静态语义：LexicallyScopedDeclarations <div id="sec-async-arrow-function-definitions-static-semantics-LexicallyScopedDeclarations"></div>
 
 ```
 AsyncConciseBody : AssignmentExpression
 ```
 
-1. Return a new empty List.
+1. 返回一个新的空列表.
 
-### 14.8.13 RS: IteratorBindingInitialization <div id="sec-async-arrow-function-definitions-IteratorBindingInitialization"></div>
+### 14.8.11 静态语义：VarDeclaredNames <div id="sec-async-arrow-function-definitions-static-semantics-VarDeclaredNames"></div>
 
-With parameters iteratorRecord and environment.
+```
+AsyncConciseBody : AssignmentExpression
+```
+
+1. 返回一个新的空列表.
+
+### 14.8.12 静态语义：VarScopedDeclarations <div id="sec-async-arrow-function-definitions-static-semantics-VarScopedDeclarations"></div>
+
+```
+AsyncConciseBody : AssignmentExpression
+```
+
+1. 返回一个新的空列表.
+
+### 14.8.13 运行时语义：IteratorBindingInitialization <div id="sec-async-arrow-function-definitions-IteratorBindingInitialization"></div>
+
+带有参数 iteratorRecord 和 environment.
 
 ```
 AsyncArrowBindingIdentifier : BindingIdentifier
 ```
 
-1. Assert: iteratorRecord.[[Done]] is false.
-2. Let next be IteratorStep(iteratorRecord).
-3. If next is an abrupt completion, set iteratorRecord.[[Done]] to true.
+1. 断言: iteratorRecord.[[Done]] is false.
+2. 令 next 为 IteratorStep(iteratorRecord).
+3. 若 next is an abrupt completion, 设置 iteratorRecord.[[Done]] to true.
 4. ReturnIfAbrupt(next).
-5. If next is false, set iteratorRecord.[[Done]] to true.
+5. 若 next is false, 设置 iteratorRecord.[[Done]] to true.
 6. Else,
-a. Let v be IteratorValue(next).
-b. If v is an abrupt completion, set iteratorRecord.[[Done]] to true.
+a. 令 v 为 IteratorValue(next).
+b. 若 v is an abrupt completion, 设置 iteratorRecord.[[Done]] to true.
 c. ReturnIfAbrupt(v).
-7. If iteratorRecord.[[Done]] is true, let v be undefined.
-8. Return the result of performing BindingInitialization for BindingIdentifier using v and environment as the arguments.
+7. 若 iteratorRecord.[[Done]] is true, 令 v 为 undefined.
+8. 返回使用v和environment作为参数对BindingIdentifier执行BindingInitialization的结果。
 
-### 14.8.14 RS: EvaluateBody <div id="sec-async-arrow-function-definitions-EvaluateBody"></div>
+### 14.8.14 运行时语义：EvaluateBody <div id="sec-async-arrow-function-definitions-EvaluateBody"></div>
 
-With parameters functionObject and List argumentsList.
+带有参数 functionObject 和 argumentsList列表.
 
 ```
 AsyncConciseBody : AssignmentExpression
 ```
 
-1. Let promiseCapability be ! NewPromiseCapability(%Promise%).
-2. Let declResult be FunctionDeclarationInstantiation(functionObject, argumentsList).
-3. If declResult is not an abrupt completion, then
-a. Perform ! AsyncFunctionStart(promiseCapability, AssignmentExpression).
+1. 令 promiseCapability 为 ! NewPromiseCapability(%Promise%).
+2. 令 declResult 为 FunctionDeclarationInstantiation(functionObject, argumentsList).
+3. 若 declResult is not an abrupt completion, then
+a. 执行 ! AsyncFunctionStart(promiseCapability, AssignmentExpression).
 4. Else declResult is an abrupt completion,
-a. Perform ! Call(promiseCapability.[[Reject]], undefined, « declResult.[[Value]] »).
-5. Return Completion { [[Type]]: return, [[Value]]: promiseCapability.[[Promise]], [[Target]]: empty }.
+a. 执行 ! Call(promiseCapability.[[Reject]], undefined, « declResult.[[Value]] »).
+5. 返回 Completion { [[Type]]: 返回, [[Value]]: promiseCapability.[[Promise]], [[Target]]: empty }.
 
 ```
 AsyncConciseBody : { AsyncFunctionBody }
 ```
 
-1. Return the result of EvaluateBody of AsyncFunctionBody passing functionObject and argumentsList as the arguments
+1. 返回 the result of EvaluateBody of AsyncFunctionBody passing functionObject and argumentsList as the arguments
 
-### 14.8.15 RS: NamedEvaluation <div id="sec-async-arrow-function-definitions-runtime-semantics-namedevaluation"></div>
+### 14.8.15 运行时语义：NamedEvaluation <div id="sec-async-arrow-function-definitions-runtime-semantics-namedevaluation"></div>
 
-With parameter name.
+带有参数 name.
 
 ```
 AsyncArrowFunction : async AsyncArrowBindingIdentifier => AsyncConciseBody
 AsyncArrowFunction : CoverCallExpressionAndAsyncArrowHead => AsyncConciseBody
 ```
 
-1. Let closure be the result of evaluating this AsyncArrowFunction.
-2. Perform SetFunctionName(closure, name).
-3. Return closure.
+1. 令 closure 为运算 this 的结果AsyncArrowFunction.
+2. 执行 SetFunctionName(closure, name).
+3. 返回 closure.
 
-### 14.8.16 RS: Evaluation <div id="sec-async-arrow-function-definitions-runtime-semantics-evaluation"></div>
+### 14.8.16 运行时语义：Evaluation <div id="sec-async-arrow-function-definitions-runtime-semantics-evaluation"></div>
 
 ```
 AsyncArrowFunction : async AsyncArrowBindingIdentifier => AsyncConciseBody
 ```
 
-1. If the function code for this AsyncArrowFunction is strict mode code, let strict be true. Otherwise, let strict be
+1. 若 the function code for this AsyncArrowFunction is strict mode code, 令 strict be true. 否则,，令 strict 为
 false.
-2. Let scope be the LexicalEnvironment of the running execution context.
-3. Let parameters be AsyncArrowBindingIdentifier.
-4. Let closure be ! AsyncFunctionCreate(Arrow, parameters, AsyncConciseBody, scope, strict).
-5. Return closure.
+2. 令 scope 为 the LexicalEnvironment of 运行时上下文.
+3. 令 parameters 为 AsyncArrowBindingIdentifier.
+4. 令 closure 为 ! AsyncFunctionCreate(Arrow, parameters, AsyncConciseBody, scope, strict).
+5. 返回 closure.
 
 ```
 AsyncArrowFunction : CoverCallExpressionAndAsyncArrowHead => AsyncConciseBody
 ```
 
-1. If the function code for this AsyncArrowFunction is strict mode code, let strict be true. Otherwise, let strict be
+1. 若 the function code for this AsyncArrowFunction is strict mode code, 令 strict be true. 否则,，令 strict 为
 false.
-2. Let scope be the LexicalEnvironment of the running execution context.
-3. Let head be CoveredAsyncArrowHead of CoverCallExpressionAndAsyncArrowHead.
-4. Let parameters be the ArrowFormalParameters of head.
-5. Let closure be ! AsyncFunctionCreate(Arrow, parameters, AsyncConciseBody, scope, strict).
-6. Return closure.
+2. 令 scope 为 the LexicalEnvironment of 运行时上下文.
+3. 令 head 为 CoverCallExpressionAndAsyncArrowHead 的 CoveredAsyncArrowHead
+4. 令 parameters 为 the head 的 ArrowFormalParameters
+5. 令 closure 为 ! AsyncFunctionCreate(Arrow, parameters, AsyncConciseBody, scope, strict).
+6. 返回 closure.
 
 ## 14.9 尾调用 <div id="sec-tail-position-calls"></div>
 
-### 14.9.1 SS: IsInTailPosition ( call ) <div id="sec-isintailposition"></div>
+### 14.9.1 静态语义：IsInTailPosition ( call ) <div id="sec-isintailposition"></div>
 
 The abstract operation IsInTailPosition with argument call performs the following steps:
 
-1. Assert: call is a Parse Node.
-2. If the source code matching call is non-strict code, return false.
-3. If call is not contained within a FunctionBody, ConciseBody, or AsyncConciseBody, return false.
-4. Let body be the FunctionBody, ConciseBody, or AsyncConciseBody that most closely contains call.
-5. If body is the FunctionBody of a GeneratorBody, return false.
-6. If body is the FunctionBody of an AsyncFunctionBody, return false.
-7. If body is the FunctionBody of an AsyncGeneratorBody, return false.
-8. If body is an AsyncConciseBody, return false.
-9. Return the result of HasCallInTailPosition of body with argument call.
+1. 断言: call is a Parse Node.
+2. 若 the source code matching call is non-strict code, 返回 false.
+3. 若 call is not contained within a FunctionBody, ConciseBody, or AsyncConciseBody, 返回 false.
+4. 令 body 为 the FunctionBody, ConciseBody, or AsyncConciseBody that most closely contains call.
+5. 若 body is the FunctionBody of a GeneratorBody, 返回 false.
+6. 若 body is the FunctionBody of an AsyncFunctionBody, 返回 false.
+7. 若 body is the FunctionBody of an AsyncGeneratorBody, 返回 false.
+8. 若 body is an AsyncConciseBody, 返回 false.
+9. 返回 the result of HasCallInTailPosition of body with argument call.
 
 > 注 Tail Position calls are only defined in strict mode code because of a common non-standard language extension (see 9.2.9) that enables observation of the chain of caller contexts.
 
-### 14.9.2 SS: HasCallInTailPosition <div id="sec-static-semantics-hascallintailposition"></div>
+### 14.9.2 静态语义：HasCallInTailPosition <div id="sec-static-semantics-hascallintailposition"></div>
 
-With parameter call.
+带有参数 call.
 
 > 注 call is a Parse Node that represents a specific range of source text. When the following algorithms compare call to another Parse Node, it is a test of whether they represent the same source text.
 
@@ -2480,15 +2466,15 @@ With parameter call.
 ConciseBody : AssignmentExpression
 ```
 
-1. Return HasCallInTailPosition of AssignmentExpression with argument call.
+1. 返回 HasCallInTailPosition of AssignmentExpression with argument call.
 
 ```
 StatementList : StatementList StatementListItem
 ```
 
-1. Let has be HasCallInTailPosition of StatementList with argument call.
-2. If has is true, return true.
-3. Return HasCallInTailPosition of StatementListItem with argument call.
+1. 令 has 为 HasCallInTailPosition of StatementList with argument call.
+2. 若 has is true, 返回 true.
+3. 返回 HasCallInTailPosition of StatementListItem with argument call.
 
 ```
 FunctionStatementList : [empty]
@@ -2502,7 +2488,7 @@ StatementListItem : Declaration
         ThrowStatement
         DebuggerStatement
 Block : { }
-ReturnStatement : return ;
+ReturnStatement : 返回 ;
 LabelledItem : FunctionDeclaration
 IterationStatement :
     for ( LeftHandSideExpression of AssignmentExpression ) Statement
@@ -2511,18 +2497,18 @@ IterationStatement :
 CaseBlock : { }
 ```
 
-1. Return false.
+1. 返回 false.
 
 ```
-IfStatement : if ( Expression ) Statement else Statement
+IfStatement : 若 ( Expression ) Statement else Statement
 ```
 
-1. Let has be HasCallInTailPosition of the first Statement with argument call.
-2. If has is true, return true.
-3. Return HasCallInTailPosition of the second Statement with argument call.
+1. 令 has 为 HasCallInTailPosition of the first Statement with argument call.
+2. 若 has is true, 返回 true.
+3. 返回 HasCallInTailPosition of the second Statement with argument call.
 
 ```
-IfStatement : if ( Expression ) Statement
+IfStatement : 若 ( Expression ) Statement
     IterationStatement :
         do Statement while ( Expression ) ;
         while ( Expression ) Statement
@@ -2538,77 +2524,77 @@ IfStatement : if ( Expression ) Statement
 WithStatement : with ( Expression ) Statement
 ```
 
-1. Return HasCallInTailPosition of Statement with argument call
+1. 返回 HasCallInTailPosition of Statement with argument call
 
    ```
    LabelledStatement :
    LabelIdentifier : LabelledItem
    ```
 
-   1. Return HasCallInTailPosition of LabelledItem with argument call
+   1. 返回 HasCallInTailPosition of LabelledItem with argument call
 
 ```
-ReturnStatement : return Expression ;
+ReturnStatement : 返回 Expression ;
 ```
 
-1. Return HasCallInTailPosition of Expression with argument call.
+1. 返回 HasCallInTailPosition of Expression with argument call.
 
 ```
 SwitchStatement : switch ( Expression ) CaseBlock
 ```
 
-1. Return HasCallInTailPosition of CaseBlock with argument call
+1. 返回 HasCallInTailPosition of CaseBlock with argument call
 
 ```
 CaseBlock : { CaseClauses DefaultClause CaseClauses }
 ```
 
-1. Let has be false.
-2. If the first CaseClauses is present, let has be HasCallInTailPosition of the first CaseClauses with argument call.
-3. If has is true, return true.
-4. Let has be HasCallInTailPosition of the DefaultClause with argument call.
-5. If has is true, return true.
-6. If the second CaseClauses is present, let has be HasCallInTailPosition of the second CaseClauses with argument call.
-7. Return has.
+1. 令 has 为 false.
+2. 若 the first CaseClauses is present, 令 has 为 HasCallInTailPosition of the first CaseClauses with argument call.
+3. 若 has is true, 返回 true.
+4. 令 has 为 HasCallInTailPosition of the DefaultClause with argument call.
+5. 若 has is true, 返回 true.
+6. 若 the second CaseClauses is present, 令 has 为 HasCallInTailPosition of the second CaseClauses with argument call.
+7. 返回 has.
 
 ```
 CaseClauses : CaseClauses CaseClause
 ```
 
-1. Let has be HasCallInTailPosition of CaseClauses with argument call.
-2. If has is true, return true.
-3. Return HasCallInTailPosition of CaseClause with argument call.
+1. 令 has 为 HasCallInTailPosition of CaseClauses with argument call.
+2. 若 has is true, 返回 true.
+3. 返回 HasCallInTailPosition of CaseClause with argument call.
 
 ```
 CaseClause : case Expression : StatementList
 DefaultClause : default : StatementList
 ```
 
-1. If StatementList is present, return HasCallInTailPosition of StatementList with argument call.
-2. Return false.
+1. 若 StatementList is present, 返回 HasCallInTailPosition of StatementList with argument call.
+2. 返回 false.
 
 ```
 TryStatement : try Block Catch
 ```
 
-1. Return HasCallInTailPosition of Catch with argument call.
+1. 返回 HasCallInTailPosition of Catch with argument call.
 
 ```
 TryStatement : try Block Finally
 TryStatement : try Block Catch Finally
 ```
 
-1. Return HasCallInTailPosition of Finally with argument call
+1. 返回 HasCallInTailPosition of Finally with argument call
 
 ```
 Catch : catch ( CatchParameter ) Block
 ```
 
-1. Return HasCallInTailPosition of Block with argument call.
+1. 返回 HasCallInTailPosition of Block with argument call.
 
 #### 14.9.2.2 Expression Rules <div id="sec-expression-rules"></div>
 
-> 注 A potential tail position call that is immediately followed by return GetValue of the call result is also a possible tail position call. Function calls cannot return reference values, so such a GetValue operation will always return the same value as the actual function call result.
+> 注 A potential tail position call that is immediately followed by 返回 GetValue of the call result is also a possible tail position call. Function calls cannot 返回 reference values, so such a GetValue operation will always 返回 the same value as the actual function call result.
 
 ```
 AssignmentExpression :
@@ -2683,7 +2669,7 @@ NewExpression : new NewExpression
         TemplateLiteral
 ```
 
-1. Return false.
+1. 返回 false.
 
    ```
    Expression :
@@ -2691,27 +2677,27 @@ NewExpression : new NewExpression
    Expression , AssignmentExpression
    ```
 
-   1. Return HasCallInTailPosition of AssignmentExpression with argument call.
+   1. 返回 HasCallInTailPosition of AssignmentExpression with argument call.
 
 ```
 ConditionalExpression : LogicalORExpression ? AssignmentExpression : AssignmentExpression
 ```
 
-1. Let has be HasCallInTailPosition of the first AssignmentExpression with argument call.
-2. If has is true, return true.
-3. Return HasCallInTailPosition of the second AssignmentExpression with argument call.
+1. 令 has 为 HasCallInTailPosition of the first AssignmentExpression with argument call.
+2. 若 has is true, 返回 true.
+3. 返回 HasCallInTailPosition of the second AssignmentExpression with argument call.
 
 ```
 LogicalANDExpression : LogicalANDExpression && BitwiseORExpression
 ```
 
-1. Return HasCallInTailPosition of BitwiseORExpression with argument call.
+1. 返回 HasCallInTailPosition of BitwiseORExpression with argument call.
 
 ```
 LogicalORExpression : LogicalORExpression || LogicalANDExpression
 ```
 
-1. Return HasCallInTailPosition of LogicalANDExpression with argument call.
+1. 返回 HasCallInTailPosition of LogicalANDExpression with argument call.
 
    ```
    CallExpression :
@@ -2720,38 +2706,38 @@ LogicalORExpression : LogicalORExpression || LogicalANDExpression
        CallExpression TemplateLiteral
    ```
 
-   1. If this CallExpression is call, return true.
-   2. Return false.
+   1. 若 this CallExpression is call, 返回 true.
+   2. 返回 false.
 
    ```
    MemberExpression :
    	MemberExpression TemplateLiteral
    ```
 
-   1. If this MemberExpression is call, return true.
-   2. Return false.
+   1. 若 this MemberExpression is call, 返回 true.
+   2. 返回 false.
 
 ```
 PrimaryExpression : CoverParenthesizedExpressionAndArrowParameterList
 ```
 
-1. Let expr be CoveredParenthesizedExpression of CoverParenthesizedExpressionAndArrowParameterList.
+1. 令 expr 为 CoverParenthesizedExpressionAndArrowParameterList 的 CoveredParenthesizedExpression
 
-2. Return HasCallInTailPosition of expr with argument call.
+2. 返回 HasCallInTailPosition of expr with argument call.
 
    ```
    ParenthesizedExpression :
    ( Expression )
    ```
 
-   1. Return HasCallInTailPosition of Expression with argument call
+   1. 返回 HasCallInTailPosition of Expression with argument call
 
-### 14.9.3 RS: PrepareForTailCall ( ) <div id="sec-preparefortailcall"></div>
+### 14.9.3 运行时语义：PrepareForTailCall ( ) <div id="sec-preparefortailcall"></div>
 
 The abstract operation PrepareForTailCall performs the following steps:
 
-1. Let leafContext be the running execution context.
+1. 令 leafContext 为 运行时上下文.
 2. Suspend leafContext.
 3. Pop leafContext from the execution context stack. The execution context now on the top of the stack becomes the
 running execution context.
-4. Assert: leafContext has no further use. It will never be activated as the running execution context.
+4. 断言: leafContext has no further use. It will never be activated as 运行时上下文.
