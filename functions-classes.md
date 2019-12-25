@@ -966,10 +966,8 @@ GeneratorMethod : * PropertyName ( UniqueFormalParameters ) { GeneratorBody }
 
 - 若 GeneratorMethod 的 HasDirectSuper 是 true，则为语法错误
 - 若 UniqueFormalParameters 包含YieldExpression 是 true，则为语法错误
-- 若 GeneratorBody 的 ContainsUseStrict 是 true and IsSimpleParameterList of，则为语法错误
-  UniqueFormalParameters is false.
-- 若 any element of the BoundNames of UniqueFormalParameters also occurs in the，则为语法错误
-  GeneratorBody 的 LexicallyDeclaredNames
+- 如果GeneratorBody的ContainsUseStrict为true并且UniqueFormalParameters的IsSimpleParameterList为false，则为语法错误
+- 如果GeneratorBody的LexicallyDeclaredNames中还出现UniqueFormalParameters BoundNames的任何元素，则是语法错误。
 
 ```
 GeneratorDeclaration : function * BindingIdentifier ( FormalParameters ) { GeneratorBody }
@@ -977,10 +975,10 @@ GeneratorDeclaration : function * ( FormalParameters ) { GeneratorBody }
 GeneratorExpression : function * BindingIdentifier ( FormalParameters ) { GeneratorBody }
 ```
 
-- 若 the source code matching this production is strict mode code, the Early Error rules for UniqueFormalParameters : FormalParameters are applied.
-- 若 the source code matching this production is strict mode code, 若 BindingIdentifier is present and the BindingIdentifier 的 StringValue 是 "eval" or "arguments"，则为语法错误
-- 若 GeneratorBody 的 ContainsUseStrict 是 true and FormalParameters 的 IsSimpleParameterList 是 false，则为语法错误
-- 若 any element of the BoundNames of FormalParameters also occurs in the GeneratorBody 的 LexicallyDeclaredNames，则为语法错误
+- 如果与此产生式匹配的源代码是严格模式代码，则将应用UniqueFormalParameters：FormalParameters的早期错误规则。
+- 如果与此产生式匹配的源代码是严格模式代码，则如果存在BindingIdentifier并且BindingIdentifier的StringValue是 "eval" 或 "arguments"，则它是语法错误。
+- 如果GeneratorBody的ContainsUseStrict为true，FormalParameters的IsSimpleParameterList为false，则为语法错误。
+- 若FormalParameters的BoundNames的任何元素也会出现在GeneratorBody的LexicallyDeclaredNames中，则为语法错误
 - 若 FormalParameters 包含YieldExpression 是 true，则为语法错误
 - 若 FormalParameters 包含SuperProperty 是 true，则为语法错误
 - 若 GeneratorBody 包含SuperProperty 是 true，则为语法错误
@@ -993,7 +991,7 @@ GeneratorExpression : function * BindingIdentifier ( FormalParameters ) { Genera
 GeneratorDeclaration : function * BindingIdentifier ( FormalParameters ) { GeneratorBody }
 ```
 
-1. 返回 the BoundNames of BindingIdentifier
+1. 返回 BindingIdentifier 的 BoundNames 
 
 ```
 GeneratorDeclaration : function * ( FormalParameters ) { GeneratorBody }
@@ -1001,7 +999,7 @@ GeneratorDeclaration : function * ( FormalParameters ) { GeneratorBody }
 
 1. 返回 « "\*default\*" ».
 
-> 注 "\*default\*"在本规范中用作使用导出声明定义的可提升匿名函数的合成名称。.
+> 注 "\*default\*"在本规范中用作使用导出声明定义的可提升匿名函数的合成名称。
 
 ### 14.4.3 静态语义：ComputedProperty包含<div id="sec-generator-function-definitions-static-semantics-computedpropertycontains"></div>
 
@@ -1011,7 +1009,7 @@ GeneratorDeclaration : function * ( FormalParameters ) { GeneratorBody }
 GeneratorMethod : * PropertyName ( UniqueFormalParameters ) { GeneratorBody }
 ```
 
-1. 返回 the result of ComputedProperty包含for PropertyName with argument symbol.
+1. 返回带有参数symbol的PropertyName的ComputedPropertyContains结果
 
 ### 14.4.4 静态语义：包含<div id="sec-generator-function-definitions-static-semantics-contains"></div>
 
@@ -1025,7 +1023,7 @@ GeneratorExpression : function * BindingIdentifier ( FormalParameters ) { Genera
 
 1. 返回 false.
 
-> 注 Static semantic rules that depend upon substructure generally do not look into function definitions.
+> 注：依赖于子结构的静态语义规则通常不会考虑函数定义。
 
 ### 14.4.5 静态语义：HasDirectSuper <div id="sec-generator-function-definitions-static-semantics-hasdirectsuper"></div>
 
@@ -1033,8 +1031,8 @@ GeneratorExpression : function * BindingIdentifier ( FormalParameters ) { Genera
 GeneratorMethod : * PropertyName ( UniqueFormalParameters ) { GeneratorBody }
 ```
 
-1. 若 UniqueFormalParameters 包含SuperCall 是 true, 返回 true.
-2. 返回 GeneratorBody 包含SuperCall.
+1. 若 UniqueFormalParameters 包含 SuperCall 是 true, 返回 true.
+2. 返回 GeneratorBody 包含 SuperCall.
 
 ### 14.4.6 静态语义：HasName <div id="sec-generator-function-definitions-static-semantics-hasname"></div>
 
@@ -1086,7 +1084,7 @@ GeneratorBody : FunctionBody
 1. 执行 ? FunctionDeclarationInstantiation(functionObject, argumentsList).
 2. 令 G 为 ? OrdinaryCreateFromConstructor(functionObject, "%GeneratorPrototype%", « [[GeneratorState]], [[GeneratorContext]] »)
 3. 执行 GeneratorStart(G, FunctionBody).
-4. 返回 Completion { [[Type]]: 返回, [[Value]]: G, [[Target]]: empty }.
+4. 返回 Completion { [[Type]]: return, [[Value]]: G, [[Target]]: empty }.
 
 ### 14.4.11 运行时语义：InstantiateFunctionObject <div id="sec-generator-function-definitions-runtime-semantics-instantiatefunctionobject"></div>
 
@@ -1096,7 +1094,7 @@ GeneratorBody : FunctionBody
 GeneratorDeclaration : function * BindingIdentifier ( FormalParameters ) { GeneratorBody }
 ```
 
-1. 若 the function code for GeneratorDeclaration is strict mode code, 令 strict 为 true. 否则，令 strict 为 false.
+1. 若 GeneratorDeclaration 的函数代码是严格模式代码，则令strict为true，否则令strict为false
 2. 令 name 为 BindingIdentifier 的 StringValue
 3. 令 F 为 GeneratorFunctionCreate(Normal, FormalParameters, GeneratorBody, scope, strict).
 4. 令 prototype 为 ObjectCreate(%GeneratorPrototype%).
@@ -1118,7 +1116,7 @@ true, [[Enumerable]]: false, [[Configurable]]: false }).
 5. 设置 F.[[SourceText]] 为GeneratorDeclaration匹配的源文本.
 6. 返回 F.
 
-> 注 An anonymous GeneratorDeclaration can only occur as part of an export default declaration, and its function code is therefore always strict mode code.
+> 注：匿名GeneratorDeclaration仅可作为export default声明的一部分出现，因此其函数代码始终为严格模式代码。
 
 ### 14.4.12 运行时语义：PropertyDefinitionEvaluation <div id="sec-generator-function-definitions-runtime-semantics-propertydefinitionevaluation"></div>
 
@@ -1151,7 +1149,7 @@ GeneratorMethod : * PropertyName ( UniqueFormalParameters ) { GeneratorBody }
 GeneratorExpression : function * ( FormalParameters ) { GeneratorBody }
 ```
 
-1. 令 closure 为运算 this 的结果GeneratorExpression.
+1. 令 closure 为运算此GeneratorExpression的结果。
 2. 执行 SetFunctionName(closure, name).
 3. 返回 closure.
 
@@ -1178,7 +1176,7 @@ GeneratorExpression : function * BindingIdentifier ( FormalParameters ) { Genera
 false.
 2. 令 scope 为 运行时上下文的 LexicalEnvironment.
 3. 令 funcEnv 为 NewDeclarativeEnvironment(scope).
-4. 令 envRec 为 funcEnv's EnvironmentRecord.
+4. 令 envRec 为 funcEnv 的 EnvironmentRecord.
 5. 令 name 为 BindingIdentifier 的 StringValue
 6. 执行 envRec.CreateImmutableBinding(name, false).
 7. 令 closure 为 GeneratorFunctionCreate(Normal, FormalParameters, GeneratorBody, funcEnv, strict).
@@ -1190,14 +1188,14 @@ false.
 12. 设置 closure.[[SourceText]] 为GeneratorExpression匹配的源文本.
 13. 返回 closure.
 
-> 注 The BindingIdentifier in a GeneratorExpression can be referenced from inside the GeneratorExpression's FunctionBody to allow the generator code to call itself recursively. However, unlike in a GeneratorDeclaration, the BindingIdentifier in a GeneratorExpression cannot be referenced from and does not affect the scope enclosing the GeneratorExpression.
+> 注：可以从GeneratorExpression的FunctionBody内部引用GeneratorExpression中的BindingIdentifier，以允许生成器代码递归调用自身。但是，与GeneratorDeclaration中的不同，GeneratorExpression中的BindingIdentifier不能从GeneratorExpression中引用，也不影响封装GeneratorExpression的范围。
 
 ```
 YieldExpression : yield
 ```
 
 1. 令 generatorKind 为 ! GetGeneratorKind().
-2. 若 generatorKind is async, then 返回 ? AsyncGeneratorYield(undefined).
+2. 若 generatorKind 是 async，那么 返回 ? AsyncGeneratorYield(undefined).
 3. 否则, 返回 ? GeneratorYield(CreateIterResultObject(undefined, false)).
 
 ```
@@ -1207,7 +1205,7 @@ YieldExpression : yield AssignmentExpression
 1. 令 generatorKind 为 ! GetGeneratorKind().
 2. 令 exprRef 为运算 AssignmentExpression 的结果
 3. 令 value 为 ? GetValue(exprRef).
-4. 若 generatorKind is async, then 返回 ? AsyncGeneratorYield(value).
+4. 若 generatorKind 是 async，那么 返回 ? AsyncGeneratorYield(value).
 5. 否则, 返回 ? GeneratorYield(CreateIterResultObject(value, false)).
 
 ```
@@ -1220,56 +1218,53 @@ YieldExpression : yield * AssignmentExpression
 4. 令 iteratorRecord 为 ? GetIterator(value, generatorKind).
 5. 令 iterator 为 iteratorRecord.[[Iterator]].
 6. 令 received 为 NormalCompletion(undefined).
-7. Repeat,
-a. 若 received.[[Type]] is normal, then
-i. 令 innerResult 为 ? Call(iteratorRecord.[[NextMethod]], iteratorRecord.[[Iterator]], « received.
-[[Value]] »).
-ii. 若 generatorKind is async, then 设置 innerResult 为 ? Await(innerResult).
-iii. 若 Type(innerResult) is not Object, throw a TypeError exception.
-iv. 令 done 为 ? IteratorComplete(innerResult).
-v. 若 done 是 true, then
-1. 返回 ? IteratorValue(innerResult).
-vi. 若 generatorKind is async, then 设置 received 为 AsyncGeneratorYield(? IteratorValue(innerResult)).
-vii. 否则, 设置 received 为 GeneratorYield(innerResult).
-b. 否则 若 received.[[Type]] is throw, then
-i. 令 throw 为 ? GetMethod(iterator, "throw").
-ii. 若 throw is not undefined, then
-1. 令 innerResult 为 ? Call(throw, iterator, « received.[[Value]] »).
-2. 若 generatorKind is async, then 设置 innerResult 为 ? Await(innerResult).
-3. 注: Exceptions from the inner iterator throw method are propagated. Normal completions
-from an inner throw method are processed similarly to an inner next.
-4. 若 Type(innerResult) is not Object, throw a TypeError exception.
-5. 令 done 为 ? IteratorComplete(innerResult).
-6. 若 done 是 true, then
-a. 返回 ? IteratorValue(innerResult).
-7. 若 generatorKind is async, then 设置 received 为 AsyncGeneratorYield(?
-IteratorValue(innerResult)).
-8. 否则, 设置 received 为 GeneratorYield(innerResult).
-iii. 否则,
-17. 注: 若 iterator does not have a throw method, this throw is going to terminate the yield*
-      loop. But first we need to give iterator a chance to clean up.
-2. 令 closeCompletion 为 Completion { [[Type]]: normal, [[Value]]: empty, [[Target]]: empty }.
-3. 若 generatorKind is async, 执行 ? AsyncIteratorClose(iteratorRecord, closeCompletion).
-4. 否则, 执行 ? IteratorClose(iteratorRecord, closeCompletion).
-5. 注: The next step throws a TypeError to indicate that there was a yield* protocol violation:
-iterator does not have a throw method.
-6. Throw a TypeError exception.
-c. 否则,
-i. 断言: received.[[Type]] is 返回.
-ii. 令 返回 为 ? GetMethod(iterator, "返回").
-iii. 若 返回 is undefined, then
-1. 若 generatorKind is async, then 设置 received.[[Value]] 为 ? Await(received.[[Value]]).
-2. 返回 Completion(received).
-iv. 令 innerReturnResult 为 ? Call(返回, iterator, « received.[[Value]] »).
-v. 若 generatorKind is async, then 设置 innerReturnResult 为 ? Await(innerReturnResult).
-vi. 若 Type(innerReturnResult) is not Object, throw a TypeError exception.
-vii. 令 done 为 ? IteratorComplete(innerReturnResult).
-viii. 若 done 是 true, then
-1. 令 value 为 ? IteratorValue(innerReturnResult).
-2. 返回 Completion { [[Type]]: 返回, [[Value]]: value, [[Target]]: empty }.
-ix. 若 generatorKind is async, then 设置 received 为 AsyncGeneratorYield(?
-IteratorValue(innerReturnResult)).
-x. 否则, 设置 received 为 GeneratorYield(innerReturnResult).
+7. 重复，
+   1. 若 received.[[Type]] 是 normal，那么
+        1. 令 innerResult 为 ? Call(iteratorRecord.[[NextMethod]], iteratorRecord.[[Iterator]], « received.[[Value]] »).
+
+        2. 若 generatorKind 是 async，那么 设置 innerResult 为 ? Await(innerResult).
+        3. 若 Type(innerResult) 不是 Object, 抛出 TypeError 异常.
+        4. 令 done 为 ? IteratorComplete(innerResult).
+        5. 若 done 是 true，那么
+           1. 返回 ? IteratorValue(innerResult).
+      6. 若 generatorKind 是 async，那么 设置 received 为 AsyncGeneratorYield(? IteratorValue(innerResult)).
+      7. 否则, 设置 received 为 GeneratorYield(innerResult).
+   2. 否则 若 received.[[Type]] 是 throw，那么
+       1. 令 throw 为 ? GetMethod(iterator, "throw").
+       2. 若 throw 不是 undefined，那么
+           1. 令 innerResult 为 ? Call\(throw, iterator, « received.\[\[Value\]\] »).
+           2. 若 generatorKind 是 async，那么 设置 innerResult 为 ? Await(innerResult).
+           3. 注: 内部迭代器throw方法的异常会传播。内部throw方法的正常完成与内部next类似。
+           4. 若 Type(innerResult) 不是 Object, 抛出 TypeError 异常.
+           5. 令 done 为 ? IteratorComplete(innerResult).
+           6. 若 done 是 true，那么
+              1. 返回 ? IteratorValue(innerResult).
+           7. 若 generatorKind 是 async，那么 设置 received 为 AsyncGeneratorYield(?
+                IteratorValue(innerResult)).
+           8. 否则, 设置 received 为 GeneratorYield(innerResult).
+   3. 否则,
+      1. 注: 如果iterator没有throw方法，则此throw将终止yield *循环。但是首先我们需要给迭代器一个清理的机会。
+      2. 令 closeCompletion 为 Completion { [[Type]]: normal, [[Value]]: empty, [[Target]]: empty }.
+      3. 若 generatorKind 是 async, 执行 ? AsyncIteratorClose(iteratorRecord, closeCompletion).
+      4. 否则, 执行 ? IteratorClose(iteratorRecord, closeCompletion).
+      5. 注: 下一步将引发TypeError，以表明发生了yield *协议违规：iterator没有throw方法。
+      6. 抛出 TypeError 异常.
+8. 否则,
+   1. 断言: received.[[Type]] 是 return.
+   2. 令 返回 为 ? GetMethod(iterator, "return").
+   3. 若 返回 是 undefined，那么
+      1. 若 generatorKind 是 async，那么 设置 received.[[Value]] 为 ? Await(received.[[Value]]).
+      2. 返回 Completion(received).
+   4. 令 innerReturnResult 为 ? Call(return, iterator, « received.[[Value]] »).
+   5. 若 generatorKind 是 async，那么 设置 innerReturnResult 为 ? Await(innerReturnResult).
+   6. 若 Type(innerReturnResult) 不是 Object, 抛出 TypeError 异常.
+   7. 令 done 为 ? IteratorComplete(innerReturnResult).
+   8. 若 done 是 true，那么
+      1. 令 value 为 ? IteratorValue(innerReturnResult).
+      2. 返回 Completion { [[Type]]: return, [[Value]]: value, [[Target]]: empty }.
+   9. 若 generatorKind 是 async，那么 设置 received 为 AsyncGeneratorYield(?
+       IteratorValue(innerReturnResult)).
+   10. 否则, 设置 received 为 GeneratorYield(innerReturnResult).
 
 ## 14.5 异步 Generator 函数定义 <div id="sec-async-generator-function-definitions"></div>
 
@@ -1287,9 +1282,9 @@ AsyncGeneratorBody :
 	FunctionBody[+Yield, +Await]
 ```
 
-> 注1 YieldExpression and AwaitExpression cannot be used within the FormalParameters of an async generator function because any expressions that are part of FormalParameters are evaluated before the resulting async generator object is in a resumable state.
+> 注1：YieldExpression和AwaitExpression不能在异步生成器函数的FormalParameters中使用，因为作为FormalParameters一部分的任何表达式都在生成的异步生成器对象处于可恢复状态之前进行求值
 
-> 注 2 Abstract operations relating to async generator objects are defined in 25.5.3
+> 注 2：与异步生成器对象有关的抽象操作在25.5.3中定义。
 
 ### 14.5.1 静态语义：Early Errors <div id="sec-async-generator-function-definitions-static-semantics-early-errors"></div>
 
@@ -1298,10 +1293,10 @@ AsyncGeneratorMethod : async * PropertyName ( UniqueFormalParameters ) { AsyncGe
 ```
 
 - 若 AsyncGeneratorMethod 的 HasDirectSuper 是 true，则为语法错误
-- 若 UniqueFormalParameters 包含YieldExpression 是 true，则为语法错误
-- 若 UniqueFormalParameters 包含AwaitExpression 是 true，则为语法错误
-- 若 AsyncGeneratorBody 的 ContainsUseStrict 是 true and UniqueFormalParameters 的 IsSimpleParameterList 是 false，则为语法错误
-- 若 any element of the BoundNames of UniqueFormalParameters also occurs in the AsyncGeneratorBody 的 LexicallyDeclaredNames，则为语法错误
+- 若 UniqueFormalParameters 包含 YieldExpression 是 true，则为语法错误
+- 若 UniqueFormalParameters 包含 AwaitExpression 是 true，则为语法错误
+- 若 AsyncGeneratorBody 的 ContainsUseStrict 是 true 并且 UniqueFormalParameters 的 IsSimpleParameterList 是 false，则为语法错误
+- 若UniqueFormalParameters的BoundNames的任何元素也都出现在AsyncGeneratorBody的LexicallyDeclaredNames中，则为语法错误
 
 ```
 AsyncGeneratorDeclaration : async function * BindingIdentifier ( FormalParameters ) { AsyncGeneratorBody }
@@ -1309,12 +1304,10 @@ AsyncGeneratorDeclaration : async function * ( FormalParameters ) { AsyncGenerat
 AsyncGeneratorExpression : async function * BindingIdentifier ( FormalParameters ) { AsyncGeneratorBody }
 ```
 
-- 若 the source code matching this production is strict mode code, the Early Error rules for UniqueFormalParameters : FormalParameters are applied.
-- 若 the source code matching this production is strict mode code, 若 BindingIdentifier is the IdentifierName eval or the IdentifierName arguments，则为语法错误
-- 若 AsyncGeneratorBody 的 ContainsUseStrict 是 true and IsSimpleParameterList of，则为语法错误
-  FormalParameters is false.
-- 若 any element of the BoundNames of FormalParameters also occurs in the，则为语法错误
-  AsyncGeneratorBody 的 LexicallyDeclaredNames
+- 若与此产生式匹配的源代码是严格模式代码，则将应用UniqueFormalParameters：FormalParameters的早期错误规则。
+- 若与此产生式匹配的源代码是严格模式代码，并且如果BindingIdentifier是IdentifierName eval或IdentifierName arguments，则它是语法错误。
+- 若AsyncGeneratorBody的ContainsUseStrict为true并且FormalParameters的IsSimpleParameterList为false，则为语法错误。
+- 若 FormalParameters 的 BoundNames 的任何元素也出现在 AsyncGeneratorBody 的 LexicallyDeclaredNames 中，则是语法错误。
 - 若 FormalParameters 包含YieldExpression 是 true，则为语法错误
 - 若 FormalParameters 包含AwaitExpression 是 true，则为语法错误
 - 若 FormalParameters 包含SuperProperty 是 true，则为语法错误
@@ -1347,7 +1340,7 @@ AsyncGeneratorDeclaration : async function * ( FormalParameters ) { AsyncGenerat
 AsyncGeneratorMethod : async * PropertyName ( UniqueFormalParameters ) { AsyncGeneratorBody }
 ```
 
-1. 返回 the result of ComputedProperty包含for PropertyName with argument symbol.
+1. 返回带有参数symbol的PropertyName的ComputedPropertyContains结果。
 
 ### 14.5.4 静态语义：包含<div id="sec-async-generator-function-definitions-static-semantics-contains"></div>
 
@@ -1363,7 +1356,7 @@ AsyncGeneratorBody }
 
 1. 返回 false.
 
-> 注 Static semantic rules that depend upon substructure generally do not look into function definitions.
+> 注：依赖于子结构的静态语义规则通常不会考虑函数定义。
 
 ### 14.5.5 静态语义：HasDirectSuper <div id="sec-async-generator-function-definitions-static-semantics-hasdirectsuper"></div>
 
@@ -1428,7 +1421,7 @@ AsyncGeneratorBody : FunctionBody
 2. 令 generator 为 ? OrdinaryCreateFromConstructor(functionObject, "%AsyncGeneratorPrototype%", «
 [[AsyncGeneratorState]], [[AsyncGeneratorContext]], [[AsyncGeneratorQueue]] »).
 3. 执行 ! AsyncGeneratorStart(generator, FunctionBody).
-4. 返回 Completion { [[Type]]: 返回, [[Value]]: generator, [[Target]]: empty }.
+4. 返回 Completion { [[Type]]: return, [[Value]]: generator, [[Target]]: empty }.
 
 ### 14.5.11 运行时语义：InstantiateFunctionObject <div id="sec-asyncgenerator-definitions-instantiatefunctionobject"></div>
 
@@ -1439,8 +1432,7 @@ AsyncGeneratorDeclaration : async function * BindingIdentifier ( FormalParameter
 AsyncGeneratorBody }
 ```
 
-1. 若 the function code for AsyncGeneratorDeclaration is strict mode code, 令 strict 为 true. 否则，令 strict 为
-false.
+1. 若AsyncGeneratorDeclaration的函数代码是严格模式代码, 令 strict 为 true. 否则，令 strict 为 false.
 2. 令 name 为 BindingIdentifier 的 StringValue
 3. 令 F 为 ! AsyncGeneratorFunctionCreate(Normal, FormalParameters, AsyncGeneratorBody, scope, strict).
 4. 令 prototype 为 ! ObjectCreate(%AsyncGeneratorPrototype%).
@@ -1454,7 +1446,7 @@ true, [[Enumerable]]: false, [[Configurable]]: false }).
 AsyncGeneratorDeclaration : async function * ( FormalParameters ) { AsyncGeneratorBody }
 ```
 
-1. 若 the function code for AsyncGeneratorDeclaration is strict mode code, 令 strict 为 true. 否则，令 strict 为 false.
+1. 若AsyncGeneratorDeclaration的函数代码是严格模式代码, 令 strict 为 true. 否则，令 strict 为 false.
 2. 令 F 为 AsyncGeneratorFunctionCreate(Normal, FormalParameters, AsyncGeneratorBody, scope, strict).
 3. 令 prototype 为 ObjectCreate(%AsyncGeneratorPrototype%).
 4. 执行 DefinePropertyOrThrow(F, "prototype", PropertyDescriptor { [[Value]]: prototype, [[Writable]]:
@@ -1463,11 +1455,11 @@ AsyncGeneratorDeclaration : async function * ( FormalParameters ) { AsyncGenerat
 6. 设置 F.[[SourceText]] 为AsyncGeneratorDeclaration匹配的源文本.
 7. 返回 F
 
-> 注 An anonymous AsyncGeneratorDeclaration can only occur as part of an export default declaration.
+> 注：匿名AsyncGeneratorDeclaration只能作为 export default 声明的一部分出现。
 
 ### 14.5.12 运行时语义：PropertyDefinitionEvaluation <div id="sec-asyncgenerator-definitions-propertydefinitionevaluation"></div>
 
-带有参数 object and enumerable.
+带有参数 object 和 enumerable.
 
 ```
 AsyncGeneratorMethod : async * PropertyName ( UniqueFormalParameters ) { AsyncGeneratorBody }
@@ -1475,19 +1467,16 @@ AsyncGeneratorMethod : async * PropertyName ( UniqueFormalParameters ) { AsyncGe
 
 1. 令 propKey 为运算 PropertyName 的结果
 2. ReturnIfAbrupt(propKey).
-3. 若此AsyncGeneratorMethod的函数代码是严格模式代码, 令 strict 为 true. 否则，令 strict 为
-false.
+3. 若此AsyncGeneratorMethod的函数代码是严格模式代码, 令 strict 为 true. 否则，令 strict 为 false.
 4. 令 scope 为 运行时上下文的 LexicalEnvironment.
-5. 令 closure 为 ! AsyncGeneratorFunctionCreate(Method, UniqueFormalParameters, AsyncGeneratorBody, scope,
-strict).
+5. 令 closure 为 ! AsyncGeneratorFunctionCreate(Method, UniqueFormalParameters, AsyncGeneratorBody, scope, strict).
 6. 执行 ! MakeMethod(closure, object).
 7. 令 prototype 为 ! ObjectCreate(%AsyncGeneratorPrototype%).
 8. 执行 ! DefinePropertyOrThrow(closure, "prototype", PropertyDescriptor { [[Value]]: prototype,
 [[Writable]]: true, [[Enumerable]]: false, [[Configurable]]: false }).
 9. 执行 ! SetFunctionName(closure, propKey).
 10. 设置 closure.[[SourceText]] 为AsyncGeneratorMethod匹配的源文本.
-11. 令 desc 为 PropertyDescriptor { [[Value]]: closure, [[Writable]]: true, [[Enumerable]]: enumerable,
-[[Configurable]]: true }.
+11. 令 desc 为 PropertyDescriptor { [[Value]]: closure, [[Writable]]: true, [[Enumerable]]: enumerable, [[Configurable]]: true }.
 12. 返回 ? DefinePropertyOrThrow(object, propKey, desc).
 
 ### 14.5.13 运行时语义：NamedEvaluation <div id="sec-asyncgenerator-definitions-namedevaluation"></div>
@@ -1498,7 +1487,7 @@ strict).
 AsyncGeneratorExpression : async function * ( FormalParameters ) { AsyncGeneratorBody }
 ```
 
-1. 令 closure 为运算 this 的结果AsyncGeneratorExpression.
+1. 令 closure 为运算此AsyncGeneratorExpression的结果。
 2. 执行 SetFunctionName(closure, name).
 3. 返回 closure.
 
@@ -1526,7 +1515,7 @@ AsyncGeneratorBody }
 false.
 2. 令 scope 为 运行时上下文的 LexicalEnvironment.
 3. 令 funcEnv 为 ! NewDeclarativeEnvironment(scope).
-4. 令 envRec 为 funcEnv's EnvironmentRecord.
+4. 令 envRec 为 funcEnv 的 EnvironmentRecord.
 5. 令 name 为 BindingIdentifier 的 StringValue
 6. 执行 ! envRec.CreateImmutableBinding(name).
 7. 令 closure 为 ! AsyncGeneratorFunctionCreate(Normal, FormalParameters, AsyncGeneratorBody, funcEnv, strict).
@@ -1538,7 +1527,7 @@ false.
 12. 设置 closure.[[SourceText]] 为AsyncGeneratorExpression匹配的源文本.
 13. 返回 closure.
 
-> 注 The BindingIdentifier in an AsyncGeneratorExpression can be referenced from inside the AsyncGeneratorExpression's AsyncGeneratorBody to allow the generator code to call itself recursively. However, unlike in an AsyncGeneratorDeclaration, the BindingIdentifier in an AsyncGeneratorExpression cannot be referenced from and does not affect the scope enclosing the AsyncGeneratorExpression.
+> 注：可以从AsyncGeneratorExpression的AsyncGeneratorBody内部引用AsyncGeneratorExpression中的BindingIdentifier，以允许生成器代码递归调用自身。但是，与AsyncGeneratorDeclaration中的方法不同，AsyncGeneratorExpression中的BindingIdentifier不能从引用，也不会影响包围AsyncGeneratorExpression的作用域。
 
 ## 14.6 Class 定义 <div id="sec-class-definitions"></div>
 
@@ -1565,7 +1554,7 @@ ClassElement[Yield, Await] :
     ;
 ```
 
-> 注 A class definition is always strict mode code.
+> 注 A class definition 是 always strict mode code.
 
 ### 14.6.1 静态语义：Early Errors <div id="sec-class-definitions-static-semantics-early-errors"></div>
 
@@ -1573,9 +1562,9 @@ ClassElement[Yield, Await] :
 ClassTail : ClassHeritage { ClassBody }
 ```
 
-- 若 ClassHeritage is not present and the following algorithm evaluates to true:，则为语法错误
+- 若 ClassHeritage 不是 present and the following algorithm evaluates to true:，则为语法错误
   1. 令 constructor 为 ClassBody 的 ConstructorMethod
-  2. 若 constructor is empty, 返回 false.
+  2. 若 constructor 是 empty, 返回 false.
   3. 返回 constructor 的 HasDirectSuper
 
 ```
@@ -1620,7 +1609,7 @@ ClassDeclaration : class ClassTail
 ClassElementList : ClassElement
 ```
 
-1. 若 ClassElement is ClassElement : ; , 返回 empty.
+1. 若 ClassElement 是 ClassElement : ; , 返回 empty.
 2. 若 ClassElement 的 IsStatic 是 true, 返回 empty.
 3. 若 ClassElement 的 PropName 是 not "constructor", 返回 empty.
 4. 返回 ClassElement.
@@ -1630,13 +1619,13 @@ ClassElementList : ClassElementList ClassElement
 ```
 
 1. 令 head 为 ClassElementList 的 ConstructorMethod
-2. 若 head is not empty, 返回 head.
-3. 若 ClassElement is ClassElement : ; , 返回 empty.
+2. 若 head 不是 empty, 返回 head.
+3. 若 ClassElement 是 ClassElement : ; , 返回 empty.
 4. 若 ClassElement 的 IsStatic 是 true, 返回 empty.
 5. 若 ClassElement 的 PropName 是 not "constructor", 返回 empty.
 6. 返回 ClassElement
 
-> 注 Early Error rules ensure that there is only one method definition named "constructor" and that it is not an accessor property or generator definition.
+> 注 Early Error rules ensure that there 是 only one method definition named "constructor" and that it 不是 an accessor property or generator definition.
 
 ### 14.6.4 静态语义：包含<div id="sec-class-definitions-static-semantics-contains"></div>
 
@@ -1646,9 +1635,9 @@ ClassElementList : ClassElementList ClassElement
 ClassTail : ClassHeritage { ClassBody }
 ```
 
-1. 若 symbol is ClassBody, 返回 true.
-2. 若 symbol is ClassHeritage, then
-a. 若 ClassHeritage is present, 返回 true; 否则 返回 false.
+1. 若 symbol 是 ClassBody, 返回 true.
+2. 若 symbol 是 ClassHeritage，那么
+a. 若 ClassHeritage 是 present, 返回 true; 否则 返回 false.
 3. 令 inHeritage 为 ClassHeritage 包含symbol.
 4. 若 inHeritage 是 true, 返回 true.
 5. 返回 the result of ComputedProperty包含for ClassBody with argument symbol.
@@ -1742,7 +1731,7 @@ ClassElement : ;
 ClassElementList : ClassElement
 ```
 
-1. 若 ClassElement is ClassElement : ; , 返回一个新的空列表.
+1. 若 ClassElement 是 ClassElement : ; , 返回一个新的空列表.
 2. 若 ClassElement 的 IsStatic 是 false and ClassElement 的 PropName 是 "constructor", 返回一个新的空列表.
 3. 返回 a List containing ClassElement.
 
@@ -1751,7 +1740,7 @@ ClassElementList : ClassElementList ClassElement
 ```
 
 1. 令 list 为 ClassElementList 的 NonConstructorMethodDefinitions
-2. 若 ClassElement is ClassElement : ; , 返回 list.
+2. 若 ClassElement 是 ClassElement : ; , 返回 list.
 3. 若 ClassElement 的 IsStatic 是 false and ClassElement 的 PropName 是 "constructor", 返回 list.
 4. Append ClassElement to the list 的 end
 5. 返回 list.
@@ -1791,9 +1780,9 @@ ClassElement : ;
 1. 令 lex 为运行时上下文的LexicalEnvironment.
 2. 令 classScope 为 NewDeclarativeEnvironment(lex).
 3. 令 classScopeEnvRec 为 classScope's EnvironmentRecord.
-4. 若 classBinding is not undefined, then
+4. 若 classBinding 不是 undefined，那么
 a. 执行 classScopeEnvRec.CreateImmutableBinding(classBinding, true).
-5. 若 ClassHeritageopt is not present, then
+5. 若 ClassHeritageopt 不是 present，那么
 a. 令 protoParent 为 the intrinsic object %ObjectPrototype%.
 b. 令 constructorParent 为 the intrinsic object %FunctionPrototype%.
 6. 否则,
@@ -1801,20 +1790,20 @@ a. 设置 运行时上下文的 LexicalEnvironment 为 classScope.
 b. 令 superclassRef 为运算 ClassHeritage 的结果
 7. c. 设置 运行时上下文的 LexicalEnvironment 为 lex.
     d. 令 superclass 为 ? GetValue(superclassRef).
-    e. 若 superclass is null, then
+    e. 若 superclass 是 null，那么
     i. 令 protoParent 为 null.
     ii. 令 constructorParent 为 the intrinsic object %FunctionPrototype%.
-    f. 否则 若 IsConstructor(superclass) is false, throw a TypeError exception.
+    f. 否则 若 IsConstructor(superclass) 是 false, 抛出 TypeError 异常.
     g. 否则,
     i. 令 protoParent 为 ? Get(superclass, "prototype").
-    ii. 若 Type(protoParent) is neither Object nor Null, throw a TypeError exception.
+    ii. 若 Type(protoParent) 是 neither Object nor Null, 抛出 TypeError 异常.
     iii. 令 constructorParent 为 superclass.
   7. 令 proto 为 ObjectCreate(protoParent).
-  8. 若 ClassBodyopt is not present, 令 constructor 为 empty.
+  8. 若 ClassBodyopt 不是 present, 令 constructor 为 empty.
   9. 否则, 令 constructor 为 ClassBody 的 ConstructorMethod
-  10. 若 constructor is empty, then
+  10. 若 constructor 是 empty，那么
 
-    a. 若 ClassHeritageopt is present, then
+    a. 若 ClassHeritageopt 是 present，那么
     i. 设置 constructor 为 the result of parsing the source text
     constructor(... args){ super (...args);}
     using the syntactic grammar with the goal symbol MethodDefinition[~Yield, ~Await] .
@@ -1826,29 +1815,29 @@ b. 令 superclassRef 为运算 ClassHeritage 的结果
   12. 令 constructorInfo 为 the result of performing DefineMethod for constructor with arguments proto and
 
     constructorParent as the optional functionPrototype argument.
-  13. 断言: constructorInfo is not an abrupt completion.
+  13. 断言: constructorInfo 不是 an abrupt completion.
   14. 令 F 为 constructorInfo.[[Closure]].
-  15. 若 ClassHeritageopt is present, 设置 F.[[ConstructorKind]] 为 "derived".
+  15. 若 ClassHeritageopt 是 present, 设置 F.[[ConstructorKind]] 为 "derived".
   16. 执行 MakeConstructor(F, false, proto).
   17. 执行 MakeClassConstructor(F).
-  18. 若 className is not undefined, then
+  18. 若 className 不是 undefined，那么
 
     a. 执行 SetFunctionName(F, className).
   19. 执行 CreateMethodProperty(proto, "constructor", F).
-  20. 若 ClassBodyopt is not present, 令 methods 为一个新的空列表.
+  20. 若 ClassBodyopt 不是 present, 令 methods 为一个新的空列表.
   21. 否则, 令 methods 为 ClassBody 的 NonConstructorMethodDefinitions
   22. For each ClassElement m in order from methods, do
 
-    a. 若 m 的 IsStatic 是 false, then
+    a. 若 m 的 IsStatic 是 false，那么
     i. 令 status 为 the result of performing PropertyDefinitionEvaluation for m with arguments proto and
     false.
     b. 否则,
     i. 令 status 为 the result of performing PropertyDefinitionEvaluation for m with arguments F and false.
-    c. 若 status is an abrupt completion, then
+    c. 若 status 是 an abrupt completion，那么
     i. 设置 运行时上下文的 LexicalEnvironment 为 lex.
     ii. 返回 Completion(status).
   23. 设置 运行时上下文的 LexicalEnvironment 为 lex.
-  24. 若 classBinding is not undefined, then
+  24. 若 classBinding 不是 undefined，那么
       a. 执行 classScopeEnvRec.InitializeBinding(classBinding, F).
   25. 返回 F.
 
@@ -1875,7 +1864,7 @@ ClassDeclaration : class ClassTail
 3. 设置 value.[[SourceText]] 为ClassDeclaration匹配的源文本.
 4. 返回 value.
 
-> 注 ClassDeclaration : class ClassTail only occurs as part of an ExportDeclaration and establishing its binding is handled as part of the evaluation action for that production. See 15.2.3.11.
+> 注 ClassDeclaration : class ClassTail only occurs as part of an ExportDeclaration and establishing its binding 是 handled as part of the evaluation action for that production. See 15.2.3.11.
 
 ### 14.6.15 运行时语义：NamedEvaluation <div id="sec-class-definitions-runtime-semantics-namedevaluation"></div>
 
@@ -1896,13 +1885,13 @@ ClassDeclaration : class BindingIdentifier ClassTail
 1. 执行 ? BindingClassDeclarationEvaluation of this ClassDeclaration.
 2. 返回 NormalCompletion(empty).
 
-> 注 ClassDeclaration : class ClassTail only occurs as part of an ExportDeclaration and is never directly evaluated.
+> 注 ClassDeclaration : class ClassTail only occurs as part of an ExportDeclaration and 是 never directly evaluated.
 
 ```
 ClassExpression : class BindingIdentifier ClassTail
 ```
 
-1. 若 BindingIdentifieropt is not present, 令 className 为 undefined.
+1. 若 BindingIdentifieropt 不是 present, 令 className 为 undefined.
 2. 否则, 令 className 为 BindingIdentifier 的 StringValue
 3. 令 value 为 the result of ClassDefinitionEvaluation of ClassTail with arguments className and className.
 4. ReturnIfAbrupt(value).
@@ -1931,13 +1920,13 @@ AwaitExpression[Yield] :
 	await UnaryExpression[?Yield, +Await]
 ```
 
-> 注 1 await is parsed as an AwaitExpression when the [Await] parameter is present. The [Await] parameter is present in the following contexts:
+> 注 1 await 是 parsed as an AwaitExpression when the [Await] parameter 是 present. The [Await] parameter 是 present in the following contexts:
 >
 > In an AsyncFunctionBody.
 > In the FormalParameters of an AsyncFunctionDeclaration, AsyncFunctionExpression, AsyncGeneratorDeclaration,
-> or AsyncGeneratorExpression. AwaitExpression in this position is a Syntax error via static semantics.
+> or AsyncGeneratorExpression. AwaitExpression in this position 是 a Syntax error via static semantics.
 >
-> When Module is the syntactic goal symbol and the [Await] parameter is absent, await is parsed as a keyword and will be a Syntax error. When Script is the syntactic goal symbol, await may be parsed as an identifier when the [Await] parameter is absent. This includes the following contexts:
+> When Module 是 the syntactic goal symbol and the [Await] parameter 是 absent, await 是 parsed as a keyword and will be a Syntax error. When Script 是 the syntactic goal symbol, await may be parsed as an identifier when the [Await] parameter 是 absent. This includes the following contexts:
 >
 > Anywhere outside of an AsyncFunctionBody or FormalParameters of an AsyncFunctionDeclaration,
 > AsyncFunctionExpression, AsyncGeneratorDeclaration, or AsyncGeneratorExpression.
@@ -1953,7 +1942,7 @@ AsyncMethod : async PropertyName ( UniqueFormalParameters ) { AsyncFunctionBody 
 ```
 
 - 若 AsyncFunctionBody 的 ContainsUseStrict 是 true and IsSimpleParameterList of，则为语法错误
-  UniqueFormalParameters is false.
+  UniqueFormalParameters 是 false.
 - 若 AsyncMethod 的 HasDirectSuper 是 true，则为语法错误
 - 若 UniqueFormalParameters 包含AwaitExpression 是 true，则为语法错误
 - 若 any element of the BoundNames of UniqueFormalParameters also occurs in the，则为语法错误
@@ -1967,11 +1956,11 @@ AsyncFunctionExpression : async function BindingIdentifier ( FormalParameters ) 
 ```
 
 - 若 AsyncFunctionBody 的 ContainsUseStrict 是 true and IsSimpleParameterList of，则为语法错误
-  FormalParameters is false.
+  FormalParameters 是 false.
 - 若 FormalParameters 包含AwaitExpression 是 true，则为语法错误
-- 若 the source code matching this production is strict code, the Early Error rules for UniqueFormalParameters :
+- 若 the source code matching this production 是 strict code, the Early Error rules for UniqueFormalParameters :
   FormalParameters are applied.
-- 若 the source code matching this production is strict code, 若 BindingIdentifier is present and the BindingIdentifier 的 StringValue 是 "eval" or "arguments"，则为语法错误
+- 若 the source code matching this production 是 strict code, 若 BindingIdentifier 是 present and the BindingIdentifier 的 StringValue 是 "eval" or "arguments"，则为语法错误
 - 若 any element of the BoundNames of FormalParameters also occurs in the，则为语法错误
   AsyncFunctionBody 的 LexicallyDeclaredNames
 - 若 FormalParameters 包含SuperProperty 是 true，则为语法错误
@@ -2075,7 +2064,7 @@ AsyncMethod : async PropertyName ( UniqueFormalParameters ) { AsyncFunctionBody 
 AsyncFunctionDeclaration : async function BindingIdentifier ( FormalParameters ) { AsyncFunctionBody }
 ```
 
-1. 若 the function code for AsyncFunctionDeclaration is strict mode code, 令 strict 为 true. 否则,，令 strict 为 false.
+1. 若 the function code for AsyncFunctionDeclaration 是 strict mode code, 令 strict 为 true. 否则,，令 strict 为 false.
 2. 令 name 为 BindingIdentifier 的 StringValue
 3. 令 F 为 ! AsyncFunctionCreate(Normal, FormalParameters, AsyncFunctionBody, scope, strict).
 4. 执行 ! SetFunctionName(F, name).
@@ -2086,7 +2075,7 @@ AsyncFunctionDeclaration : async function BindingIdentifier ( FormalParameters )
 AsyncFunctionDeclaration : async function ( FormalParameters ) { AsyncFunctionBody }
 ```
 
-1. 若 the function code for AsyncFunctionDeclaration is strict mode code, 令 strict 为 true. 否则,，令 strict 为 false.
+1. 若 the function code for AsyncFunctionDeclaration 是 strict mode code, 令 strict 为 true. 否则,，令 strict 为 false.
 2. 令 F 为 ! AsyncFunctionCreate(Normal, FormalParameters, AsyncFunctionBody, scope, strict).
 3. 执行 ! SetFunctionName(F, "default").
 4. 设置 F.[[SourceText]] 为AsyncFunctionDeclaration匹配的源文本.
@@ -2102,9 +2091,9 @@ AsyncFunctionBody : FunctionBody
 
 1. 令 promiseCapability 为 ! NewPromiseCapability(%Promise%).
 2. 令 declResult 为 FunctionDeclarationInstantiation(functionObject, argumentsList).
-3. 若 declResult is not an abrupt completion, then
+3. 若 declResult 不是 an abrupt completion，那么
 a. 执行 ! AsyncFunctionStart(promiseCapability, FunctionBody).
-4. 否则 declResult is an abrupt completion,
+4. 否则 declResult 是 an abrupt completion,
 a. 执行 ! Call(promiseCapability.[[Reject]], undefined, « declResult.[[Value]] »).
 5. 返回 Completion { [[Type]]: 返回, [[Value]]: promiseCapability.[[Promise]], [[Target]]: empty }.
 
@@ -2158,7 +2147,7 @@ AsyncFunctionDeclaration : async function ( FormalParameters ) { AsyncFunctionBo
 AsyncFunctionExpression : async function ( FormalParameters ) { AsyncFunctionBody }
 ```
 
-1. 若 the function code for AsyncFunctionExpression is strict mode code, 令 strict 为 true. 否则，令 strict 为
+1. 若 the function code for AsyncFunctionExpression 是 strict mode code, 令 strict 为 true. 否则，令 strict 为
 false.
 2. 令 scope 为运行时上下文的LexicalEnvironment.
 3. 令 closure 为 ! AsyncFunctionCreate(Normal, FormalParameters, AsyncFunctionBody, scope, strict).
@@ -2169,7 +2158,7 @@ false.
 AsyncFunctionExpression : async function BindingIdentifier ( FormalParameters ) { AsyncFunctionBody }
 ```
 
-1. 若 the function code for AsyncFunctionExpression is strict mode code, 令 strict 为 true. 否则，令 strict 为
+1. 若 the function code for AsyncFunctionExpression 是 strict mode code, 令 strict 为 true. 否则，令 strict 为
 false.
 2. 令 scope 为运行时上下文的LexicalEnvironment.
 3. 令 funcEnv 为 ! NewDeclarativeEnvironment(scope).
@@ -2232,9 +2221,9 @@ AsyncArrowFunction : CoverCallExpressionAndAsyncArrowHead => AsyncConciseBody
 
 - 若 CoverCallExpressionAndAsyncArrowHead 包含YieldExpression 是 true，则为语法错误
 - 若 CoverCallExpressionAndAsyncArrowHead 包含AwaitExpression 是 true，则为语法错误
-- 若 CoverCallExpressionAndAsyncArrowHead is not covering an AsyncArrowHead，则为语法错误
+- 若 CoverCallExpressionAndAsyncArrowHead 不是 covering an AsyncArrowHead，则为语法错误
 - 若 any element of the BoundNames of CoverCallExpressionAndAsyncArrowHead also occurs in the AsyncConciseBody 的 LexicallyDeclaredNames，则为语法错误
-- 若 AsyncConciseBody 的 ContainsUseStrict 是 true and IsSimpleParameterList of CoverCallExpressionAndAsyncArrowHead is false，则为语法错误
+- 若 AsyncConciseBody 的 ContainsUseStrict 是 true and IsSimpleParameterList of CoverCallExpressionAndAsyncArrowHead 是 false，则为语法错误
 - All Early Error rules for AsyncArrowHead and its derived productions apply to CoverCallExpressionAndAsyncArrowHead 的 CoveredAsyncArrowHead
 
 ### 14.8.2 静态语义：CoveredAsyncArrowHead <div id="sec-async-arrow-function-definitions-static-semantics-CoveredAsyncArrowHead"></div>
@@ -2243,7 +2232,7 @@ AsyncArrowFunction : CoverCallExpressionAndAsyncArrowHead => AsyncConciseBody
 CoverCallExpressionAndAsyncArrowHead : MemberExpression Arguments
 ```
 
-1. 返回 the AsyncArrowHead that is covered by CoverCallExpressionAndAsyncArrowHead
+1. 返回 the AsyncArrowHead that 是 covered by CoverCallExpressionAndAsyncArrowHead
 
 ### 14.8.3 静态语义：BoundNames <div id="sec-async-arrow-function-definitions-static-semantics-BoundNames"></div>
 
@@ -2262,14 +2251,14 @@ CoverCallExpressionAndAsyncArrowHead : MemberExpression Arguments
 AsyncArrowFunction : async AsyncArrowBindingIdentifier => AsyncConciseBody
 ```
 
-1. 若 symbol is not one of NewTarget, SuperProperty, SuperCall, super, or this, 返回 false.
+1. 若 symbol 不是 one of NewTarget, SuperProperty, SuperCall, super, or this, 返回 false.
 2. 返回 AsyncConciseBody 包含symbol.
 
 ```
 AsyncArrowFunction : CoverCallExpressionAndAsyncArrowHead => AsyncConciseBody
 ```
 
-1. 若 symbol is not one of NewTarget, SuperProperty, SuperCall, super, or this, 返回 false.
+1. 若 symbol 不是 one of NewTarget, SuperProperty, SuperCall, super, or this, 返回 false.
 2. 令 head 为 CoverCallExpressionAndAsyncArrowHead 的 CoveredAsyncArrowHead
 3. 若 head 包含symbol 是 true, 返回 true.
 4. 返回 AsyncConciseBody 包含symbol.
@@ -2356,14 +2345,14 @@ AsyncConciseBody : AssignmentExpression
 AsyncArrowBindingIdentifier : BindingIdentifier
 ```
 
-1. 断言: iteratorRecord.[[Done]] is false.
+1. 断言: iteratorRecord.[[Done]] 是 false.
 2. 令 next 为 IteratorStep(iteratorRecord).
-3. 若 next is an abrupt completion, 设置 iteratorRecord.[[Done]] 为 true.
+3. 若 next 是 an abrupt completion, 设置 iteratorRecord.[[Done]] 为 true.
 4. ReturnIfAbrupt(next).
-5. 若 next is false, 设置 iteratorRecord.[[Done]] 为 true.
+5. 若 next 是 false, 设置 iteratorRecord.[[Done]] 为 true.
 6. 否则,
 a. 令 v 为 IteratorValue(next).
-b. 若 v is an abrupt completion, 设置 iteratorRecord.[[Done]] 为 true.
+b. 若 v 是 an abrupt completion, 设置 iteratorRecord.[[Done]] 为 true.
 c. ReturnIfAbrupt(v).
 7. 若 iteratorRecord.[[Done]] 是 true, 令 v 为 undefined.
 8. 返回使用v和environment作为参数对BindingIdentifier执行BindingInitialization的结果。
@@ -2378,9 +2367,9 @@ AsyncConciseBody : AssignmentExpression
 
 1. 令 promiseCapability 为 ! NewPromiseCapability(%Promise%).
 2. 令 declResult 为 FunctionDeclarationInstantiation(functionObject, argumentsList).
-3. 若 declResult is not an abrupt completion, then
+3. 若 declResult 不是 an abrupt completion，那么
 a. 执行 ! AsyncFunctionStart(promiseCapability, AssignmentExpression).
-4. 否则 declResult is an abrupt completion,
+4. 否则 declResult 是 an abrupt completion,
 a. 执行 ! Call(promiseCapability.[[Reject]], undefined, « declResult.[[Value]] »).
 5. 返回 Completion { [[Type]]: 返回, [[Value]]: promiseCapability.[[Promise]], [[Target]]: empty }.
 
@@ -2434,14 +2423,14 @@ false.
 
 The abstract operation IsInTailPosition with argument call performs the following steps:
 
-1. 断言: call is a Parse Node.
-2. 若 the source code matching call is non-strict code, 返回 false.
-3. 若 call is not contained within a FunctionBody, ConciseBody, or AsyncConciseBody, 返回 false.
+1. 断言: call 是 a Parse Node.
+2. 若 the source code matching call 是 non-strict code, 返回 false.
+3. 若 call 不是 contained within a FunctionBody, ConciseBody, or AsyncConciseBody, 返回 false.
 4. 令 body 为 the FunctionBody, ConciseBody, or AsyncConciseBody that most closely 包含call.
-5. 若 body is the FunctionBody of a GeneratorBody, 返回 false.
-6. 若 body is the FunctionBody of an AsyncFunctionBody, 返回 false.
-7. 若 body is the FunctionBody of an AsyncGeneratorBody, 返回 false.
-8. 若 body is an AsyncConciseBody, 返回 false.
+5. 若 body 是 the FunctionBody of a GeneratorBody, 返回 false.
+6. 若 body 是 the FunctionBody of an AsyncFunctionBody, 返回 false.
+7. 若 body 是 the FunctionBody of an AsyncGeneratorBody, 返回 false.
+8. 若 body 是 an AsyncConciseBody, 返回 false.
 9. 返回 the result of HasCallInTailPosition of body with argument call.
 
 > 注 Tail Position calls are only defined in strict mode code because of a common non-standard language extension (see 9.2.9) that enables observation of the chain of caller contexts.
@@ -2450,7 +2439,7 @@ The abstract operation IsInTailPosition with argument call performs the followin
 
 带有参数 call.
 
-> 注 call is a Parse Node that represents a specific range of source text. When the following algorithms compare call to another Parse Node, it is a test of whether they represent the same source text.
+> 注 call 是 a Parse Node that represents a specific range of source text. When the following algorithms compare call to another Parse Node, it 是 a test of whether they represent the same source text.
 
 #### 14.9.2.1 Statement Rules <div id="sec-statement-rules"></div>
 
@@ -2542,11 +2531,11 @@ CaseBlock : { CaseClauses DefaultClause CaseClauses }
 ```
 
 1. 令 has 为 false.
-2. 若 the first CaseClauses is present, 令 has 为 HasCallInTailPosition of the first CaseClauses with argument call.
+2. 若 the first CaseClauses 是 present, 令 has 为 HasCallInTailPosition of the first CaseClauses with argument call.
 3. 若 has 是 true, 返回 true.
 4. 令 has 为 HasCallInTailPosition of the DefaultClause with argument call.
 5. 若 has 是 true, 返回 true.
-6. 若 the second CaseClauses is present, 令 has 为 HasCallInTailPosition of the second CaseClauses with argument call.
+6. 若 the second CaseClauses 是 present, 令 has 为 HasCallInTailPosition of the second CaseClauses with argument call.
 7. 返回 has.
 
 ```
@@ -2562,7 +2551,7 @@ CaseClause : case Expression : StatementList
 DefaultClause : default : StatementList
 ```
 
-1. 若 StatementList is present, 返回 HasCallInTailPosition of StatementList with argument call.
+1. 若 StatementList 是 present, 返回 HasCallInTailPosition of StatementList with argument call.
 2. 返回 false.
 
 ```
@@ -2586,7 +2575,7 @@ Catch : catch ( CatchParameter ) Block
 
 #### 14.9.2.2 Expression Rules <div id="sec-expression-rules"></div>
 
-> 注 A potential tail position call that is immediately followed by 返回 GetValue of the call result is also a possible tail position call. Function calls cannot 返回 reference values, so such a GetValue operation will always 返回 the same value as the actual function call result.
+> 注 A potential tail position call that 是 immediately followed by 返回 GetValue of the call result 是 also a possible tail position call. Function calls cannot 返回 reference values, so such a GetValue operation will always 返回 the same value as the actual function call result.
 
 ```
 AssignmentExpression :
@@ -2698,7 +2687,7 @@ LogicalORExpression : LogicalORExpression || LogicalANDExpression
        CallExpression TemplateLiteral
    ```
 
-   1. 若 this CallExpression is call, 返回 true.
+   1. 若 this CallExpression 是 call, 返回 true.
    2. 返回 false.
 
    ```
@@ -2706,7 +2695,7 @@ LogicalORExpression : LogicalORExpression || LogicalANDExpression
    	MemberExpression TemplateLiteral
    ```
 
-   1. 若 this MemberExpression is call, 返回 true.
+   1. 若 this MemberExpression 是 call, 返回 true.
    2. 返回 false.
 
 ```
