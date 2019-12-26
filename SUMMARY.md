@@ -893,6 +893,8 @@
     * [14.9 尾调用](function-classes.md#sec-tail-position-calls)
         * [14.9.1 SS: IsInTailPosition ( call )](function-classes.md#sec-isintailposition)
         * [14.9.2 SS: HasCallInTailPosition](function-classes.md#sec-static-semantics-hascallintailposition)
+            * [14.9.2.1 Statement Rules](function-classes.md#sec-statement-rules)
+            * [14.9.2.2 Expression Rules](function-classes.md#sec-expression-rules)
         * [14.9.3 RS: PrepareForTailCall ( )](function-classes.md#sec-preparefortailcall)
 * 15 ECMAScript语言：脚本和模块
     * 15.1 脚本

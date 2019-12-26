@@ -1822,11 +1822,8 @@ ClassTail : ClassHeritage { ClassBody }
           constructor(... args){ super (...args);}
           using the syntactic grammar with the goal symbol MethodDefinition[~Yield, ~Await] .
           ```
-      ```
     
-      ```
-    
-2. 否则,
+11. 否则,
    
    1.  设置 constructor 为解析源文本的结果
    
@@ -1835,31 +1832,31 @@ ClassTail : ClassHeritage { ClassBody }
           using the syntactic grammar with the goal symbol MethodDefinition[~Yield, ~Await] .
          ```
    
-11. 设置 运行时上下文的 LexicalEnvironment 为 classScope.
+12. 设置 运行时上下文的 LexicalEnvironment 为 classScope.
 
-12. 令 constructorInfo 为使用参数proto和ConstructorParent作为可选functionPrototype参数为构造函数执行DefineMethod的结果。
+13. 令 constructorInfo 为使用参数proto和ConstructorParent作为可选functionPrototype参数为构造函数执行DefineMethod的结果。
 
-13. 断言: builderInfo不是 abrupt completion.
+14. 断言: builderInfo不是 abrupt completion.
 
-14. 令 F 为 constructorInfo.[[Closure]].
+15. 令 F 为 constructorInfo.[[Closure]].
 
-15. 若 ClassHeritageopt 存在, 设置 F.[[ConstructorKind]] 为 "derived".
+16. 若 ClassHeritageopt 存在, 设置 F.[[ConstructorKind]] 为 "derived".
 
-16. 执行 MakeConstructor(F, false, proto).
+17. 执行 MakeConstructor(F, false, proto).
 
-17. 执行 MakeClassConstructor(F).
+18. 执行 MakeClassConstructor(F).
 
-18. 若 className 不是 undefined，那么
+19. 若 className 不是 undefined，那么
 
     1. 执行 SetFunctionName(F, className).
 
-19. 执行 CreateMethodProperty(proto, "constructor", F).
+20. 执行 CreateMethodProperty(proto, "constructor", F).
 
-20. 若 ClassBodyopt 不存在, 令 methods 为一个新的空列表.
+21. 若 ClassBodyopt 不存在, 令 methods 为一个新的空列表.
 
-21. 否则, 令 methods 为 ClassBody 的 NonConstructorMethodDefinitions
+22. 否则, 令 methods 为 ClassBody 的 NonConstructorMethodDefinitions
 
-22. 对于methods的每一个按顺序的 ClassElement m, 执行
+23. 对于methods的每一个按顺序的 ClassElement m, 执行
 
     1. 若 m 的 IsStatic 是 false，那么
        1. 令 status 为使用参数proto和false对m执行PropertyDefinitionEvaluation的结果。
@@ -1869,13 +1866,13 @@ ClassTail : ClassHeritage { ClassBody }
        1. 设置 运行时上下文的 LexicalEnvironment 为 lex.
        2. 返回 Completion(status).
 
-23. 设置 运行时上下文的 LexicalEnvironment 为 lex.
+24. 设置 运行时上下文的 LexicalEnvironment 为 lex.
 
-24. 若 classBinding 不是 undefined，那么
+25. 若 classBinding 不是 undefined，那么
 
     1. 执行 classScopeEnvRec.InitializeBinding(classBinding, F).
 
-25. 返回 F.
+26. 返回 F.
 
 ### 14.6.14 运行时语义：BindingClassDeclarationEvaluation <div id="sec-runtime-semantics-bindingclassdeclarationevaluation"></div>
 
@@ -2103,7 +2100,7 @@ AsyncFunctionDeclaration : async function BindingIdentifier ( FormalParameters )
 AsyncFunctionDeclaration : async function ( FormalParameters ) { AsyncFunctionBody }
 ```
 
-1. 若如果AsyncFunctionDeclaration的函数代码是严格模式代码, 令 strict 为 true. 否则,，令 strict 为 false.
+1. 若如果AsyncFunctionDeclaration的函数代码是严格模式代码, 令 strict 为 true. 否则，令 strict 为 false.
 2. 令 F 为 ! AsyncFunctionCreate(Normal, FormalParameters, AsyncFunctionBody, scope, strict).
 3. 执行 ! SetFunctionName(F, "default").
 4. 设置 F.[[SourceText]] 为AsyncFunctionDeclaration匹配的源文本.
@@ -2228,7 +2225,7 @@ CoverCallExpressionAndAsyncArrowHead[Yield, Await] :
 
 **补充语法**
 
-When processing an instance of the production AsyncArrowFunction : CoverCallExpressionAndAsyncArrowHead => AsyncConciseBody the CoverCallExpressionAndAsyncArrowHead 的 interpretation 是 refined using the following grammar:
+处理产生式的实例时 AsyncArrowFunction : CoverCallExpressionAndAsyncArrowHead => AsyncConciseBody，使用以下语法完善CoverCallExpressionAndAsyncArrowHead的解释：
 
 ```
 AsyncArrowHead :
@@ -2241,18 +2238,18 @@ AsyncArrowHead :
 AsyncArrowFunction : async AsyncArrowBindingIdentifier => AsyncConciseBody
 ```
 
-- 若 any element of the BoundNames of AsyncArrowBindingIdentifier also occurs in the AsyncConciseBody 的 LexicallyDeclaredNames，则为语法错误
+- 若AsyncArrowBindingIdentifier的BoundNames中的任何元素也出现在AsyncConciseBody的LexicallyDeclaredNames中。，则为语法错误
 
 ```
 AsyncArrowFunction : CoverCallExpressionAndAsyncArrowHead => AsyncConciseBody
 ```
 
-- 若 CoverCallExpressionAndAsyncArrowHead 包含YieldExpression 是 true，则为语法错误
-- 若 CoverCallExpressionAndAsyncArrowHead 包含AwaitExpression 是 true，则为语法错误
-- 若 CoverCallExpressionAndAsyncArrowHead 不是 covering an AsyncArrowHead，则为语法错误
-- 若 any element of the BoundNames of CoverCallExpressionAndAsyncArrowHead also occurs in the AsyncConciseBody 的 LexicallyDeclaredNames，则为语法错误
-- 若 AsyncConciseBody 的 ContainsUseStrict 是 true and IsSimpleParameterList of CoverCallExpressionAndAsyncArrowHead 是 false，则为语法错误
-- All Early Error rules for AsyncArrowHead and its derived productions apply to CoverCallExpressionAndAsyncArrowHead 的 CoveredAsyncArrowHead
+- 若 CoverCallExpressionAndAsyncArrowHead 包含 YieldExpression 是 true，则为语法错误
+- 若 CoverCallExpressionAndAsyncArrowHead 包含 AwaitExpression 是 true，则为语法错误
+- 若 CoverCallExpressionAndAsyncArrowHead 没有覆盖 AsyncArrowHead。，则为语法错误
+- 如果CoverCallExpressionAndAsyncArrowHead的BoundNames中的任何元素也出现在AsyncConciseBody的LexicallyDeclaredNames中，则是语法错误。
+- 如果AsyncConciseBody的ContainsUseStrict为true，并且CoverCallExpressionAndAsyncArrowHead的IsSimpleParameterList为false，则为语法错误。
+- AsyncArrowHead及其衍生产生式的所有早期错误规则均适用于CoverCallExpressionAndAsyncArrowHead的CoveredAsyncArrowHead。
 
 ### 14.8.2 静态语义：CoveredAsyncArrowHead <div id="sec-async-arrow-function-definitions-static-semantics-CoveredAsyncArrowHead"></div>
 
@@ -2260,7 +2257,7 @@ AsyncArrowFunction : CoverCallExpressionAndAsyncArrowHead => AsyncConciseBody
 CoverCallExpressionAndAsyncArrowHead : MemberExpression Arguments
 ```
 
-1. 返回 the AsyncArrowHead that 是 covered by CoverCallExpressionAndAsyncArrowHead
+1. 返回被CoverCallExpressionAndAsyncArrowHead覆盖的AsyncArrowHead。
 
 ### 14.8.3 静态语义：BoundNames <div id="sec-async-arrow-function-definitions-static-semantics-BoundNames"></div>
 
@@ -2269,7 +2266,7 @@ CoverCallExpressionAndAsyncArrowHead : MemberExpression Arguments
 ```
 
 1. 令 head 为 CoverCallExpressionAndAsyncArrowHead 的 CoveredAsyncArrowHead
-2. 返回 the head 的 BoundNames
+2. 返回 head 的 BoundNames
 
 ### 14.8.4 静态语义：包含<div id="sec-async-arrow-function-definitions-static-semantics-Contains"></div>
 
@@ -2279,19 +2276,19 @@ CoverCallExpressionAndAsyncArrowHead : MemberExpression Arguments
 AsyncArrowFunction : async AsyncArrowBindingIdentifier => AsyncConciseBody
 ```
 
-1. 若 symbol 不是 one of NewTarget, SuperProperty, SuperCall, super, or this, 返回 false.
+1. 若 symbol 不是 NewTarget, SuperProperty, SuperCall, super, 或 this 其中之一, 返回 false.
 2. 返回 AsyncConciseBody 包含symbol.
 
 ```
 AsyncArrowFunction : CoverCallExpressionAndAsyncArrowHead => AsyncConciseBody
 ```
 
-1. 若 symbol 不是 one of NewTarget, SuperProperty, SuperCall, super, or this, 返回 false.
+1. 若 symbol 不是 NewTarget, SuperProperty, SuperCall, super, 或 this 其中之一, 返回 false.
 2. 令 head 为 CoverCallExpressionAndAsyncArrowHead 的 CoveredAsyncArrowHead
 3. 若 head 包含symbol 是 true, 返回 true.
 4. 返回 AsyncConciseBody 包含symbol.
 
-> 注 Normally, 包含does not look inside most function forms. However, 包含is used to detect new.target, this, and super usage within an AsyncArrowFunction.
+> 注：通常，Contains并不在大多数函数表单中。但是，Contains用于检测AsyncArrowFunction中的new.target、this和super用法。
 
 ### 14.8.5 静态语义：ContainsExpression <div id="sec-async-arrow-function-definitions-static-semantics-ContainsExpression"></div>
 
@@ -2375,13 +2372,13 @@ AsyncArrowBindingIdentifier : BindingIdentifier
 
 1. 断言: iteratorRecord.[[Done]] 是 false.
 2. 令 next 为 IteratorStep(iteratorRecord).
-3. 若 next 是 an abrupt completion, 设置 iteratorRecord.[[Done]] 为 true.
+3. 若 next 是 abrupt completion, 设置 iteratorRecord.[[Done]] 为 true.
 4. ReturnIfAbrupt(next).
 5. 若 next 是 false, 设置 iteratorRecord.[[Done]] 为 true.
 6. 否则,
-a. 令 v 为 IteratorValue(next).
-b. 若 v 是 an abrupt completion, 设置 iteratorRecord.[[Done]] 为 true.
-c. ReturnIfAbrupt(v).
+   1. 令 v 为 IteratorValue(next).
+   2. 若 v 是 abrupt completion, 设置 iteratorRecord.[[Done]] 为 true.
+   3. ReturnIfAbrupt(v).
 7. 若 iteratorRecord.[[Done]] 是 true, 令 v 为 undefined.
 8. 返回使用v和environment作为参数对BindingIdentifier执行BindingInitialization的结果。
 
@@ -2395,17 +2392,17 @@ AsyncConciseBody : AssignmentExpression
 
 1. 令 promiseCapability 为 ! NewPromiseCapability(%Promise%).
 2. 令 declResult 为 FunctionDeclarationInstantiation(functionObject, argumentsList).
-3. 若 declResult 不是 an abrupt completion，那么
-a. 执行 ! AsyncFunctionStart(promiseCapability, AssignmentExpression).
-4. 否则 declResult 是 an abrupt completion,
-a. 执行 ! Call(promiseCapability.[[Reject]], undefined, « declResult.[[Value]] »).
-5. 返回 Completion { [[Type]]: 返回, [[Value]]: promiseCapability.[[Promise]], [[Target]]: empty }.
+3. 若 declResult 不是 abrupt completion，那么
+1. 执行 ! AsyncFunctionStart(promiseCapability, AssignmentExpression).
+4. 否则 declResult 是 abrupt completion,
+  1. 执行 ! Call(promiseCapability.[[Reject]], undefined, « declResult.[[Value]] »).
+5. 返回 Completion { [[Type]]: return, [[Value]]: promiseCapability.[[Promise]], [[Target]]: empty }.
 
 ```
 AsyncConciseBody : { AsyncFunctionBody }
 ```
 
-1. 返回 the result of EvaluateBody of AsyncFunctionBody passing functionObject and argumentsList as the arguments
+1. 返回AsyncFunctionBody的EvaluateBody将functionObject和argumentsList作为参数传递的结果。
 
 ### 14.8.15 运行时语义：NamedEvaluation <div id="sec-async-arrow-function-definitions-runtime-semantics-namedevaluation"></div>
 
@@ -2416,7 +2413,7 @@ AsyncArrowFunction : async AsyncArrowBindingIdentifier => AsyncConciseBody
 AsyncArrowFunction : CoverCallExpressionAndAsyncArrowHead => AsyncConciseBody
 ```
 
-1. 令 closure 为运算 this 的结果AsyncArrowFunction.
+1. 令 closure 为运算此AsyncArrowFunction的结果.
 2. 执行 SetFunctionName(closure, name).
 3. 返回 closure.
 
@@ -2426,7 +2423,7 @@ AsyncArrowFunction : CoverCallExpressionAndAsyncArrowHead => AsyncConciseBody
 AsyncArrowFunction : async AsyncArrowBindingIdentifier => AsyncConciseBody
 ```
 
-1. 若此AsyncArrowFunction的函数代码是严格模式代码, 令 strict 为 true. 否则,，令 strict 为
+1. 若此AsyncArrowFunction的函数代码是严格模式代码, 令 strict 为 true. 否则，令 strict 为
 false.
 2. 令 scope 为运行时上下文的LexicalEnvironment.
 3. 令 parameters 为 AsyncArrowBindingIdentifier.
@@ -2437,11 +2434,11 @@ false.
 AsyncArrowFunction : CoverCallExpressionAndAsyncArrowHead => AsyncConciseBody
 ```
 
-1. 若此AsyncArrowFunction的函数代码是严格模式代码, 令 strict 为 true. 否则,，令 strict 为
+1. 若此AsyncArrowFunction的函数代码是严格模式代码, 令 strict 为 true. 否则，令 strict 为
 false.
 2. 令 scope 为运行时上下文的LexicalEnvironment.
 3. 令 head 为 CoverCallExpressionAndAsyncArrowHead 的 CoveredAsyncArrowHead
-4. 令 parameters 为 the head 的 ArrowFormalParameters
+4. 令 parameters 为 head 的 ArrowFormalParameters
 5. 令 closure 为 ! AsyncFunctionCreate(Arrow, parameters, AsyncConciseBody, scope, strict).
 6. 返回 closure.
 
@@ -2449,25 +2446,25 @@ false.
 
 ### 14.9.1 静态语义：IsInTailPosition ( call ) <div id="sec-isintailposition"></div>
 
-The abstract operation IsInTailPosition with argument call performs the following steps:
+带有参数call的抽象操作IsInTailPosition执行以下步骤:
 
-1. 断言: call 是 a Parse Node.
-2. 若 the source code matching call 是 non-strict code, 返回 false.
-3. 若 call 不是 contained within a FunctionBody, ConciseBody, or AsyncConciseBody, 返回 false.
-4. 令 body 为 the FunctionBody, ConciseBody, or AsyncConciseBody that most closely 包含call.
-5. 若 body 是 the FunctionBody of a GeneratorBody, 返回 false.
-6. 若 body 是 the FunctionBody of an AsyncFunctionBody, 返回 false.
-7. 若 body 是 the FunctionBody of an AsyncGeneratorBody, 返回 false.
-8. 若 body 是 an AsyncConciseBody, 返回 false.
-9. 返回 the result of HasCallInTailPosition of body with argument call.
+1. 断言: call 是一个解析节点.
+2. 若源代码匹配调用是非严格代码, 返回 false.
+3. 若 call 不包含在 FunctionBody, ConciseBody, 或 AsyncConciseBody 中, 返回 false.
+4. 令 body 成为最包含call的FunctionBody、ConciseBody或AsyncConciseBody。
+5. 若 body 是 GeneratorBody 的 FunctionBody , 返回 false.
+6. 若 body 是 AsyncFunctionBody 的 FunctionBody, 返回 false.
+7. 若 body 是 AsyncGeneratorBody 的 FunctionBody, 返回 false.
+8. 若 body 是 AsyncConciseBody, 返回 false.
+9. 返回带参数call 的 body 的 HasCallInTailPosition 的结果
 
-> 注 Tail Position calls are only defined in strict mode code because of a common non-standard language extension (see 9.2.9) that enables observation of the chain of caller contexts.
+> 注：尾部位置调用仅在严格模式代码中定义，因为有一个通用的非标准语言扩展(参见9.2.9)，它支持观察调用者上下文链。
 
 ### 14.9.2 静态语义：HasCallInTailPosition <div id="sec-static-semantics-hascallintailposition"></div>
 
 带有参数 call.
 
-> 注 call 是 a Parse Node that represents a specific range of source text. When the following algorithms compare call to another Parse Node, it 是 a test of whether they represent the same source text.
+> 注：call是一个表示特定范围的源文本的解析节点。当以下算法将call与另一个解析节点进行比较时，将测试它们是否表示相同的源文本。
 
 #### 14.9.2.1 Statement Rules <div id="sec-statement-rules"></div>
 
@@ -2475,15 +2472,15 @@ The abstract operation IsInTailPosition with argument call performs the followin
 ConciseBody : AssignmentExpression
 ```
 
-1. 返回 HasCallInTailPosition of AssignmentExpression with argument call.
+1. 返回带有参数 call 的 AssignmentExpression 的 HasCallInTailPosition。
 
 ```
 StatementList : StatementList StatementListItem
 ```
 
-1. 令 has 为 HasCallInTailPosition of StatementList with argument call.
+1. 令 has 为带有参数 call 的 StatementList 的 HasCallInTailPosition。
 2. 若 has 是 true, 返回 true.
-3. 返回 HasCallInTailPosition of StatementListItem with argument call.
+3. 返回带有参数 call 的 StatementListItem 的 HasCallInTailPosition。
 
 ```
 FunctionStatementList : [empty]
@@ -2497,7 +2494,7 @@ StatementListItem : Declaration
         ThrowStatement
         DebuggerStatement
 Block : { }
-ReturnStatement : 返回 ;
+ReturnStatement : return ;
 LabelledItem : FunctionDeclaration
 IterationStatement :
     for ( LeftHandSideExpression of AssignmentExpression ) Statement
@@ -2509,15 +2506,15 @@ CaseBlock : { }
 1. 返回 false.
 
 ```
-IfStatement : 若 ( Expression ) Statement 否则 Statement
+IfStatement : if ( Expression ) Statement else Statement
 ```
 
-1. 令 has 为 HasCallInTailPosition of the first Statement with argument call.
+1. 令 has 为带有参数call的第一个语句的HasCallInTailPosition。
 2. 若 has 是 true, 返回 true.
-3. 返回 HasCallInTailPosition of the second Statement with argument call.
+3. 返回带有参数call的第二个语句的HasCallInTailPosition。
 
 ```
-IfStatement : 若 ( Expression ) Statement
+IfStatement : if ( Expression ) Statement
     IterationStatement :
         do Statement while ( Expression ) ;
         while ( Expression ) Statement
@@ -2533,77 +2530,77 @@ IfStatement : 若 ( Expression ) Statement
 WithStatement : with ( Expression ) Statement
 ```
 
-1. 返回 HasCallInTailPosition of Statement with argument call
+1. 返回具有参数call的Statement的HasCallInTailPosition
 
    ```
    LabelledStatement :
    LabelIdentifier : LabelledItem
    ```
 
-   1. 返回 HasCallInTailPosition of LabelledItem with argument call
+   1. 返回具有参数call的LabelledItem的HasCallInTailPosition
 
 ```
 ReturnStatement : 返回 Expression ;
 ```
 
-1. 返回 HasCallInTailPosition of Expression with argument call.
+1. 返回具有参数call的Expression的HasCallInTailPosition.
 
 ```
 SwitchStatement : switch ( Expression ) CaseBlock
 ```
 
-1. 返回 HasCallInTailPosition of CaseBlock with argument call
+1. 返回具有参数call的CaseBlock的HasCallInTailPosition
 
 ```
 CaseBlock : { CaseClauses DefaultClause CaseClauses }
 ```
 
 1. 令 has 为 false.
-2. 若 the first CaseClauses 存在, 令 has 为 HasCallInTailPosition of the first CaseClauses with argument call.
+2. 若 the first CaseClauses 存在, 令 has 为具有参数call的第一个CaseClauses的HasCallInTailPosition。
 3. 若 has 是 true, 返回 true.
-4. 令 has 为 HasCallInTailPosition of the DefaultClause with argument call.
+4. 令 has 为带参数call的DefaultClause的HasCallInTailPosition。
 5. 若 has 是 true, 返回 true.
-6. 若 the second CaseClauses 存在, 令 has 为 HasCallInTailPosition of the second CaseClauses with argument call.
+6. 如果存在第二个CaseClauses，则令has成为带有参数call的第二个CaseClauses的HasCallInTailPosition。
 7. 返回 has.
 
 ```
 CaseClauses : CaseClauses CaseClause
 ```
 
-1. 令 has 为 HasCallInTailPosition of CaseClauses with argument call.
+1. 令 has 为具有参数call的CaseClauses的HasCallInTailPosition.
 2. 若 has 是 true, 返回 true.
-3. 返回 HasCallInTailPosition of CaseClause with argument call.
+3. 返回具有参数call的CaseClause的HasCallInTailPosition.
 
 ```
 CaseClause : case Expression : StatementList
 DefaultClause : default : StatementList
 ```
 
-1. 若 StatementList 存在, 返回 HasCallInTailPosition of StatementList with argument call.
+1. 若 StatementList 存在, 返回具有参数call的StatementList的HasCallInTailPosition.
 2. 返回 false.
 
 ```
 TryStatement : try Block Catch
 ```
 
-1. 返回 HasCallInTailPosition of Catch with argument call.
+1. 返回具有参数call的Catch的HasCallInTailPosition.
 
 ```
 TryStatement : try Block Finally
 TryStatement : try Block Catch Finally
 ```
 
-1. 返回 HasCallInTailPosition of Finally with argument call
+1. 返回具有参数call的Finally的HasCallInTailPosition
 
 ```
 Catch : catch ( CatchParameter ) Block
 ```
 
-1. 返回 HasCallInTailPosition of Block with argument call.
+1. 返回具有参数call的Block的HasCallInTailPosition.
 
 #### 14.9.2.2 Expression Rules <div id="sec-expression-rules"></div>
 
-> 注 A potential tail position call that 是 immediately followed by 返回 GetValue of the call result 是 also a possible tail position call. Function calls cannot 返回 reference values, so such a GetValue operation will always 返回 the same value as the actual function call result.
+> 注：潜在的尾部位置调用（紧随其后的是调用结果的返回GetValue）也是可能的尾部位置调用。函数调用不能返回参考值，因此，此类GetValue操作将始终返回与实际函数调用结果相同的值。
 
 ```
 AssignmentExpression :
@@ -2686,27 +2683,27 @@ NewExpression : new NewExpression
    Expression , AssignmentExpression
    ```
 
-   1. 返回 HasCallInTailPosition of AssignmentExpression with argument call.
+   1. 返回具有参数call的AssignmentExpression的HasCallInTailPosition.
 
 ```
 ConditionalExpression : LogicalORExpression ? AssignmentExpression : AssignmentExpression
 ```
 
-1. 令 has 为 HasCallInTailPosition of the first AssignmentExpression with argument call.
+1. 令 has 为带参数call的第一个AssignmentExpression的HasCallInTailPosition。
 2. 若 has 是 true, 返回 true.
-3. 返回 HasCallInTailPosition of the second AssignmentExpression with argument call.
+3. 返回具有参数call的第二个AssignmentExpression的HasCallInTailPosition
 
 ```
 LogicalANDExpression : LogicalANDExpression && BitwiseORExpression
 ```
 
-1. 返回 HasCallInTailPosition of BitwiseORExpression with argument call.
+1. 返回具有参数call的BitwiseORExpression的HasCallInTailPosition.
 
 ```
 LogicalORExpression : LogicalORExpression || LogicalANDExpression
 ```
 
-1. 返回 HasCallInTailPosition of LogicalANDExpression with argument call.
+1. 返回具有参数call的LogicalANDExpression的HasCallInTailPosition.
 
    ```
    CallExpression :
@@ -2715,7 +2712,7 @@ LogicalORExpression : LogicalORExpression || LogicalANDExpression
        CallExpression TemplateLiteral
    ```
 
-   1. 若 this CallExpression 是 call, 返回 true.
+   1. 若此 CallExpression 是 call, 返回 true.
    2. 返回 false.
 
    ```
@@ -2723,7 +2720,7 @@ LogicalORExpression : LogicalORExpression || LogicalANDExpression
    	MemberExpression TemplateLiteral
    ```
 
-   1. 若 this MemberExpression 是 call, 返回 true.
+   1. 若此 MemberExpression 是 call, 返回 true.
    2. 返回 false.
 
 ```
@@ -2732,21 +2729,24 @@ PrimaryExpression : CoverParenthesizedExpressionAndArrowParameterList
 
 1. 令 expr 为 CoverParenthesizedExpressionAndArrowParameterList 的 CoveredParenthesizedExpression
 
-2. 返回 HasCallInTailPosition of expr with argument call.
+2. 返回具有参数call的expr的HasCallInTailPosition.
 
    ```
    ParenthesizedExpression :
    ( Expression )
    ```
 
-   1. 返回 HasCallInTailPosition of Expression with argument call
+   1. 返回具有参数call的Expression的HasCallInTailPosition
 
 ### 14.9.3 运行时语义：PrepareForTailCall ( ) <div id="sec-preparefortailcall"></div>
 
-The abstract operation PrepareForTailCall performs the following steps:
+抽象操作PrepareForTailCall执行以下步骤：
 
 1. 令 leafContext 为 运行时上下文.
-2. Suspend leafContext.
-3. Pop leafContext from the execution context stack. The execution context now on the top of the stack becomes the
-running execution context.
-4. 断言: leafContext has no further use. It will never be activated as 运行时上下文.
+2. 挂起 leafContext.
+3. 从执行上下文堆栈中弹出leafContext。现在堆栈顶部的执行上下文成为正在运行的执行上下文。
+4. 断言: leafContext没有进一步的用途。它永远不会作为正在运行的执行参数被激活
+
+尾位置调用必须在调用目标函数之前释放与当前执行的函数执行上下文相关的任何临时内部资源，或者重用这些资源以支持目标函数。
+
+> 注：例如，尾部位置调用应该只将实现的激活记录堆栈的大小增加到目标函数的激活记录的大小超过调用函数的激活记录的大小。如果目标函数的激活记录较小，则堆栈的总大小应该减小。
