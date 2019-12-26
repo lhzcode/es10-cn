@@ -21,8 +21,8 @@ Gitbook 链接：https://lhzcode.github.io/es10-cn/
 - [x] [11 ECMAScript语言：词法语法](lexical-grammar.md)
 - [x] [12 ECMAScript语言：表达式](expressions.md)
 - [x] [13 ECMAScript语言：语句和声明](statements-declarations.md)
-- [x] [14 ECMAScript语言：函数和类](functions-classes.md)
-- [ ] 15 ECMAScript语言：脚本和模块
+- [x] [14 ECMAScript语言：函数和类](functions-and-classes.md)
+- [X] [15 ECMAScript语言：脚本和模块](scripts-and-modules.md)
 - [ ] 16 错误处理和语言扩展
 - [ ] 17 ECMAScript标准内置对象
 - [ ] 18 全局对象
