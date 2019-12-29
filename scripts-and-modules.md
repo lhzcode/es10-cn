@@ -7,7 +7,7 @@
 Script :
 ScriptBodyopt
 ScriptBody :
-StatementList[~Yield, ~Await, ~返回]
+StatementList[~Yield, ~Await, ~return]
 ```
 
 ### 15.1.1 SS: Early Errors <div id="sec-scripts-static-semantics-early-errors"></div>
@@ -28,7 +28,7 @@ ScriptBody : StatementList
 如果StatementList包含了NewTarget，这是一个语法错误，除非包含NewTarget的源代码是由直接eval处理的eval代码。在18.2.1.1中定义了直接求值的super额外早期错误规则。
 如果包含带有参数«»的重复声明列表为真，这是一个语法错误。
 如果带有参数«»的StatementList的ContainsUndefinedBreakTarget为真，这是一个语法错误。
-如果带有参数«»和«»的ContainsUndefinedContinueTarget of StatementList为真，则为语法错误。
+如果带有参数«»和«»的StatementList的ContainsUndefinedContinueTarget为真，则为语法错误。
 
 ### 15.1.2 SS: IsStrict <div id="sec-static-semantics-isstrict"></div>
 
@@ -46,7 +46,7 @@ ScriptBody : StatementList
 
 1. 返回StatementList的TopLevelLexicallyDeclaredNames
 
-> 注：在Script的顶层，将函数声明视为var声明，而不是词汇声明。
+> 注：在Script的顶层，将函数声明视为var声明，而不是词法声明。
 
 ### 15.1.4 SS: LexicallyScopedDeclarations <div id="sec-scripts-static-semantics-lexicallyscopeddeclarations"></div>
 
@@ -86,12 +86,12 @@ Script : [empty]
 
 表格 36: Script Record Fields
 
-| 字段名             | 值类型                           | 意义                                                     |
-| ------------------ | -------------------------------- | -------------------------------------------------------- |
-| [[Realm]]          | Realm Record \| undefined        | 在其中创建此脚本的作用域。undefined（如果尚未分配）。    |
-| [[Environment]]    | Lexical Environment \| undefined | 包含此脚本的顶级绑定的词法环境。实例化脚本时设置此字段。 |
-| [[ECMAScriptCode]] | a parse Node                     | 使用脚本作为目标符号解析此模块的源文本的结果。           |
-| [[HostDefined]]    | Any, default value 是 undefined. | 保留给需要将其他信息与脚本关联的主机环境使用的字段。     |
+| 字段名             | 值类型                    | 意义                                                     |
+| ------------------ | ------------------------- | -------------------------------------------------------- |
+| [[Realm]]          | 作用域记录项 \| undefined | 在其中创建此脚本的作用域。undefined（如果尚未分配）。    |
+| [[Environment]]    | 词法环境 \| undefined     | 包含此脚本的顶级绑定的词法环境。实例化脚本时设置此字段。 |
+| [[ECMAScriptCode]] | 解析节点                  | 使用脚本作为目标符号解析此模块的源文本的结果。           |
+| [[HostDefined]]    | 任意，默认值为undefined   | 保留给需要将其他信息与脚本关联的主机环境使用的字段。     |
 
 ### 15.1.9 ParseScript ( sourceText, realm, hostDefined ) <div id="sec-parse-script"></div>
 
@@ -162,10 +162,10 @@ GlobalDeclarationInstantiation使用参数脚本和env如下执行。脚本是�
         1. 对于在 d 的 BoundNames 中的每一个字符串 vn，执行
     
             1. 若 vn 不是 declaredFunctionNames 的元素，那么
-              1. 令 vnDefinable 为 ? envRec.CanDeclareGlobalVar(vn).
-              2. 若 vnDefinable 是 false, 抛出 TypeError 异常
-              3. 若 vn 不是 an declaredVarNames 的元素，那么
-                    1. 将 vn 添加到 declaredVarNames.
+                    1. 令 vnDefinable 为 ? envRec.CanDeclareGlobalVar(vn).
+                    2. 若 vnDefinable 是 false, 抛出 TypeError 异常
+                    3. 若 vn 不是 an declaredVarNames 的元素，那么
+                          1. 将 vn 添加到 declaredVarNames.
 13. 注: 如果全局对象是普通对象，则在此算法步骤之后不会发生异常终止。但是，如果全局对象是Proxy外来对象，则在以下某些步骤中，它可能会表现出导致异常终止的行为。
 14. 注: 附件B.3.3.2在这一点上增加了其他步骤。
 15. 令 lexDeclarations 为 script 的 LexicallyScopedDeclarations
@@ -196,8 +196,8 @@ GlobalDeclarationInstantiation使用参数脚本和env如下执行。脚本是�
 2. 令 realm 为当前 Realm Record.
 3. 令 s 为 ParseScript(sourceText, realm, hostDefined).
 4. 若 s 是 errors 的 列表，那么
-5. a. 执行 HostReportErrors(s).
-6. b. 返回 NormalCompletion(undefined).
+   5. 执行 HostReportErrors(s).
+   2. 返回 NormalCompletion(undefined).
   7. 返回 ? ScriptEvaluation(s).
 
 ## 15.2 模块 <div id="sec-modules"></div>
