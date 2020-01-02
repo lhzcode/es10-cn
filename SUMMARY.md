@@ -964,7 +964,7 @@
 * [16 错误处理和语言扩展](error-handling-and-language-extensions.md)
     * [16.1 HostReportErrors ( errorList )](error-handling-and-language-extensions.md#sec-host-report-errors)
     * [16.2 禁止扩展](error-handling-and-language-extensions.md#sec-forbidden-extensions)
-* [17 ECMAScript标准内置对象]()
+* [17 ECMAScript标准内置对象](standard-built-in-objects.md)
 * [18 全局对象]()
     * [18.1 全局对象的值属性](http://www.ecma-international.org/ecma-262/10.0/index.html#sec-value-properties-of-the-global-object)
         * [18.1.1 Infinity](http://www.ecma-international.org/ecma-262/10.0/index.html#sec-value-properties-of-the-global-object-infinity)
