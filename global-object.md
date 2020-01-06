@@ -1,298 +1,299 @@
 # 18 全局对象
 
-The global object:
+全局对象:
 
-- is created before control enters any execution context.
-- does not have a [[Construct]] internal method; it cannot be used as a constructor with the new operator.
-- does not have a [[Call]] internal method; it cannot be invoked as a function
-- has a [[Prototype]] internal slot whose value is implementation-dependent.
-- may have host defined properties in addition to the properties defined in this specification. This may include a property whose value is the global object itself.
+- 在控件进入任何执行上下文之前创建的。
+- 没有[[Construct]]内部方法；它不能与new运算符一起用作构造函数。
+- 没有[[Call]]内部方法；它不能作为函数调用。
+- 有一个[[Prototype]]内部插槽，其值取决于实现。
+- 除本规范中定义的属性外，还可能具有主机定义的属性。这可能包括其值为全局对象本身的属性。
 
 ## 18.1 全局对象的值属性 <div id="sec-value-properties-of-the-global-object"></div>
+
 ### 18.1.1 Infinity <div id="sec-value-properties-of-the-global-object-infinity"></div>
 
-The value of Infinity is +∞ (see 6.1.6). This property has the attributes { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }.
+Infinity的值为+∞（请参见6.1.6）。该属性具有以下属性 { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }.
 
 ### 18.1.2 NaN <div id="sec-value-properties-of-the-global-object-nan"></div>
 
-The value of NaN is NaN (see 6.1.6). This property has the attributes { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }.
+NaN的值为NaN（请参见6.1.6）。该属性具有以下属性 { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }.
 
 ### 18.1.3 undefined <div id="sec-undefined"></div>
 
-The value of undefined is undefined (see 6.1.1). This property has the attributes { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }.
+undefined的值是undefined（请参见6.1.1）。该属性具有以下属性 { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }.
 
 ## 18.2 全局对象的函数属性 <div id="sec-function-properties-of-the-global-object"></div>
 
 ### 18.2.1 eval ( x ) <div id="sec-eval-x"></div>
 
-The eval function is the %eval% intrinsic object. When the eval function is called with one argument x, the following steps are taken:
+eval函数是％eval％内部对象。当使用一个参数x调用eval函数时，将执行以下步骤：
 
-1. Assert: The execution context stack has at least two elements.
-2. Let callerContext be the second to top element of the execution context stack.
-3. Let callerRealm be callerContext's Realm.
-4. Let calleeRealm be the current Realm Record.
-5. Perform ? HostEnsureCanCompileStrings(callerRealm, calleeRealm).
-6. Return ? PerformEval(x, calleeRealm, false, false).
+1. 断言：执行上下文堆栈至少具有两个元素。
+2. 令 callerContext 为执行上下文堆栈的第二个元素。
+3. 令 callerRealm 为 callerContext 的 Realm.
+4. 令 calleeRealm 为 当前 Realm 记录项.
+5. 执行 ? HostEnsureCanCompileStrings(callerRealm, calleeRealm).
+6. 返回 ? PerformEval(x, calleeRealm, false, false).
 
 #### 18.2.1.1 运行时语义：PerformEval ( x, evalRealm, strictCaller, direct ) <div id="sec-performeval"></div>
 
-The abstract operation PerformEval with arguments x, evalRealm, strictCaller, and direct performs the following steps:
+具有参数x，evalRealm，strictCaller和direct的抽象操作PerformEval执行以下步骤：
 
-1. Assert: If direct is false, then strictCaller is also false.
-2. If Type(x) is not String, return x.
-3. Let thisEnvRec be ! GetThisEnvironment().
-4. If thisEnvRec is a function Environment Record, then
-   1. Let F be thisEnvRec.[[FunctionObject]].
-   2. Let inFunction be true.
-   3. Let inMethod be thisEnvRec.HasSuperBinding().
-   4. If F.[[ConstructorKind]] is "derived", let inDerivedConstructor be true; otherwise, let
-     inDerivedConstructor be false.
-5. Else,
-  1. Let inFunction be false.
-  2. Let inMethod be false.
-  3. Let inDerivedConstructor be false.
-6. Let script be the ECMAScript code that is the result of parsing x, interpreted as UTF-16 encoded Unicode text as described in 6.1.4, for the goal symbol Script. If inFunction is false, additional early error rules from 18.2.1.1.1 are applied. If inMethod is false, additional early error rules from 18.2.1.1.2 are applied. If inDerivedConstructor is false, additional early error rules from 18.2.1.1.3 are applied. If the parse fails, throw a SyntaxError exception. If any early errors are detected, throw a SyntaxError or a ReferenceError exception, depending on the type of the error (but see also clause 16). Parsing and early error detection may be interweaved in an implementationdependent manner.
-7. If script Contains ScriptBody is false, return undefined.
-8. Let body be the ScriptBody of script.
-9. If strictCaller is true, let strictEval be true.
-10. Else, let strictEval be IsStrict of script.
-11. Let ctx be the running execution context.
-12. NOTE: If direct is true, ctx will be the execution context that performed the direct eval. If direct is false, ctx will be the execution context for the invocation of the eval function.
-13. f direct is true, then
-    1. Let lexEnv be NewDeclarativeEnvironment(ctx's LexicalEnvironment).
-    2. Let varEnv be ctx's VariableEnvironment.
-14. Else,
-    1. Let lexEnv be NewDeclarativeEnvironment(evalRealm.[[GlobalEnv]]).
-    2. Let varEnv be evalRealm.[[GlobalEnv]].
-15. If strictEval is true, set varEnv to lexEnv.
-16. If ctx is not already suspended, suspend ctx.
-17. Let evalCxt be a new ECMAScript code execution context.
-18. Set the evalCxt's Function to null.
-19. Set the evalCxt's Realm to evalRealm.
-20. Set the evalCxt's ScriptOrModule to ctx's ScriptOrModule.
-21. Set the evalCxt's VariableEnvironment to varEnv.
-22. Set the evalCxt's LexicalEnvironment to lexEnv.
-23. Push evalCxt on to the execution context stack; evalCxt is now the running execution context.
-24. Let result be EvalDeclarationInstantiation(body, varEnv, lexEnv, strictEval).
-25. If result.[[Type]] is normal, then
-    1. Set result to the result of evaluating body.
-26. If result.[[Type]] is normal and result.[[Value]] is empty, then
-    1. Set result to NormalCompletion(undefined).
-27. Suspend evalCxt and remove it from the execution context stack.
-28. Resume the context that is now on the top of the execution context stack as the running execution context.
-29. Return Completion(result).
+1. 断言：若 direct 是 false, 那么 strictCaller 也是 false.
+2. 若 Type(x) 不是 String, 返回 x.
+3. 令 thisEnvRec 为 ! GetThisEnvironment().
+4. 若 thisEnvRec 是函数环境记录项, 那么
+    1. 令 F 为 thisEnvRec.[[FunctionObject]].
+    2. 令 inFunction 为 true.
+    3. 令 inMethod 为 thisEnvRec.HasSuperBinding().
+    4. 若 F.[[ConstructorKind]] 是 "derived", 令 inDerivedConstructor 为 true; 否则, 令 inDerivedConstructor 为 false.
+5. 否则，
+    1. 令 inFunction 为 false.
+    2. 令 inMethod 为 false.
+    3. 令 inDerivedConstructor 为 false.
+6. 令脚本为ECMAScript代码，它是解析x的结果，对于目标符号脚本，x解释为UTF-16编码的Unicode文本（如6.1.4中所述）。如果inFunction为false，则将应用18.2.1.1.1中的其他早期错误规则。如果inMethod为false，则将应用18.2.1.1.2中的其他早期错误规则。如果inDerivedConstructor为false，则会应用18.2.1.1.3中的其他早期错误规则。如果解析失败，则抛出SyntaxError异常。如果检测到任何早期错误，则根据错误的类型抛出SyntaxError或ReferenceError异常（但另请参见第16节）。解析和早期错误检测可以以依赖于实现的方式混合在一起。
+7. 若 script 包含 ScriptBody 是 false, 返回 undefined.
+8. 令 body 为 ScriptBody 的 script.
+9. 若 strictCaller 是 true, 令 strictEval 为 true.
+10. 否则，令 strictEval 为 script 的 IsStrict.
+11. 令 ctx 为运行时执行上下文。
+12. 注意:如果direct为真，则ctx将是执行直接求值的执行上下文。如果direct为false，则ctx将是调用eval函数的执行上下文。
+13. 若 direct 是 true，那么
+     1. 令 lexEnv 为 NewDeclarativeEnvironment(ctx 的词法环境).
+     2. 令 varEnv 为 ctx 的 VariableEnvironment.
+14. 否则，
+     1. 令 lexEnv 为 NewDeclarativeEnvironment(evalRealm.[[GlobalEnv]]).
+     2. 令 varEnv 为 evalRealm.[[GlobalEnv]].
+15. 若 strictEval 是 true, 设置 varEnv 为 lexEnv.
+16. 若 ctx 还没有被挂起, 挂起 ctx.
+17. 令 evalCxt 为一个新的ECMAScript代码执行上下文。
+18. 设置 evalCxt 的 Function 为 null.
+19. 设置 evalCxt 的 Realm 为 evalRealm.
+20. 设置 evalCxt 的 ScriptOrModule 为 ctx 的 ScriptOrModule.
+21. 设置 evalCxt 的 VariableEnvironment 为 varEnv.
+22. 设置 evalCxt 的 LexicalEnvironment 为 lexEnv.
+23. Push evalCxt on to the execution context stack; evalCxt is now运行时执行上下文。
+24. 令 result 为 EvalDeclarationInstantiation(body, varEnv, lexEnv, strictEval).
+25. 若 result.[[Type]] 是 normal，那么
+     1. 设置 result 为 the result of evaluating body.
+26. 若 result.[[Type]] 是 normal 并且 result.[[Value]] 是 empty，那么
+     1. 设置 result 为 NormalCompletion(undefined).
+27. 挂起evalCxt并将其从执行上下文堆栈中移除。
+28. 将当前位于执行上下文堆栈顶部的上下文恢复为正在运行的执行上下文
+29. 返回 Completion(result).
 
-> NOTE The eval code cannot instantiate variable or function bindings in the variable environment of the calling context that invoked the eval if the calling context is evaluating formal parameter initializers or if either the code of the calling context or the eval code is strict mode code. Instead such bindings are instantiated in a new VariableEnvironment that is only accessible to the eval code. Bindings introduced by let, const, or class declarations are always instantiated in a new LexicalEnvironment.
+> 注：如果调用上下文正在计算形式参数初始化器，或者调用上下文的代码或eval代码是严格模式代码，则eval代码不能在调用上下文的变量环境中实例化调用eval的变量或函数绑定。
+> 相反，这样的绑定是在一个新的VariableEnvironment中实例化的，这个环境只能被eval代码访问。
+> 由let、const或类声明引入的绑定总是在新的LexicalEnvironment中实例化。
 
 ##### 18.2.1.1.1 eval外部函数的附加早期错误规则 <div id="sec-performeval-rules-outside-functions"></div>
 
-These static semantics are applied by PerformEval when a direct eval call occurs outside of any function.
+当直接eval调用发生在任何函数之外时，PerformEval将应用这些静态语义。
 
 ```
 ScriptBody : StatementList
 ```
 
-- It is a Syntax Error if StatementList Contains NewTarget
+- 如果StatementList包含NewTarget，这是一个语法错误
 
 ##### 18.2.1.1.2 eval外部方法的附加早期错误规则 <div id="sec-performeval-rules-outside-methods"></div>
 
-These static semantics are applied by PerformEval when a direct eval call occurs outside of a MethodDefinition.
+当直接eval调用发生在MethodDefinition之外时，PerformEval将应用这些静态语义。
 
 ```
 ScriptBody : StatementList
 ```
 
-- It is a Syntax Error if StatementList Contains SuperProperty.
+- 如果StatementList包含SuperProperty，则为语法错误。
 
 ##### 18.2.1.1.3 eval外部构造方法的附加早期错误规则 <div id="sec-performeval-rules-outside-constructors"></div>
 
-These static semantics are applied by PerformEval when a direct eval call occurs outside of the constructor method of a ClassDeclaration or ClassExpression.
+当直接eval调用发生在ClassDeclaration或ClassExpression的构造方法之外时，PerformEval将应用这些静态语义。
 
 ```
 ScriptBody : StatementList
 ```
 
-- It is a Syntax Error if StatementList Contains SuperCall.
+- 如果StatementList包含SuperCall，则为语法错误。
 
 #### 18.2.1.2 HostEnsureCanCompileStrings ( callerRealm, calleeRealm ) <div id="sec-hostensurecancompilestrings"></div>
 
-HostEnsureCanCompileStrings is an implementation-defined abstract operation that allows host environments to block certain ECMAScript functions which allow developers to compile strings into ECMAScript code.
+HostEnsureCanCompileStrings是实现定义的抽象操作，它允许主机环境阻止某些ECMAScript函数，这些函数使开发人员可以将字符串编译为ECMAScript代码。
 
-An implementation of HostEnsureCanCompileStrings may complete normally or abruptly. Any abrupt completions will be propagated to its callers. The default implementation of HostEnsureCanCompileStrings is to unconditionally return an empty normal completion.
+HostEnsureCanCompileStrings的实现可以正常或突然完成。任何突然的完成都会传播给它的调用者。 HostEnsureCanCompileStrings的默认实现是无条件返回空的正常完成。
 
 #### 18.2.1.3 运行时语义：EvalDeclarationInstantiation ( body, varEnv, lexEnv, strict ) <div id="sec-evaldeclarationinstantiation"></div>
 
-When the abstract operation EvalDeclarationInstantiation is called with arguments body, varEnv, lexEnv, and strict, the following steps are taken:
+当使用参数body，varEnv，lexEnv和strict调用抽象操作EvalDeclarationInstantiation时，将执行以下步骤：
 
-1. Let varNames be the VarDeclaredNames of body.
-2. Let varDeclarations be the VarScopedDeclarations of body.
-3. Let lexEnvRec be lexEnv's EnvironmentRecord.
-4. Let varEnvRec be varEnv's EnvironmentRecord.
-5. If strict is false, then
-   1. If varEnvRec is a global Environment Record, then
-     1. For each name in varNames, do
-       1. If varEnvRec.HasLexicalDeclaration(name) is true, throw a SyntaxError exception.
-       2. NOTE: eval will not create a global var declaration that would be shadowed by a global lexical
-         declaration.
-   2. Let thisLex be lexEnv.
-   3. Assert: The following loop will terminate.
-   4. Repeat, while thisLex is not the same as varEnv,
-     1. Let thisEnvRec be thisLex's EnvironmentRecord.
-     2. If thisEnvRec is not an object Environment Record, then
-       1. NOTE: The environment of with statements cannot contain any lexical declaration so it doesn't need to be checked for var/let hoisting conflicts.
-       2. For each name in varNames, do
-          1. If thisEnvRec.HasBinding(name) is true, then
-            1. Throw a SyntaxError exception.
-            2. NOTE: Annex B.3.5 defines alternate semantics for the above step.
-          2. NOTE: A direct eval will not hoist var declaration over a like-named lexical declaration.
-     3. Set thisLex to thisLex's outer environment reference.
-6. Let functionsToInitialize be a new empty List.
-7. Let declaredFunctionNames be a new empty List.
-8. For each d in varDeclarations, in reverse list order, do
-   1. If d is neither a VariableDeclaration nor a ForBinding nor a BindingIdentifier, then
-     1. Assert: d is either a FunctionDeclaration, a GeneratorDeclaration, an AsyncFunctionDeclaration, or an AsyncGeneratorDeclaration.
-     2. NOTE: If there are multiple function declarations for the same name, the last declaration is used.
-     3. Let fn be the sole element of the BoundNames of d.
-     4. If fn is not an element of declaredFunctionNames, then
-       1. If varEnvRec is a global Environment Record, then
-          1. Let fnDefinable be ? varEnvRec.CanDeclareGlobalFunction(fn).
-          2. If fnDefinable is false, throw a TypeError exception.
-       2. Append fn to declaredFunctionNames.
-       3. Insert d as the first element of functionsToInitialize.
-9. NOTE: Annex B.3.3.3 adds additional steps at this point.
-10. Let declaredVarNames be a new empty List.
-11. For each d in varDeclarations, do
-    1. If d is a VariableDeclaration, a ForBinding, or a BindingIdentifier, then
-      1. For each String vn in the BoundNames of d, do
-        1. If vn is not an element of declaredFunctionNames, then
-           1. If varEnvRec is a global Environment Record, then
-             1. Let vnDefinable be ? varEnvRec.CanDeclareGlobalVar(vn).
-             2. If vnDefinable is false, throw a TypeError exception.
-           2. If vn is not an element of declaredVarNames, then
-             1. Append vn to declaredVarNames.
-12. NOTE: No abnormal terminations occur after this algorithm step unless varEnvRec is a global Environment Record and the global object is a Proxy exotic object.
-13. Let lexDeclarations be the LexicallyScopedDeclarations of body.
-14. For each element d in lexDeclarations, do
-    1. NOTE: Lexically declared names are only instantiated here but not initialized.
-    2. For each element dn of the BoundNames of d, do
-      1. If IsConstantDeclaration of d is true, then
-        1. Perform ? lexEnvRec.CreateImmutableBinding(dn, true).
-      2. Else,
-         1. Perform ? lexEnvRec.CreateMutableBinding(dn, false).
-15. For each Parse Node f in functionsToInitialize, do
-    1. Let fn be the sole element of the BoundNames of f.
-    2. Let fo be the result of performing InstantiateFunctionObject for f with argument lexEnv.
-    3. If varEnvRec is a global Environment Record, then
-      1. Perform ? varEnvRec.CreateGlobalFunctionBinding(fn, fo, true).
-    4. Else,
-      1. Let bindingExists be varEnvRec.HasBinding(fn).
-      2. If bindingExists is false, then
-        1. Let status be ! varEnvRec.CreateMutableBinding(fn, true).
-        2. Assert: status is not an abrupt completion because of validation preceding step 12.
-        3. Perform ! varEnvRec.InitializeBinding(fn, fo).
-      3. Else,
-        1. Perform ! varEnvRec.SetMutableBinding(fn, fo, false).
-16. For each String vn in declaredVarNames, in list order, do
-    1. If varEnvRec is a global Environment Record, then
-      1. Perform ? varEnvRec.CreateGlobalVarBinding(vn, true).
-    2. Else,
-      1. Let bindingExists be varEnvRec.HasBinding(vn).
-      2. If bindingExists is false, then
-        1. Let status be ! varEnvRec.CreateMutableBinding(vn, true).
-        2. Assert: status is not an abrupt completion because of validation preceding step 12.
-        3. Perform ! varEnvRec.InitializeBinding(vn, undefined).
-17. Return NormalCompletion(empty).
+1. 令 varNames 为 body 的 VarDeclaredNames 
+2. 令 varDeclarations 为 body 的 VarScopedDeclarations 
+3. 令 lexEnvRec 为 lexEnv 的 EnvironmentRecord.
+4. 令 varEnvRec 为 varEnv 的 EnvironmentRecord.
+5. 若 strict 是 false，那么
+   1. 若 varEnvRec 是全局环境记录项，那么
+           1. 对于每一个在 varNames 中的 name，执行
+                 1. 若 varEnvRec.HasLexicalDeclaration(name) 是 true, 抛出 SyntaxError 异常
+                2. 注意：eval不会创建一个全局var声明，该声明会被全局词法声明所遮盖。
+   2. 令 thisLex 为 lexEnv.
+   3. 断言：以下循环将终止。
+   4. 重复，当 thisLex 与 varEnv 不同，
+           1. 令 thisEnvRec 为 thisLex 的 EnvironmentRecord.
+           2. 若 thisEnvRec 对象环境记录，那么
+                 1. 注意：with语句的环境不能包含任何词法声明，因此不需要检查它是否存在 var / let 提升冲突。
+                 2. 对于varNames中的每个name，执行
+                     1. 若 thisEnvRec.HasBinding(name) 是 true，那么
+                           1. 抛出 SyntaxError 异常
+                           2. 注意：附件B.3.5定义了上述步骤的替代语义。
+                     2. 注意：直接eval不会将var声明放在同名的词法声明上。
+           3. 设置 thisLex 为 thisLex 的外部环境参考。
+6. 令 functionsToInitialize 为新的空列表
+7. 令 declaredFunctionNames 为新的空列表
+8. 对于varDeclarations中的每个d，以相反的顺序排列，执行
+   1. 若 d 既不是VariableDeclaration也不是ForBinding或BindingIdentifier，那么
+     1. 断言：d是FunctionDeclaration，GeneratorDeclaration，AsyncFunctionDeclaration或AsyncGeneratorDeclaration。
+     2. 注意：如果有多个具有相同名称的函数声明，则使用最后一个声明。
+     3. 令 fn 为 d 的 BoundNames 的唯一元素。
+     4. 若 fn 不是 declaredFunctionNames 的元素，那么
+           1. 若 varEnvRec 是全局环境记录项，那么
+             1. 令 fnDefinable 为 ? varEnvRec.CanDeclareGlobalFunction(fn).
+             2. 若 fnDefinable 是 false, 抛出 TypeError 异常
+           2. 将 fn 附加到声明的 FunctionNames。
+           3. 插入 d 作为 functionsToInitialize 的第一个元素。
+9. 注意：附件B.3.3.3在这一点上增加了其他步骤。
+10. 令 declaredVarNames 为新的空列表
+11. 对于varDeclarations中的每个d，执行
+    1. 若 d 是 VariableDeclaration, ForBinding, 或 BindingIdentifier，那么
+            1. 对于 d 的 BoundNames 中的每个字符串 vn，执行
+                  1. 若 vn 不是 declaredFunctionNames 的元素，那么
+                    1. 若 varEnvRec 是全局环境记录项，那么
+                         1. 令 vnDefinable 为 ? varEnvRec.CanDeclareGlobalVar(vn).
+                         2. 若 vnDefinable 是 false, 抛出 TypeError 异常
+                    2. 若 vn 不是 declaredVarNames 的元素，那么
+                         1. 将vn附加到clarifiedVarNames。
+12. 注意：在该算法步骤之后，不会发生异常终止，除非varEnvRec是全局环境记录并且全局对象是Proxy异类对象。
+13. 令 lexDeclarations 为 body 的 LexicallyScopedDeclarations 
+14. 对于lexDeclarations中的每个元素d，执行
+    1. 注意：词汇声明的名称仅在此处实例化，而不初始化。
+    2. 对于d的BoundNames中的每个元素dn，执行
+            1. 如果d的IsConstantDeclaration为true，那么
+                  1. 执行 ? lexEnvRec.CreateImmutableBinding(dn, true).
+            2. 否则，
+               1. 执行 ? lexEnvRec.CreateMutableBinding(dn, false).
+15. 对于functionsToInitialize中的每个解析节点f，执行
+    1. 令 fn 为f的BoundNames的唯一元素
+    2. 令 fo 为使用参数lexEnv为f执行InstantiateFunctionObject的结果。
+    3. 若 varEnvRec 是全局环境记录项，那么
+      4. 执行 ? varEnvRec.CreateGlobalFunctionBinding(fn, fo, true).
+    5. 否则，
+      6. 令 bindingExists 为 varEnvRec.HasBinding(fn).
+      7. 若 bindingExists 是 false，那么
+          1. 令 status 为 ! varEnvRec.CreateMutableBinding(fn, true).
+          2. 断言：由于第12步之前的验证，状态不是突然完成。
+          3. 执行 ! varEnvRec.InitializeBinding(fn, fo).
+      8. 否则，
+            1. 执行 ! varEnvRec.SetMutableBinding(fn, fo, false).
+16. 对于clarifiedVarNames中的每个String vn，按列表顺序，执行
+    1. 若 varEnvRec 是全局环境记录项，那么
+      1. 执行 ? varEnvRec.CreateGlobalVarBinding(vn, true).
+    2. 否则，
+      1. 令 bindingExists 为 varEnvRec.HasBinding(vn).
+      2. 若 bindingExists 是 false，那么
+          1. 令 status 为 ! varEnvRec.CreateMutableBinding(vn, true).
+          2. 断言：由于第12步之前的验证，状态不是突然完成。
+          3. 执行 ! varEnvRec.InitializeBinding(vn, undefined).
+17. 返回 NormalCompletion(empty).
 
-> NOTE An alternative version of this algorithm is described in B.3.5
+> 注：B.3.5中描述了该算法的替代版本。
 
 ### 18.2.2 isFinite ( number ) <div id="sec-isfinite-number"></div>
 
-The isFinite function is the %isFinite% intrinsic object. When the isFinite function is called with one argument number, the following steps are taken:
+isFinite函数是％isFinite％内部对象。当使用一个参数号调用isFinite函数时，将执行以下步骤：
 
-1. Let num be ? ToNumber(number).
-2. If num is NaN, +∞, or -∞, return false.
-3. Otherwise, return true.
+1. 令 num 为 ? ToNumber(number).
+2. 若 num 是 NaN, +∞, or -∞，返回 false.
+3. 否则，返回 true.
 
 ### 18.2.3 isNaN ( number ) <div id="sec-isnan-number"></div>
 
-The isNaN function is the %isNaN% intrinsic object. When the isNaN function is called with one argument number, the following steps are taken:
+isNaN函数是％isNaN％内部对象。当使用一个参数号调用isNaN函数时，将执行以下步骤：
 
-1. Let num be ? ToNumber(number).
-2. If num is NaN, return true.
-3. Otherwise, return false.
+1. 令 num 为 ? ToNumber(number).
+2. 若 num 是 NaN，返回 true.
+3. 否则，返回 false.
 
-> NOTE A reliable way for ECMAScript code to test if a value X is a NaN is an expression of the form X !== X. The result will be true if and only if X is a NaN.
+> 注：测试ECMAScript代码值X是否为NaN的可靠方式是形式为X!==X。只有当X为NaN时，结果才为true。
 
 ### 18.2.4 parseFloat ( string ) <div id="sec-parsefloat-string"></div>
 
-The parseFloat function produces a Number value dictated by interpretation of the contents of the string argument as a decimal literal.
+parseFloat函数产生一个Number值，该值由将字符串参数的内容解释为十进制文字来指示。
 
-The parseFloat function is the %parseFloat% intrinsic object. When the parseFloat function is called with one argument string, the following steps are taken:
+parseFloat函数是％parseFloat％内部对象。当使用一个参数字符串调用parseFloat函数时，将执行以下步骤：
 
-1. Let inputString be ? ToString(string).
-2. Let trimmedString be a substring of inputString consisting of the leftmost code unit that is not a StrWhiteSpaceChar and all code units to the right of that code unit. (In other words, remove leading white space.) If inputString does not contain any such code units, let trimmedString be the empty string.
-3. If neither trimmedString nor any prefix of trimmedString satisfies the syntax of a StrDecimalLiteral (see 7.1.3.1), return NaN.
-4. Let numberString be the longest prefix of trimmedString, which might be trimmedString itself, that satisfies the syntax of a StrDecimalLiteral.
-5. Let mathFloat be MV of numberString.
-6. If mathFloat = 0, then
-   1. If the first code unit of trimmedString is the code unit 0x002D (HYPHEN-MINUS), return -0.
-   2. Return +0.
-7. Return the Number value for mathFloat.
+1. 令 inputString 为 ? ToString(string).
+2. 令trimmedString为inputString的子字符串，该子字符串由不是StrWhiteSpaceChar的最左边的代码单元以及该代码单元右边的所有代码单元组成。 （换句话说，删除前导空格。）如果inputString不包含任何此类代码单元，则将trimmedString设为空字符串。
+3. 如果trimmedString或trimmedString的任何前缀都不满足StrDecimalLiteral的语法（请参见7.1.3.1），则返回NaN。
+4. 令numberString为trimmedString的最长前缀，它可以是trimmedString本身，它满足StrDecimalLiteral的语法。
+5. 令 mathFloat 为 numberString 的MV。
+6. 若 mathFloat = 0，那么
+   1. 如果trimmedString的第一个代码单元是代码单元0x002D（\-），则返回-0。
+   2. 返回 +0.
+7. 返回 mathFloat的Number值。
 
-> NOTE parseFloat may interpret only a leading portion of string as a Number value; it ignores any code units that cannot be interpreted as part of the notation of a decimal literal, and no indication is given that any such code units were ignored.
+> 注：parseFloat只能将字符串的开头部分解释为Number值；它忽略了不能解释为十进制文字表示法一部分的任何代码单元，也没有给出任何此类代码单元被忽略的指示。
 
 ### 18.2.5 parseInt ( string, radix ) <div id="sec-parseint-string-radix"></div>
 
-The parseInt function produces an integer value dictated by interpretation of the contents of the string argument according to the specified radix. Leading white space in string is ignored. If radix is undefined or 0, it is assumed to be 10 except when the number begins with the code unit pairs 0x or 0X, in which case a radix of 16 is assumed. If radix is 16, the number may also optionally begin with the code unit pairs 0x or 0X.
+parseInt函数产生一个整数值，该整数值是根据指定的基数解释字符串参数的内容而指定的。字符串中的前导空格将被忽略。如果基数未定义或为0，则假定为10，除非数字以代码单元对0x或0X开头（在这种情况下，基数为16）。如果基数为16，则数字也可以选择以代码单元对0x或0X开头。
 
-The parseInt function is the %parseInt% intrinsic object. When the parseInt function is called, the following steps are taken:
+parseInt函数是％parseInt％内部对象。调用parseInt函数时，将执行以下步骤：
 
-1. Let inputString be ? ToString(string).
-2. Let S be a newly created substring of inputString consisting of the first code unit that is not a StrWhiteSpaceChar and all code units following that code unit. (In other words, remove leading white space.) If inputString does not contain any such code unit, let S be the empty string.
-3. Let sign be 1.
-4. If S is not empty and the first code unit of S is the code unit 0x002D (HYPHEN-MINUS), set sign to -1.
-5. If S is not empty and the first code unit of S is the code unit 0x002B (PLUS SIGN) or the code unit 0x002D (HYPHEN-MINUS), remove the first code unit from S.
-6. Let R be ? ToInt32(radix).
-7. Let stripPrefix be true.
-8. If R ≠ 0, then
-   1. If R < 2 or R > 36, return NaN.
-   2. If R ≠ 16, set stripPrefix to false.
+1. 令 inputString 为 ? ToString(string).
+2. 令S为新创建的inputString子字符串，它由不是StrWhiteSpaceChar的第一个代码单元以及该代码单元之后的所有代码单元组成。 （换句话说，删除前导空格。）如果inputString不包含任何此类代码单元，则使S为空字符串。
+3. 令 sign 为 1.
+4. 若S不为空，并且S的第一个代码单元是代码单元0x002D（-），, 设置 sign 为 -1.
+5. 若S不为空并且S的第一个代码单元是代码单元0x002B（+）或代码单元0x002D(-), 从S中删除第一个代码单元。
+6. 令 R 为 ? ToInt32(radix).
+7. 令 stripPrefix 为 true.
+8. 若 R ≠ 0，那么
+   1. 若 R < 2 or R > 36，返回 NaN.
+   2. 若 R ≠ 16, 设置 stripPrefix 为 false.
 9. Else R = 0,
-   1. Set R to 10.
-10. If stripPrefix is true, then
-    1. If the length of S is at least 2 and the first two code units of S are either "0x" or "0X", then
-      1. Remove the first two code units from S.
-      2. Set R to 16.
-11. If S contains a code unit that is not a radix-R digit, let Z be the substring of S consisting of all code units before the first such code unit; otherwise, let Z be S.
-12. If Z is empty, return NaN.
-13. Let mathInt be the mathematical integer value that is represented by Z in radix-R notation, using the letters A-Z and a-z for digits with values 10 through 35. (However, if R is 10 and Z contains more than 20 significant digits, every significant digit after the 20th may be replaced by a 0 digit, at the option of the implementation; and if R is not 2, 4, 8, 10, 16, or 32, then mathInt may be an implementation-dependent approximation to the mathematical integer value that is represented by Z in radix-R notation.)
-14. If mathInt = 0, then
-    1. If sign = -1, return -0.
-    2. Return +0.
-15. Let number be the Number value for mathInt.
-16. Return sign × number.
+   1. 设置 R 为 10.
+10. 若 stripPrefix 是 true，那么
+    1. 如果S的长度至少为2，并且S的前两个代码单元为“ 0x”或“ 0X”，那么
+      1. 从S中删除前两个代码单元。
+      2. 设置 R 为 16.
+11. 若S包含不是基数R的代码单元，则令Z为S的子字符串，该子字符串由第一个此类代码单元之前的所有代码单元组成；否则，让Z为S。
+12. 若 Z 是 empty，返回 NaN.
+13. 令mathInt为Z以基数R表示的数学整数值，使用字母AZ和az表示从10到35的数字。（但是，如果R为10并且Z包含20个以上有效数字，则每个有效数字根据实现的选择，第20个位之后的数字可以用0代替；并且如果R不是2、4、8、10、16或32，则mathInt可以是与实现相关的数学整数的近似值Z以基数R表示的值。）
+14. 若 mathInt = 0，那么
+    1. 若 sign = -1，返回 -0.
+    2. 返回 +0.
+15. 令 number 为mathInt的Number值
+16. 返回 sign × number.
 
-> NOTE parseInt may interpret only a leading portion of string as an integer value; it ignores any code units that cannot be interpreted as part of the notation of an integer, and no indication is given that any such code units were ignored.
+> 注：parseInt只能将字符串的开头部分解释为整数值；它会忽略无法解释为整数符号一部分的任何代码单元，并且不会给出任何此类代码单元被忽略的指示。
 
 ### 18.2.6 URI Handling Functions <div id="sec-uri-handling-functions"></div>
 
-Uniform Resource Identifiers, or URIs, are Strings that identify resources (e.g. web pages or files) and transport protocols by which to access them (e.g. HTTP or FTP) on the Internet. The ECMAScript language itself does not provide any support for using URIs except for functions that encode and decode URIs as described in 18.2.6.2, 18.2.6.3, 18.2.6.4 and 18.2.6.5
+统一资源标识符（URI）是用于标识资源（例如网页或文件）和传输协议的字符串，通过这些协议可以在Internet上访问资源（例如HTTP或FTP）。 ECMAScript语言本身不提供对使用URI的任何支持，除了18.2.6.2、18.2.6.3、18.2.6.4和18.2.6.5中所述的编码和解码URI的函数外。
 
-> NOTE Many implementations of ECMAScript provide additional functions and methods that manipulate web pages; these functions are beyond the scope of this standard.
+> 注：ECMAScript的许多实现都提供了操纵网页的其他功能和方法。这些功能超出了本标准的范围。
 
 #### 18.2.6.1 URI 语法和语义 <div id="sec-uri-syntax-and-semantics"></div>
 
-A URI is composed of a sequence of components separated by component separators. The general form is:
+URI由由组件分隔符分隔的一系列组件组成。通用形式为：
 
 ```
 Scheme : First / Second ; Third ? Fourth
 ```
 
-where the italicized names represent components and “:”, “/”, “;” and “?” are reserved for use as separators. The encodeURI and decodeURI functions are intended to work with complete URIs; they assume that any reserved code units in the URI are intended to have special meaning and so are not encoded. The encodeURIComponent and decodeURIComponent functions are intended to work with the individual component parts of a URI; they assume that any reserved code units represent text and so must be encoded so that they are not interpreted as reserved code units when the component is part of a complete URI.
+其中斜体名称代表组件，“：”，“ /”，“;”和“？”保留用作分隔符。该encodeURI和decodeURI函数旨在与完整的URI一起使用。它们假定URI中的任何保留代码单元均具有特殊含义，因此未进行编码。该encodeURIComponent和decodeURIComponent函数旨在与URI的各个组成部分一起使用。它们假定任何保留代码单元都代表文本，因此必须进行编码，以便当该组件是完整URI的一部分时，它们不会被解释为保留代码单元。
 
-The following lexical grammar specifies the form of encoded URIs.
+以下词汇语法指定了已编码URI的形式。
 
-Syntax
+**语法**
 
 ```
 uri :::
@@ -318,154 +319,152 @@ uriMark ::: one of
 	- _ . ! ~ * ' ( )
 ```
 
-> NOTE The above syntax is based upon RFC 2396 and does not reflect changes introduced by the more recent RFC 3986
+> 注：以上语法基于RFC 2396，并不反映最新RFC 3986引入的更改
 
-Runtime Semantics
+**运行时语义**
 
-When a code unit to be included in a URI is not listed above or is not intended to have the special meaning sometimes given to the reserved code units, that code unit must be encoded. The code unit is transformed into its UTF-8 encoding, with surrogate pairs first converted from UTF-16 to the corresponding code point value. (Note that for code units in the range [0, 127] this results in a single octet with the same value.) The resulting sequence of octets is then transformed into a String with each octet represented by an escape sequence of the form "%xx".
+如果上面未列出要包含在URI中的代码单元，或者有时不赋予保留的代码单元特殊含义，则必须对该代码单元进行编码。该代码单元被转换为其UTF-8编码，其中代理对首先从UTF-16转换为相应的代码点值。 （请注意，对于[0，127]范围内的代码单元，这将导致单个octet具有相同的值。）然后，将所得的octet序列转换为字符串，每个octet均以形式为“％”的转义序列表示xx”。
 
 ##### 18.2.6.1.1 运行时语义：Encode ( string, unescapedSet ) <div id="sec-encode"></div>
 
-The encoding and escaping process is described by the abstract operation Encode taking two String arguments string and unescapedSet.
+编码和转义过程由抽象操作Encode描述，该操作采用两个String参数string和unescapedSet。
 
-1. Let strLen be the number of code units in string.
-2. Let R be the empty String.
-3. Let k be 0.
-4. Repeat,
-   1. If k equals strLen, return R.
-   2. Let C be the code unit at index k within string.
-   3. If C is in unescapedSet, then
-     1. Let S be the String value containing only the code unit C.
-     2. Set R to the string-concatenation of the previous value of R and S.
-   4. Else C is not in unescapedSet,
-     1. If C is a trailing surrogate, throw a URIError exception.
-     2. If C is not a leading surrogate, then
-       1. Let V be the code point with the same numeric value as code unit C.
-     3. Else,
-       1. Increase k by 1.
-       2. If k equals strLen, throw a URIError exception.
-       3. Let kChar be the code unit at index k within string.
-       4. If kChar is not a trailing surrogate, throw a URIError exception.
-       5. Let V be UTF16Decode(C, kChar).
-     4. Let Octets be the List of octets resulting by applying the UTF-8 transformation to V.
-     5. For each element octet of Octets in List order, do
-       1. Let S be the string-concatenation of:
+1. 令 strLen 为字符串中的代码单位数。
+2. 令 R 为空字符串
+3. 令 k 为 0.
+4. 重复，
+   1. 若 k 等于 strLen，返回 R.
+   2. 令 C 为字符串中索引k处的代码单元。
+   3. 若 C 在 unescapedSet 中，那么
+           1. 令 S 为仅包含代码单元C的String值。
+           2. 设置 R 为R和S的先前值的字符串连接。
+   4. 否则 C 不在unescapedSet中，
+     1. 若 C 是 a trailing surrogate, 抛出 URIError 异常
+     2. 若 C 不是前导代理，那么
+           1. 令 V 为与代码单位C具有相同数值的代码点。
+     3. 否则，
+           1. k 增加 1.
+           2. 若 k 等于 strLen, 抛出 URIError 异常
+           3. 令 kChar 为字符串中索引k处的代码单元。
+           4. 若 kChar 不是前导代理, 抛出 URIError 异常
+           5. 令 V 为 UTF16Decode(C, kChar).
+     4. 令 Octets 为通过对V应用UTF-8转换得到的八位字节列表。
+     5. 对于列表顺序中octet的每个元素octet，执行
+           1. 令 S 为字符串串联：
          "%"
-         the String representation of octet, formatted as a two-digit uppercase hexadecimal number,padded to the left with a zero if necessary
-       2. Set R to the string-concatenation of the previous value of R and S.
-   5. Increase k by 1.
+         octet的字符串表示形式，格式为两位数的大写十六进制数字，如有必要，在左侧添加零
+            2. 设置 R 为R和S的先前值的字符串连接。
+   5. k 增加 1.
 
 ##### 18.2.6.1.2 运行时语义：Decode ( string, reservedSet ) <div id="sec-decode"></div>
-The unescaping and decoding process is described by the abstract operation Decode taking two String arguments string and reservedSet.
+通过使用两个字符串参数string和reservedSet的抽象操作Decode描述了转义和解码过程。
 
-1. Let strLen be the number of code units in string.
-2. Let R be the empty String.
-3. Let k be 0.
-4. Repeat,
-        1. If k equals strLen, return R.
-        2. Let C be the code unit at index k within string.
-        3. If C is not the code unit 0x0025 (PERCENT SIGN), then
-               1. Let S be the String value containing only the code unit C.
-        4. Else C is the code unit 0x0025 (PERCENT SIGN),
-               1. Let start be k.
-               2. If k + 2 is greater than or equal to strLen, throw a URIError exception.
-               3. If the code units at index (k + 1) and (k + 2) within string do not represent hexadecimal digits, throw aURIError exception.
-               4. Let B be the 8-bit value represented by the two hexadecimal digits at index (k + 1) and (k + 2).
-               5. Increment k by 2.
-               6. If the most significant bit in B is 0, then
-                      1. Let C be the code unit whose value is B.
-                      2. If C is not in reservedSet, then
-                             1. Let S be the String value containing only the code unit C.
-                      3. Else C is in reservedSet,
-                             1. Let S be the substring of string from index start to index k inclusive.
-               7. Else the most significant bit in B is 1,
-                      1. Let n be the smallest nonnegative integer such that (B << n) & 0x80 is equal to 0.
-                      2. If n equals 1 or n is greater than 4, throw a URIError exception.
-                      3. Let Octets be a List of 8-bit integers of size n.
-                      4. Set Octets[0] to B.
-                      5. If k + (3 × (n - 1)) is greater than or equal to strLen, throw a URIError exception.
-                      6. Let j be 1.
-                      7. Repeat, while j < n
-                             1. Increment k by 1.
-                             2. If the code unit at index k within string is not the code unit 0x0025 (PERCENT SIGN), throw a URIError exception.
-                             3. If the code units at index (k + 1) and (k + 2) within string do not represent hexadecimal digits, throw a URIError exception.
-                             4. Let B be the 8-bit value represented by the two hexadecimal digits at index (k + 1) and (k + 2).
-                             5. If the two most significant bits in B are not 10, throw a URIError exception.
-                             6. Increment k by 2.
-                             7. Set Octets[j] to B.
-                             8. Increment j by 1.
-                      8. If Octets does not contain a valid UTF-8 encoding of a Unicode code point, throw a URIError
-                           exception.
-                      9. Let V be the value obtained by applying the UTF-8 transformation to Octets, that is, from a List of octets into a 21-bit value.
-                      10. Let S be the String value whose code units are, in order, the elements in UTF16Encoding(V).
-        5. Set R to the string-concatenation of the previous value of R and S.
-        6. Increase k by 1.
+1. 令 strLen 为字符串中的代码单位数。
+2. 令 R 为空字符串
+3. 令 k 为 0.
+4. 重复，
+    1. 若 k 等于 strLen，返回 R.
+        2. 令 C 为字符串中索引k处的代码单元。
+        3. 若 C 不是代码单元0x0025 (%)，那么
+            1. 令 S 为仅包含代码单元C的String值。
+        4. 否则 C是代码单元0x0025 (PERCENT SIGN),
+            1. 令 start 为 k.
+            2. 若 k + 2 是 大于或等于 strLen, 抛出 URIError 异常
+            3. 如果字符串中位于索引（k + 1）和（k + 2）的代码单元不表示十六进制数字，抛出 URIError 异常.
+            4. 令 B 为索引（k + 1）和（k + 2）处两个十六进制数字表示的8位值
+            5. k 增加 2.
+            6. 若B中的最高有效位是 0，那么
+                  1. 令 C 为值为B的代码单位。
+                      2. 若 C 不在 reservedSet 中，那么
+                          1. 令 S 为仅包含代码单元C的String值。
+                      3. 否则 C 在reservedSet中,
+                          1. 令 S 为字符串的子字符串，从索引开始到索引k（包括索引）。
+            7. 否则 B 中的最高有效位是1
+                  1. 令 n 为最小的非负整数，使得（B << n）＆0x80等于0。
+                      2. 若 n 等于 1 或 n 大于 4, 抛出 URIError 异常
+                      3. 令 Octets 为一个大小为n的8位整数列表。
+                      4. 设置 Octets[0] 为 B.
+                      5. 若 k + (3 × (n - 1)) 是大于等于strLen, 抛出 URIError 异常
+                      6. 令 j 为 1.
+                      7. 重复，while j < n
+                          1. k 增加 1.
+                          2. 若字符串中索引k处的代码单元不是代码单元 0x0025 (%), 抛出 URIError 异常
+                          3. 若字符串中位于索引（k + 1）和（k + 2）的代码单元不表示十六进制数字, 抛出 URIError 异常
+                          4. 令 B 为由索引（k + 1）和（k + 2）处的两个十六进制数字表示的8位值。
+                          5. 若B中的两个最高有效位不是10, 抛出 URIError 异常
+                          6. k 增加 2.
+                          7. 设置 Octets[j] 为 B.
+                          8. j 增加 1.
+                      8. 若octet不包含Unicode代码点的有效UTF-8编码，引发URIError异常。
+                      9. 令 V 为通过对Octets应用UTF-8转换而获得的值，即从Octets列表转换为21位值。
+                      10. 令 S 为String值，其代码单位按顺序是UTF16Encoding（V）中的元素。
+        5. 设置 R 为 R 和S的先前值的字符串连接。
+        6. k 增加 1.
 
-> NOTE This syntax of Uniform Resource Identifiers is based upon RFC 2396 and does not reflect the more recent RFC 3986 which replaces RFC 2396. A formal description and implementation of UTF-8 is given in RFC 3629.
+> 注：这种统一资源标识符的语法基于RFC 2396，并且不反映更新的RFC 3986（它代替RFC 2396）。RFC3629中给出了UTF-8的正式描述和实现。
 >
-> In UTF-8, characters are encoded using sequences of 1 to 6 octets. The only octet of a sequence of one has the higherorder bit set to 0, the remaining 7 bits being used to encode the character value. In a sequence of n octets, n > 1, the initial octet has the n higher-order bits set to 1, followed by a bit set to 0. The remaining bits of that octet contain bits from the value of the character to be encoded. The following octets all have the higher-order bit set to 1 and the following bit set to 0, leaving 6 bits in each to contain bits from the character to be encoded. The possible UTF-8 encodings of ECMAScript characters are specified in Table 46.
+> 在UTF-8中，使用1到6个octets的序列对字符进行编码。序列1的唯一octet将高阶位设置为0，其余7位用于编码字符值。在n个octet的序列中，n> 1，初始octet的n个高阶位设置为1，其后的位设置为0。该octet的其余位包含要编码的字符值中的位。接下来的octet的高位均设置为1，随后的位均设置为0，每个位保留6位以包含来自要编码字符的位。表46中指定了ECMAScript字符可能的UTF-8编码。
 >
 > |                                                     |                                                         |              |              |              |              |
 > | --------------------------------------------------- | ------------------------------------------------------- | ------------ | ------------ | ------------ | ------------ |
 > | Code Unit Value                                     | Representation                                          | 1st Octet    | 2nd Octet    | 3rd Octet    | 4th Octet    |
-> | `0x0000 - 0x007F`                                   | `00000000 0*zzzzzzz*`                                   | `0*zzzzzzz*` |              |              |              |
-> | `0x0080 - 0x07FF`                                   | `00000*yyy yyzzzzzz*`                                   | `110*yyyyy*` | `10*zzzzzz*` |              |              |
-> | `0x0800 - 0xD7FF`                                   | `*xxxxyyyy yyzzzzzz*`                                   | `1110*xxxx*` | `10*yyyyyy*` | `10*zzzzzz*` |              |
-> | `0xD800 - 0xDBFF` followed by `0xDC00 - 0xDFFF`     | `110110*vv vvwwwwxx*` followed by `110111*yy yyzzzzzz*` | `11110*uuu*` | `10*uuwwww*` | `10*xxyyyy*` | `10*zzzzzz*` |
+> | `0x0000 - 0x007F`                                   | `00000000 0zzzzzzz`                                     | `0zzzzzzz`   |              |              |              |
+> | `0x0080 - 0x07FF`                                   | `00000yyy yyzzzzzz`                                     | `110yyyyy`   | `10zzzzzz`   |              |              |
+> | `0x0800 - 0xD7FF`                                   | `xxxxyyyy yyzzzzzz`                                     | `1110xxxx`   | `10yyyyyy`  | `10zzzzzz` |              |
+> | `0xD800 - 0xDBFF` followed by `0xDC00 - 0xDFFF`     | `110110vv vvwwwwxx` followed by `110111yy yyzzzzzz` | `11110uuu` | `10uuwwww` | `10xxyyyy` | `10zzzzzz` |
 > | `0xD800 - 0xDBFF` not followed by `0xDC00 - 0xDFFF` | causes `URIError`                                       |              |              |              |              |
 > | `0xDC00 - 0xDFFF`                                   | causes `URIError`                                       |              |              |              |              |
-> | `0xE000 - 0xFFFF`                                   | `*xxxxyyyy yyzzzzzz*`                                   | `1110*xxxx*` | `10*yyyyyy*` | `10*zzzzzz*` |              |
+> | `0xE000 - 0xFFFF`                                   | `xxxxyyyy yyzzzzzz`                                   | `1110xxxx` | `10yyyyyy` | `10zzzzzz` |              |
 >
-> Where uuuuu = vvvv + 1 to account for the addition of 0x10000 as in section 3.8 of the Unicode Standard (Surrogates).
+> 其中，uuuuu = vvvv + 1代表Unicode标准（替代）第3.8节中添加的0x10000。
 >
-> The above transformation combines each surrogate pair (for which code unit values in the inclusive range 0xD800 to 0xDFFF are reserved) into a UTF-32 representation and encodes the resulting 21-bit value into UTF-8. Decoding reconstructs the surrogate pair.
+> 上面的转换将每个代理对（保留其在0xD800到0xDFFF范围内的代码单元值）组合为UTF-32表示形式，并将得到的21位值编码为UTF-8。解码可重建代理对。
 >
-> RFC 3629 prohibits the decoding of invalid UTF-8 octet sequences. For example, the invalid sequence C0 80 must not decode into the code unit 0x0000. Implementations of the Decode algorithm are required to throw a URIError when encountering such invalid sequences.
+> RFC 3629禁止解码无效的UTF-8八位位组序列。例如，无效序列C0 80不得解码为代码单元0x0000。遇到此类无效序列时，需要使用Decode算法的实现来引发URIError。
 
 #### 18.2.6.2 decodeURI ( encodedURI ) <div id="sec-decodeuri-encodeduri"></div>
 
-The decodeURI function computes a new version of a URI in which each escape sequence and UTF-8 encoding of the sort that might be introduced by the encodeURI function is replaced with the UTF-16 encoding of the code points that it represents. Escape sequences that could not have been introduced by encodeURI are not replaced.
+encodeURI函数计算URI的新版本，其中可能由encodeURI函数引入的每个转义序列和此类的UTF-8编码都用其表示的代码点的UTF-16编码代替。无法替换encodeURI无法引入的转义序列。
 
-The decodeURI function is the %decodeURI% intrinsic object. When the decodeURI function is called with one argument encodedURI, the following steps are taken:
+encodeURI函数是％decodeURI％内部对象。当用一个参数encodedURI调用decodeURI函数时，将执行以下步骤：
 
-1. Let uriString be ? ToString(encodedURI).
-2. Let reservedURISet be a String containing one instance of each code unit valid in uriReserved plus "#".
-3. Return ? Decode(uriString, reservedURISet).
+1. 令 uriString 为 ? ToString(encodedURI).
+2. 令reservedURISet为一个字符串，其中包含在uriReserved中有效的每个代码单元的一个实例加“＃”。
+3. 返回 ? Decode(uriString, reservedURISet).
 
-> NOTE The code point "#" is not decoded from escape sequences even though it is not a reserved URI code point.
+> 注：即使不是保留的URI代码点，也不会从转义序列中解码代码点“＃”。
 
 #### 18.2.6.3 decodeURIComponent ( encodedURIComponent ) <div id="sec-decodeuricomponent-encodeduricomponent"></div>
 
-The decodeURIComponent function computes a new version of a URI in which each escape sequence and UTF-8 encoding of the sort that might be introduced by the encodeURIComponent function is replaced with the UTF-16 encoding of the code points that it represents.
+encodeURIComponent函数计算URI的新版本，其中可能由encodeURIComponent函数引入的每个转义序列和此类的UTF-8编码都用其表示的代码点的UTF-16编码代替。
 
-The decodeURIComponent function is the %decodeURIComponent% intrinsic object. When the decodeURIComponent function is called with one argument encodedURIComponent, the following steps are taken:
+encodeURIComponent函数是％decodeURIComponent％内部对象。当使用一个已编码URIComponent参数调用decodeURIComponent函数时，将执行以下步骤：
 
-1. Let componentString be ? ToString(encodedURIComponent).
-2. Let reservedURIComponentSet be the empty String.
-3. Return ? Decode(componentString, reservedURIComponentSet).
+1. 令 componentString 为 ? ToString(encodedURIComponent).
+2. 令 reservedURIComponentSet 为空字符串。
+3. 返回 ? Decode(componentString, reservedURIComponentSet).
 
 #### 18.2.6.4 encodeURI ( uri ) <div id="sec-encodeuri-uri"></div>
 
-The encodeURI function computes a new version of a UTF-16 encoded (6.1.4) URI in which each instance of certain code points is replaced by one, two, three, or four escape sequences representing the UTF-8 encoding of the code points.
+encodeURI函数计算UTF-16编码（6.1.4）URI的新版本，其中某些代码点的每个实例都被一个，两个，三个或四个表示代码点UTF-8编码的转义序列替换。
 
-The encodeURI function is the %encodeURI% intrinsic object. When the encodeURI function is called with one argument uri, the following steps are taken:
+encodeURI函数是％encodeURI％内部对象。当使用一个参数uri调用encodeURI函数时，将执行以下步骤：
 
-1. Let uriString be ? ToString(uri).
-2. Let unescapedURISet be a String containing one instance of each code unit valid in uriReserved and uriUnescaped
-plus "#".
-3. Return ? Encode(uriString, unescapedURISet).
+1. 令 uriString 为 ? ToString(uri).
+2. 令 unescapedURISet 为一个字符串，其中包含在uriReserved和uriUnescaped加上“＃”有效的每个代码单元的一个实例。
+3. 返回 ? Encode(uriString, unescapedURISet).
 
-> NOTE The code unit "#" is not encoded to an escape sequence even though it is not a reserved or unescaped URI code point.
+> 注：即使代码单元“＃”不是保留或未转义的URI代码点，也不会被编码为转义序列。
 
 #### 18.2.6.5 encodeURIComponent ( uriComponent ) <div id="sec-encodeuricomponent-uricomponent"></div>
 
-The encodeURIComponent function computes a new version of a UTF-16 encoded (6.1.4) URI in which each instance of certain code points is replaced by one, two, three, or four escape sequences representing the UTF-8 encoding of the code point.
+encodeURIComponent函数计算新版本的UTF-16编码（6.1.4）URI，其中某些代码点的每个实例都被一个，两个，三个或四个表示代码点UTF-8编码的转义序列替换。
 
-The encodeURIComponent function is the %encodeURIComponent% intrinsic object. When the encodeURIComponent function is called with one argument uriComponent, the following steps are taken:
+encodeURIComponent函数是％encodeURIComponent％内部对象。当使用一个参数uriComponent调用encodeURIComponent函数时，将执行以下步骤：
 
-1. Let componentString be ? ToString(uriComponent).
-2. Let unescapedURIComponentSet be a String containing one instance of each code unit valid in uriUnescaped.
-3. Return ? Encode(componentString, unescapedURIComponentSet).
+1. 令 componentString 为 ? ToString(uriComponent).
+2. 令 unescapedURIComponentSet 为一个字符串，其中包含在uriUnescapeed中有效的每个代码单元的一个实例。
+3. 返回 ? Encode(componentString, unescapedURIComponentSet).
 
 ## 18.3 全局对象的构造函数属性 <div id="sec-constructor-properties-of-the-global-object"></div>
 ### 18.3.1 Array ( . . . ) <div id="sec-constructor-properties-of-the-global-object-array"></div>
@@ -552,7 +551,7 @@ See 19.5.5.3.
 
 See 21.2.3.
 
-### 18.3.22 Set ( . . . ) <div id="sec-set"></div>
+### 18.3.22 设置 ( . . . ) <div id="sec-set"></div>
 
 See 23.2.1.
 
