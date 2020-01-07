@@ -2,392 +2,390 @@
 ## 19.1 Object 对象 <div id="sec-object-objects"></div>
 ### 19.1.1 Object 构造器 <div id="sec-object-constructor"></div>
 
-The Object constructor:
+对象构造函数：
 
-- is the intrinsic object %Object%.
-- is the initial value of the Object property of the global object.
-- creates a new ordinary object when called as a constructor.
-- performs a type conversion when called as a function rather than as a constructor.
-- is designed to be subclassable. It may be used as the value of an extends clause of a class definition.
+- 是内部对象％Object％。
+- 是全局对象的对象属性的初始值。
+- 在作为构造函数调用时创建一个新的普通对象。
+- 在作为函数而不是构造函数调用时执行类型转换。
+- 被设计为可子类化。它可以用作类定义的extends子句的值。
 
 #### 19.1.1.1 Object ( [ value ] ) <div id="sec-object-value"></div>
 
-When the Object function is called with optional argument value, the following steps are taken:
+使用可选参数值调用对象函数时，采取以下步骤:
 
-1. If NewTarget is neither undefined nor the active function, then
-1. Return ? OrdinaryCreateFromConstructor(NewTarget, "%ObjectPrototype%").
-2. If value is null, undefined or not supplied, return ObjectCreate(%ObjectPrototype%).
-3. Return ! ToObject(value).
+1. 如果NewTarget既不是未定义的，也不是活动函数，则
+   1. 返回 ? OrdinaryCreateFromConstructor(NewTarget, "%ObjectPrototype%").
+2. 若 value 是 null, undefined 或不提供, 返回 ObjectCreate(%ObjectPrototype%).
+3. 返回 ! ToObject(value).
 
-The "length" property of the Object constructor function is 1
+对象构造函数的“length”属性是1
 
 ### 19.1.2 Object 构造器属性 <div id="sec-properties-of-the-object-constructor"></div>
 
-The Object constructor:
+对象构造函数：
 
-- has a [[Prototype]] internal slot whose value is the intrinsic object %FunctionPrototype%.
-- has a "length" property.
-- has the following additional properties:
+- 有一个[[Prototype]]内部插槽，其值是内部对象％FunctionPrototype％。
+- 具有“length”属性。
+- 具有以下附加属性：
 
 #### 19.1.2.1 Object.assign ( target, ...sources ) <div id="sec-object.assign"></div>
 
-The assign function is used to copy the values of all of the enumerable own properties from one or more source objects to a target object. When the assign function is called, the following steps are taken:
+Assign函数用于将所有可枚举的自身属性的值从一个或多个源对象复制到目标对象。调用assign函数时，将执行以下步骤：
 
-1. Let to be ? ToObject(target).
-2. If only one argument was passed, return to.
-3. Let sources be the List of argument values starting with the second argument.
-4. For each element nextSource of sources, in ascending index order, do
-  1. If nextSource is neither undefined nor null, then
-        1. Let from be ! ToObject(nextSource).
-            2. Let keys be ? from.\[\[OwnPropertyKeys]]().
-                3. For each element nextKey of keys in List order, do
-      1. Let desc be ? from.\[\[GetOwnProperty]](nextKey).
-      2. If desc is not undefined and desc.[[Enumerable]] is true, then
-        1. Let propValue be ? Get(from, nextKey).
-        2. Perform ? Set(to, nextKey, propValue, true).
-5. Return to.
+1. 令 to 为 ? ToObject(target).
+2. 如果仅传递了一个参数, 返回 to.
+3. 令 sources 为从第二个参数开始的参数值列表。
+4. 对于每个元素nextsource的源，按升序排列，执行
+    1. 如果nextSource既未定义也不为null，那么
+        1. 令 from 为 ! ToObject(nextSource).
+        2. 令 keys 为 ? from.\[\[OwnPropertyKeys]]().
+        3. 对于按列表顺序的键的每个元素nextKey，执行
+            1. 令 desc 为 ? from.\[\[GetOwnProperty]](nextKey).
+            2. 如果desc不是undefined并且desc.[[Enumerable]]为true，那么
+5. 返回 to.
 
-The "length" property of the assign function is 2.
+分配函数的“length”属性为2。
 
 #### 19.1.2.2 Object.create ( O, Properties ) <div id="sec-object.create"></div>
 
-The create function creates a new object with a specified prototype. When the create function is called, the following steps are taken:
+create函数使用指定的原型创建一个新对象。调用create函数时，将执行以下步骤：
 
-1. If Type(O) is neither Object nor Null, throw a TypeError exception.
-2. Let obj be ObjectCreate(O).
-3. If Properties is not undefined, then
-1. Return ? ObjectDefineProperties(obj, Properties).
-4. Return obj.
+1. 若 Type(O) 不是 Object 或 Null, 抛出 TypeError 异常。
+2. 令 obj 为 ObjectCreate(O).
+3. 若 Properties 不是 undefined，那么
+1. 返回 ? ObjectDefineProperties(obj, Properties).
+4. 返回 obj.
 
 #### 19.1.2.3 Object.defineProperties ( O, Properties ) <div id="sec-object.defineproperties"></div>
 
-The defineProperties function is used to add own properties and/or update the attributes of existing own properties of an object. When the defineProperties function is called, the following steps are taken:
+defineProperties函数用于添加自己的属性和/或更新对象现有的自己属性的属性。调用defineProperties函数时，将执行以下步骤：
 
-1. Return ? ObjectDefineProperties(O, Properties).
+1. 返回 ? ObjectDefineProperties(O, Properties).
 
 ##### 19.1.2.3.1 RS: ObjectDefineProperties ( O, Properties ) <div id="sec-objectdefineproperties"></div>
 
-The abstract operation ObjectDefineProperties with arguments O and Properties performs the following steps:
+具有参数O和属性的抽象操作ObjectDefineProperties执行以下步骤：
 
-1. If Type(O) is not Object, throw a TypeError exception.
-2. Let props be ? ToObject(Properties).
-3. Let keys be ? props.\[\[OwnPropertyKeys]]().
-4. Let descriptors be a new empty List.
-5. For each element nextKey of keys in List order, do
-1. Let propDesc be ? props.\[\[GetOwnProperty]](nextKey).
-2. If propDesc is not undefined and propDesc.[[Enumerable]] is true, then
-  1. Let descObj be ? Get(props, nextKey).
-  2. Let desc be ? ToPropertyDescriptor(descObj).
-  3. Append the pair (a two element List) consisting of nextKey and desc to the end of descriptors.
-6. For each pair from descriptors in list order, do
-  1. Let P be the first element of pair.
-  2. Let desc be the second element of pair.
-  3. Perform ? DefinePropertyOrThrow(O, P, desc).
-7. Return O.
+1. 若 Type(O) 不是 Object, 抛出 TypeError 异常。
+2. 令 props 为 ? ToObject(Properties).
+3. 令 keys 为 ? props.\[\[OwnPropertyKeys]]().
+4. 令 descriptors 为新的空列表
+5. 对于按列表顺序的键的每个元素nextKey，执行
+   1. 令 propDesc 为 ? props.\[\[GetOwnProperty]](nextKey).
+   2. 若 propDesc 不是 undefined 并且 propDesc.[[Enumerable]] 是 true，那么
+        1. 令 descObj 为 ? Get(props, nextKey).
+        2. 令 desc 为 ? ToPropertyDescriptor(descObj).
+        3. 将由nextKey和desc组成的对（一个由两个元素组成的List）附加到描述符的末尾。
+6. 对于列表中描述符中的每一对，执行
+     1. 令 P 为对的第一个元素。
+     2. 令 desc 为对的第二个元素。
+     3. 执行 ? DefinePropertyOrThrow(O, P, desc).
+7. 返回 O.
 
 #### 19.1.2.4 Object.defineProperty ( O, P, Attributes ) <div id="sec-object.defineproperty"></div>
 
-The defineProperty function is used to add an own property and/or update the attributes of an existing own property of an object. When the defineProperty function is called, the following steps are taken:
+defineProperty函数用于添加自己的属性和/或更新对象现有的自己属性的属性。调用defineProperty函数时，将执行以下步骤：
 
-1. If Type(O) is not Object, throw a TypeError exception.
-2. Let key be ? ToPropertyKey(P).
-3. Let desc be ? ToPropertyDescriptor(Attributes).
-4. Perform ? DefinePropertyOrThrow(O, key, desc).
-5. Return O
+1. 若 Type(O) 不是 Object, 抛出 TypeError 异常。
+2. 令 key 为 ? ToPropertyKey(P).
+3. 令 desc 为 ? ToPropertyDescriptor(Attributes).
+4. 执行 ? DefinePropertyOrThrow(O, key, desc).
+5. 返回 O
 
 #### 19.1.2.5 Object.entries ( O ) <div id="sec-object.entries"></div>
 
-When the entries function is called with argument O, the following steps are taken:
+当使用参数O调用entrys函数时，将执行以下步骤：
 
-1. Let obj be ? ToObject(O).
-2. Let nameList be ? EnumerableOwnPropertyNames(obj, "key+value").
-3. Return CreateArrayFromList(nameList).
+1. 令 obj 为 ? ToObject(O).
+2. 令 nameList 为 ? EnumerableOwnPropertyNames(obj, "key+value").
+3. 返回 CreateArrayFromList(nameList).
 
 #### 19.1.2.6 Object.freeze ( O ) <div id="sec-object.freeze"></div>
 
-When the freeze function is called, the following steps are taken:
+调用冻结函数时，将执行以下步骤：
 
-1. If Type(O) is not Object, return O.
-2. Let status be ? SetIntegrityLevel(O, "frozen").
-3. If status is false, throw a TypeError exception.
-4. Return O.
+1. 若 Type(O) 不是 Object, 返回 O.
+2. 令 status 为 ? SetIntegrityLevel(O, "frozen").
+3. 若 status 是 false, 抛出 TypeError 异常。
+4. 返回 O.
 
 #### 19.1.2.7 Object.fromEntries ( iterable ) <div id="sec-object.fromentries"></div>
 
-When the fromEntries method is called with argument iterable, the following steps are taken:
+当使用参数iterable调用fromEntries方法时，将执行以下步骤：
 
-1. Perform ? RequireObjectCoercible(iterable).
-2. Let obj be ObjectCreate(%ObjectPrototype%).
-3. Assert: obj is an extensible ordinary object with no own properties.
-4. Let stepsDefine be the algorithm steps defined in CreateDataPropertyOnObject Functions.
-5. Let adder be CreateBuiltinFunction(stepsDefine, « »).
-6. Return ? AddEntriesFromIterable(obj, iterable, adder).
+1. 执行 ? RequireObjectCoercible(iterable).
+2. 令 obj 为 ObjectCreate(%ObjectPrototype%).
+3. 断言：obj是没有自己属性的可扩展普通对象。
+4. 令 stepsDefine 为CreateDataPropertyOnObject函数中定义的算法步骤。
+5. 令 adder 为 CreateBuiltinFunction(stepsDefine, « »).
+6. 返回 ? AddEntriesFromIterable(obj, iterable, adder).
 
-> NOTE The function created for adder is never directly accessible to ECMAScript code.
+> 注：ECMAScript代码绝对不能直接访问为adder创建的函数。
 
 ##### 19.1.2.7.1 CreateDataPropertyOnObject Functions <div id="sec-create-data-property-on-object-functions"></div>
 
-A CreateDataPropertyOnObject function is an anonymous built-in function. When a CreateDataPropertyOnObject function is called with arguments key and value, the following steps are taken:
+CreateDataPropertyOnObject函数是匿名内置函数。当使用参数key和value调用CreateDataPropertyOnObject函数时，将执行以下步骤：
 
-1. Let O be the this value.
-2. Assert: Type(O) is Object.
-3. Assert: O is an extensible ordinary object.
-4. Let propertyKey be ? ToPropertyKey(key).
-5. Perform ! CreateDataPropertyOrThrow(O, propertyKey, value).
-6. Return undefined.
+1. 令 O 为 this 值.
+2. 断言：Type(O) 是 Object.
+3. 断言：O是可扩展的普通对象。
+4. 令 propertyKey 为 ? ToPropertyKey(key).
+5. 执行 ! CreateDataPropertyOrThrow(O, propertyKey, value).
+6. 返回 undefined.
 
 #### 19.1.2.8 Object.getOwnPropertyDescriptor ( O, P ) <div id="sec-object.getownpropertydescriptor"></div>
 
-When the getOwnPropertyDescriptor function is called, the following steps are taken:
+调用getOwnPropertyDescriptor函数时，将执行以下步骤：
 
-1. Let obj be ? ToObject(O).
-2. Let key be ? ToPropertyKey(P).
-3. Let desc be ? obj.\[\[GetOwnProperty]](key).
-4. Return FromPropertyDescriptor(desc).
+1. 令 obj 为 ? ToObject(O).
+2. 令 key 为 ? ToPropertyKey(P).
+3. 令 desc 为 ? obj.\[\[GetOwnProperty]](key).
+4. 返回 FromPropertyDescriptor(desc).
 
 #### 19.1.2.9 Object.getOwnPropertyDescriptors ( O ) <div id="sec-object.getownpropertydescriptors"></div>
 
-When the getOwnPropertyDescriptors function is called, the following steps are taken:
+调用getOwnPropertyDescriptors函数时，将执行以下步骤：
 
-1. Let obj be ? ToObject(O).
-2. Let ownKeys be ? obj.\[\[OwnPropertyKeys]]().
-3. Let descriptors be ! ObjectCreate(%ObjectPrototype%).
-4. For each element key of ownKeys in List order, do
-1. Let desc be ? obj.\[\[GetOwnProperty]](key).
-2. Let descriptor be ! FromPropertyDescriptor(desc).
-3. If descriptor is not undefined, perform ! CreateDataProperty(descriptors, key, descriptor).
-5. Return descriptors.
+1. 令 obj 为 ? ToObject(O).
+2. 令 ownKeys 为 ? obj.\[\[OwnPropertyKeys]]().
+3. 令 descriptors 为 ! ObjectCreate(%ObjectPrototype%).
+4. 对于List顺序中ownKeys的每个元素键，执行
+   1. 令 desc 为 ? obj.\[\[GetOwnProperty]](key).
+   2. 令 descriptor 为 ! FromPropertyDescriptor(desc).
+   3. 若 descriptor 不是 undefined, 执行 ! CreateDataProperty(descriptors, key, descriptor).
+5. 返回 descriptors.
 
 #### 19.1.2.10 Object.getOwnPropertyNames ( O ) <div id="sec-object.getownpropertynames"></div>
 
-When the getOwnPropertyNames function is called, the following steps are taken:
+调用getOwnPropertyNames函数时，将执行以下步骤：
 
-1. Return ? GetOwnPropertyKeys(O, String).
+1. 返回 ? GetOwnPropertyKeys(O, String).
 
 #### 19.1.2.11 Object.getOwnPropertySymbols ( O ) <div id="sec-object.getownpropertysymbols"></div>
 
-When the getOwnPropertySymbols function is called with argument O, the following steps are taken:
+使用参数O调用getOwnPropertySymbols函数时，将执行以下步骤：
 
-1. Return ? GetOwnPropertyKeys(O, Symbol).
+1. 返回 ? GetOwnPropertyKeys(O, Symbol).
 
 ##### 19.1.2.11.1 RS: GetOwnPropertyKeys ( O, type ) <div id="sec-getownpropertykeys"></div>
 
-The abstract operation GetOwnPropertyKeys is called with arguments O and type where O is an Object and type is one of the ECMAScript specification types String or Symbol. The following steps are taken:
+使用参数O和类型调用抽象操作GetOwnPropertyKeys，其中类型O为对象，类型为ECMAScript规范类型String或Symbol之一。采取以下步骤：
 
-1. Let obj be ? ToObject(O).
-2. Let keys be ? obj.\[\[OwnPropertyKeys]]().
-3. Let nameList be a new empty List.
-4. For each element nextKey of keys in List order, do
-  1. If Type(nextKey) is type, then
-        1. Append nextKey as the last element of nameList.
-5. Return CreateArrayFromList(nameList).
+1. 令 obj 为 ? ToObject(O).
+2. 令 keys 为 ? obj.\[\[OwnPropertyKeys]]().
+3. 令 nameList 为新的空列表
+4. 对于按列表顺序的键的每个元素nextKey，执行
+        1. 若 Type(nextKey) 是 type，那么
+              1. 追加nextKey作为nameList的最后一个元素。
+5. 返回 CreateArrayFromList(nameList).
 
 #### 19.1.2.12 Object.getPrototypeOf ( O ) <div id="sec-object.getprototypeof"></div>
 
-When the getPrototypeOf function is called with argument O, the following steps are taken:
+使用参数OF调用getPrototypeOf函数时，将执行以下步骤：
 
-1. Let obj be ? ToObject(O).
-2. Return ? obj.\[\[GetPrototypeOf]]().
+1. 令 obj 为 ? ToObject(O).
+2. 返回 ? obj.\[\[GetPrototypeOf]]().
 
 #### 19.1.2.13 Object.is ( value1, value2 ) <div id="sec-object.is"></div>
 
-When the is function is called with arguments value1 and value2, the following steps are taken:
+当使用参数value1和value2调用is函数时，将执行以下步骤：
 
-1. Return SameValue(value1, value2).
+1. 返回 SameValue(value1, value2).
 
 #### 19.1.2.14 Object.isExtensible ( O ) <div id="sec-object.isextensible"></div>
 
-When the isExtensible function is called with argument O, the following steps are taken:
+当使用参数O调用is可扩展函数时，将执行以下步骤：
 
-1. If Type(O) is not Object, return false.
-2. Return ? IsExtensible(O).
+1. 若 Type(O) 不是 Object, 返回 false.
+2. 返回 ? IsExtensible(O).
 
 #### 19.1.2.15 Object.isFrozen ( O ) <div id="sec-object.isfrozen"></div>
-When the isFrozen function is called with argument O, the following steps are taken:
+ 使用参数O调用isFrozen函数时，将执行以下步骤：
 
-1. If Type(O) is not Object, return true.
-2. Return ? TestIntegrityLevel(O, "frozen").
+1. 若 Type(O) 不是 Object, 返回 true.
+2. 返回 ? TestIntegrityLevel(O, "frozen").
 
 #### 19.1.2.16 Object.isSealed ( O ) <div id="sec-object.issealed"></div>
 
-When the isSealed function is called with argument O, the following steps are taken:
+当使用参数O调用is Sealed函数时，将执行以下步骤：
 
-1. If Type(O) is not Object, return true.
-2. Return ? TestIntegrityLevel(O, "sealed").
+1. 若 Type(O) 不是 Object, 返回 true.
+2. 返回 ? TestIntegrityLevel(O, "sealed").
 
 #### 19.1.2.17 Object.keys ( O ) <div id="sec-object.keys"></div>
 
-When the keys function is called with argument O, the following steps are taken:
+当使用参数O调用keys函数时，将执行以下步骤：
 
-1. Let obj be ? ToObject(O).
-2. Let nameList be ? EnumerableOwnPropertyNames(obj, "key").
-3. Return CreateArrayFromList(nameList).
+1. 令 obj 为 ? ToObject(O).
+2. 令 nameList 为 ? EnumerableOwnPropertyNames(obj, "key").
+3. 返回 CreateArrayFromList(nameList).
 
 #### 19.1.2.18 Object.preventExtensions ( O ) <div id="sec-object.preventextensions"></div>
 
-When the preventExtensions function is called, the following steps are taken:
+调用preventExtensions函数时，将执行以下步骤：
 
-1. If Type(O) is not Object, return O.
-2. Let status be ? O.\[[\PreventExtensions]]().
-3. If status is false, throw a TypeError exception.
-4. Return O.
+1. 若 Type(O) 不是 Object, 返回 O.
+2. 令 status 为 ? O.\[\[PreventExtensions]]().
+3. 若 status 是 false, 抛出 TypeError 异常。
+4. 返回 O.
 
 #### 19.1.2.19 Object.prototype <div id="sec-object.prototype"></div>
 
-The initial value of Object.prototype is the intrinsic object %ObjectPrototype%.
+Object.prototype的初始值为内部对象％ObjectPrototype％。
 
-This property has the attributes { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }.
+该属性具有以下属性 { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }.
 
 #### 19.1.2.20 Object.seal ( O ) <div id="sec-object.seal"></div>
 
-When the seal function is called, the following steps are taken:
+调用seal函数时，将执行以下步骤：
 
-1. If Type(O) is not Object, return O.
-2. Let status be ? SetIntegrityLevel(O, "sealed").
-3. If status is false, throw a TypeError exception.
-4. Return O.
+1. 若 Type(O) 不是 Object, 返回 O.
+2. 令 status 为 ? SetIntegrityLevel(O, "sealed").
+3. 若 status 是 false, 抛出 TypeError 异常。
+4. 返回 O.
 
 #### 19.1.2.21 Object.setPrototypeOf ( O, proto ) <div id="sec-object.setprototypeof"></div>
 
-When the setPrototypeOf function is called with arguments O and proto, the following steps are taken:
+当使用参数O和proto调用setPrototypeOf函数时，将执行以下步骤：
 
-1. Set O to ? RequireObjectCoercible(O).
-2. If Type(proto) is neither Object nor Null, throw a TypeError exception.
-3. If Type(O) is not Object, return O.
-4. Let status be ? O.\[\[SetPrototypeOf]](proto).
-5. If status is false, throw a TypeError exception.
-6. Return O.
+1. 设置 O 为 ? RequireObjectCoercible(O).
+2. 若 Type(proto) 不是 Object 或 Null, 抛出 TypeError 异常。
+3. 若 Type(O) 不是 Object, 返回 O.
+4. 令 status 为 ? O.\[\[SetPrototypeOf]](proto).
+5. 若 status 是 false, 抛出 TypeError 异常。
+6. 返回 O.
 
 #### 19.1.2.22 Object.values ( O ) <div id="sec-object.values"></div>
 
-When the values function is called with argument O, the following steps are taken:
+当使用参数O调用values函数时，将执行以下步骤：
 
-1. Let obj be ? ToObject(O).
-2. Let nameList be ? EnumerableOwnPropertyNames(obj, "value").
-3. Return CreateArrayFromList(nameList).
+1. 令 obj 为 ? ToObject(O).
+2. 令 nameList 为 ? EnumerableOwnPropertyNames(obj, "value").
+3. 返回 CreateArrayFromList(nameList).
 
 ### 19.1.3 Object 原型对象属性 <div id="sec-properties-of-the-object-prototype-object"></div>
 
-The Object prototype object:
+对象原型对象：
 
-- is the intrinsic object %ObjectPrototype%.
-- is an immutable prototype exotic object.
-- has a [[Prototype]] internal slot whose value is null.
+- 是内部对象％ObjectPrototype％。
+- 是不变的原型异类对象
+- 有一个[[Prototype]]内部插槽，其值为null。
 
 #### 19.1.3.1 Object.prototype.constructor <div id="sec-object.prototype.constructor"></div>
 
-The initial value of Object.prototype.constructor is the intrinsic object %Object%.
+Object.prototype.constructor的初始值为内部对象％Object％。
 
 #### 19.1.3.2 Object.prototype.hasOwnProperty ( V ) <div id="sec-object.prototype.hasownproperty"></div>
 
-When the hasOwnProperty method is called with argument V, the following steps are taken:
+当使用参数V调用hasOwnProperty方法时，将执行以下步骤：
 
-1. Let P be ? ToPropertyKey(V).
-2. Let O be ? ToObject(this value).
-3. Return ? HasOwnProperty(O, P).
+1. 令 P 为 ? ToPropertyKey(V).
+2. 令 O 为 ? ToObject(this value).
+3. 返回 ? HasOwnProperty(O, P).
 
-> NOTE The ordering of steps 1 and 2 is chosen to ensure that any exception that would have been thrown by step 1 in previous editions of this specification will continue to be thrown even if the this value is undefined or null.
+> 注：选择步骤1和2的顺序是为了确保即使this值undefined或为null，在本规范的先前版本中由步骤1引发的任何异常都将继续引发。
 
 #### 19.1.3.3 Object.prototype.isPrototypeOf ( V ) <div id="sec-object.prototype.isprototypeof"></div>
 
-When the isPrototypeOf method is called with argument V, the following steps are taken:
+使用参数V调用isPrototypeOf方法时，将执行以下步骤：
 
-1. If Type(V) is not Object, return false.
-2. Let O be ? ToObject(this value).
-3. Repeat,
-1. Set V to ? V.\[\[GetPrototypeOf]]().
-2. If V is null, return false.
-3. If SameValue(O, V) is true, return true.
+1. 若 Type(V) 不是 Object, 返回 false.
+2. 令 O 为 ? ToObject(this value).
+3. 重复，
+   1. 设置 V 为 ? V.\[\[GetPrototypeOf]]().
+   2. 若 V 是 null, 返回 false.
+   3. 若 SameValue(O, V) 是 true, 返回 true.
 
-> NOTE The ordering of steps 1 and 2 preserves the behaviour specified by previous editions of this specification for the case where V is not an object and the this value is undefined or null.
+> 注：对于V不是对象且this值undefined或为null的情况，步骤1和2的顺序保留了本规范先前版本指定的行为。
 
 #### 19.1.3.4 Object.prototype.propertyIsEnumerable ( V ) <div id="sec-object.prototype.propertyisenumerable"></div>
 
-When the propertyIsEnumerable method is called with argument V, the following steps are taken:
+当使用参数V调用propertyIsEnumerable方法时，将执行以下步骤：
 
-1. Let P be ? ToPropertyKey(V).
-2. Let O be ? ToObject(this value).
-3. Let desc be ? O.\[\[GetOwnProperty]](P).
-4. If desc is undefined, return false.
-5. Return desc.[[Enumerable]].
+1. 令 P 为 ? ToPropertyKey(V).
+2. 令 O 为 ? ToObject(this value).
+3. 令 desc 为 ? O.\[\[GetOwnProperty]](P).
+4. 若 desc 是 undefined, 返回 false.
+5. 返回 desc.[[Enumerable]].
 
->NOTE 1 This method does not consider objects in the prototype chain.
+>注1：该方法不考虑原型链中的对象。
 
-> NOTE 2 The ordering of steps 1 and 2 is chosen to ensure that any exception that would have been thrown by step 1 in previous editions of this specification will continue to be thrown even if the this value is undefined or null.
+> 注2：选择步骤1和2的顺序是为了确保即使this值为undefined或null，在本规范先前版本中由步骤1引发的任何异常都将继续引发。
 
 #### 19.1.3.5 Object.prototype.toLocaleString ( [ reserved1 [ , reserved2 ] ] ) <div id="sec-object.prototype.tolocalestring"></div>
 
-When the toLocaleString method is called, the following steps are taken:
+调用toLocaleString方法时，将执行以下步骤：
 
-1. Let O be the this value.
-2. Return ? Invoke(O, "toString").
+1. 令 O 为 this 值.
+2. 返回 ? Invoke(O, "toString").
 
-The optional parameters to this function are not used but are intended to correspond to the parameter pattern used by ECMA-402 toLocaleString functions. Implementations that do not include ECMA-402 support must not use those parameter positions for other purposes.
+该函数的可选参数未使用，但旨在与ECMA-402 toLocaleString函数使用的参数模式相对应。不包含ECMA-402支持的实现不得将这些参数位置用于其他目的。
 
->NOTE 1 This function provides a generic toLocaleString implementation for objects that have no locale-specific toString behaviour. Array, Number, Date, and Typed Arrays provide their own locale-sensitive toLocaleString methods.
+>注1：该函数为没有特定于语言环境的toString行为的对象提供通用的toLocaleString实现。数组，数字，日期和类型数组提供了它们自己的区域设置敏感的toLocaleString方法。
 
-> NOTE 2 ECMA-402 intentionally does not provide an alternative to this default implementation.
+> 注2：ECMA-402有意不提供此默认实施方式的替代方法。
 
 #### 19.1.3.6 Object.prototype.toString ( ) <div id="sec-object.prototype.tostring"></div>
 
-When the toString method is called, the following steps are taken:
+调用toString方法时，将执行以下步骤：
 
-1. If the this value is undefined, return "[object Undefined]".
-2. If the this value is null, return "[object Null]".
-3. Let O be ! ToObject(this value).
-4. Let isArray be ? IsArray(O).
-5. If isArray is true, let builtinTag be "Array".
-6. Else if O is a String exotic object, let builtinTag be "String".
-7. Else if O has a [[ParameterMap]] internal slot, let builtinTag be "Arguments".
-8. Else if O has a [[Call]] internal method, let builtinTag be "Function".
-9. Else if O has an [[ErrorData]] internal slot, let builtinTag be "Error".
-10. Else if O has a [[BooleanData]] internal slot, let builtinTag be "Boolean".
-11. Else if O has a [[NumberData]] internal slot, let builtinTag be "Number".
-12. Else if O has a [[DateValue]] internal slot, let builtinTag be "Date".
-13. Else if O has a [[RegExpMatcher]] internal slot, let builtinTag be "RegExp".
-14. Else, let builtinTag be "Object".
-15. Let tag be ? Get(O, @@toStringTag).
-16. If Type(tag) is not String, set tag to builtinTag.
-17. Return the string-concatenation of "[object ", tag, and "]".
+1. 若 this 值是 undefined, 返回 "[object Undefined]".
+2. 若 this 值是 null, 返回 "[object Null]".
+3. 令 O 为 ! ToObject(this value).
+4. 令 isArray 为 ? IsArray(O).
+5. 若 isArray 是 true, 令 builtinTag 为 "Array".
+6. 否则，若 O 是 String 异类对象, 令 builtinTag 为 "String".
+7. 否则，若 O 具有 [[ParameterMap]] 内部插槽, 令 builtinTag 为 "Arguments".
+8. 否则，若 O 具有 [[Call]] 内部方法, 令 builtinTag 为 "Function".
+9. 否则，若 O 具有 [[ErrorData]] 内部插槽, 令 builtinTag 为 "Error".
+10. 否则，若 O 具有 [[BooleanData]] 内部插槽, 令 builtinTag 为 "Boolean".
+11. 否则，若 O 具有 [[NumberData]] 内部插槽, 令 builtinTag 为 "Number".
+12. 否则，若 O 具有 [[DateValue]] 内部插槽, 令 builtinTag 为 "Date".
+13. 否则，若 O 具有 [[RegExpMatcher]] 内部插槽, 令 builtinTag 为 "RegExp".
+14. 否则, 令 builtinTag 为 "Object".
+15. 令 tag 为 ? Get(O, @@toStringTag).
+16. 若 Type(tag) 不是 String, 设置 tag 为 builtinTag.
+17. 返回 "[object ", tag, and "]" 的字符串连接
 
-This function is the %ObjProto_toString% intrinsic object.
+此函数是％ObjProto_toString％内部对象。
 
-> NOTE Historically, this function was occasionally used to access the String value of the [[Class]] internal slot that was used in previous editions of this specification as a nominal type tag for various built-in objects. The above definition of toString preserves compatibility for legacy code that uses toString as a test for those specific kinds of built-in objects. It does not provide a reliable type testing mechanism for other kinds of built-in or program defined objects. In addition, programs can use @@toStringTag in ways that will invalidate the reliability of such legacy type tests.
+> 注：从历史上看，此函数有时用于访问[[Class]]内部插槽的String值，该内部插槽在本规范的先前版本中用作各种内置对象的标称类型标记。上面对toString的定义保留了与使用toString来测试那些特定种类的内置对象的旧代码的兼容性。它没有为其他类型的内置或程序定义的对象提供可靠的类型测试机制。另外，程序可以使用@@ toStringTag，这将使此类旧式测试的可靠性无效。
 
 #### 19.1.3.7 Object.prototype.valueOf ( ) <div id="sec-object.prototype.valueof"></div>
 
-When the valueOf method is called, the following steps are taken
+调用valueOf方法时，将执行以下步骤
 
-1. Return ? ToObject(this value).
+1. 返回 ? ToObject(this value).
 
-This function is the %ObjProto_valueOf% intrinsic object.
+此函数是％ObjProto_valueOf％内部对象。
 
 ### 19.1.4 Object 实例属性 <div id="sec-properties-of-object-instances"></div>
 
-Object instances have no special properties beyond those inherited from the Object prototype object.
+对象实例除了从Object原型对象继承的属性外，没有其他特殊属性。
 
 ## 19.2 Function 对象 <div id="sec-function-objects"></div>
 ### 19.2.1 Function 构造器 <div id="sec-function-constructor"></div>
 
-The Function constructor:
+函数构造函数：
 
-- is the intrinsic object %Function%.
-- is the initial value of the Function property of the global object.
-- creates and initializes a new function object when called as a function rather than as a constructor. Thus the function call Function(…) is equivalent to the object creation expression new Function(…) with the same arguments.
-- is designed to be subclassable. It may be used as the value of an extends clause of a class definition. Subclass constructors that intend to inherit the specified Function behaviour must include a super call to the Function constructor to create and initialize a subclass instance with the internal slots necessary for built-in function behaviour. All ECMAScript syntactic forms for defining function objects create instances of Function.
-- There is no syntactic means to create instances of Function subclasses except for the built-in GeneratorFunction, AsyncFunction, and AsyncGeneratorFunction subclasses
+- 是内部对象％Function％。
+- 是全局对象的Function属性的初始值。
+- 当作为函数而不是构造函数调用时，创建并初始化一个新的函数对象。因此，函数调用Function（…）等效于具有相同参数的对象创建表达式new Function（…）。
+- 设计为可归类的。它可以用作类定义的extends子句的值。打算继承指定Function行为的子类构造函数必须包括对Function构造函数的super调用，以使用内置函数行为所需的内部插槽来创建和初始化子类实例。用于定义函数对象的所有ECMAScript语法形式都将创建Function的实例。
+- 除了内置的GeneratorFunction，AsyncFunction和AsyncGeneratorFunction子类之外，没有语法方法可以创建Function子类的实例。
 
 #### 19.2.1.1 Function ( p1, p2, … , pn, body ) <div id="sec-function-p1-p2-pn-body"></div>
 
-The last argument specifies the body (executable code) of a function; any preceding arguments specify formal parameters.
+最后一个参数指定函数的主体（可执行代码）；前面的任何参数都指定形式参数。
 
-When the Function function is called with some arguments p1, p2, … , pn, body (where n might be 0, that is, there are no “ p ” arguments, and where body might also not be provided), the following steps are taken:
+当使用某些参数p1，p2，…，pn主体（其中n可能为0，即没有“ p”参数，也可能不提供主体）调用Function函数时，将执行以下步骤采取：
 
-1. Let C be the active function object.
-2. Let args be the argumentsList that was passed to this function by [[Call]] or [[Construct]].
-3. Return ? CreateDynamicFunction(C, NewTarget, "normal", args).
+1. 令 C 为活动函数对象。
+2. 令 args 为由[[Call]]或[[Construct]]传递给此函数的argumentsList。
+3. 返回 ? CreateDynamicFunction(C, NewTarget, "normal", args).
 
-> NOTE It is permissible but not necessary to have one argument for each formal parameter to be specified. For example, all three of the following expressions produce the same result:
+> 注：允许但不必为每个要指定的形式参数使用一个参数。例如，以下所有三个表达式产生相同的结果：
 >
 > new Function("a", "b", "c", "return a+b+c")
 > new Function("a, b, c", "return a+b+c")
@@ -395,85 +393,84 @@ When the Function function is called with some arguments p1, p2, … , pn, body 
 
 ##### 19.2.1.1.1 RS: CreateDynamicFunction ( constructor, newTarget, kind, args ) <div id="sec-createdynamicfunction"></div>
 
-The abstract operation CreateDynamicFunction is called with arguments constructor, newTarget, kind, and args. constructor is the constructor function that is performing this action, newTarget is the constructor that new was initially applied to, kind is either "normal", "generator", "async", or "async generator", and args is a List containing the actual argument values that were passed to constructor. The following steps are taken:
+抽象操作CreateDynamicFunction用参数构造函数，newTarget，kind和args调用。构造函数是执行此操作的构造函数，newTarget是new最初应用于的构造函数，kind是“ normal”，“ generator”，“ async”或“ async generator”，而args是包含以下内容的List传递给构造函数的实际参数值。采取以下步骤：
 
-1. Assert: The execution context stack has at least two elements.
-2. Let callerContext be the second to top element of the execution context stack.
-3. Let callerRealm be callerContext's Realm.
-4. Let calleeRealm be the current Realm Record.
-5. Perform ? HostEnsureCanCompileStrings(callerRealm, calleeRealm).
-6. If newTarget is undefined, set newTarget to constructor.
-7. If kind is "normal", then
-    1. Let goal be the grammar symbol FunctionBody[~Yield, ~Await] .
-    2. Let parameterGoal be the grammar symbol FormalParameters[~Yield, ~Await] .
-    3. Let fallbackProto be "%FunctionPrototype%".
-8. Else if kind is "generator", then
-    1. Let goal be the grammar symbol GeneratorBody.
-    2. Let parameterGoal be the grammar symbol FormalParameters[+Yield, ~Await] .
-    3. Let fallbackProto be "%Generator%".
-9. Else if kind is "async", then
-    1. Let goal be the grammar symbol AsyncFunctionBody.
-    2. Let parameterGoal be the grammar symbol FormalParameters[~Yield, +Await] .
-    3. Let fallbackProto be "%AsyncFunctionPrototype%".
-10. Else,
-    1. Assert: kind is "async generator".
-    2. Let goal be the grammar symbol AsyncGeneratorBody.
-    3. Let parameterGoal be the grammar symbol FormalParameters[+Yield, +Await] .
-    4. Let fallbackProto be "%AsyncGenerator%".
-11. Let argCount be the number of elements in args.
-12. Let P be the empty String.
-13. If argCount = 0, let bodyText be the empty String.
-14. Else if argCount = 1, let bodyText be args[0].
-15. Else argCount > 1,
-    1. Let firstArg be args[0].
-    2. Set P to ? ToString(firstArg).
-    3. Let k be 1.
-    4. Repeat, while k < argCount - 1
-        1. Let nextArg be args[k].
-        2. Let nextArgString be ? ToString(nextArg).
-        3. Set P to the string-concatenation of the previous value of P, "," (a comma), and nextArgString.
-        4. Increase k by 1.
-    5. Let bodyText be args[k].
-16. Set bodyText to ? ToString(bodyText).
-17. Let parameters be the result of parsing P, interpreted as UTF-16 encoded Unicode text as described in 6.1.4, using parameterGoal as the goal symbol. Throw a SyntaxError exception if the parse fails.
-18. Let body be the result of parsing bodyText, interpreted as UTF-16 encoded Unicode text as described in 6.1.4, using goal as the goal symbol. Throw a SyntaxError exception if the parse fails.
-19. Let strict be ContainsUseStrict of body.
-20. If any static semantics errors are detected for parameters or body, throw a SyntaxError or a ReferenceError exception, depending on the type of the error. If strict is true, the Early Error rules for UniqueFormalParameters : FormalParameters are applied. Parsing and early error detection may be interweaved in an implementationdependent manner.
-21. If strict is true and IsSimpleParameterList of parameters is false, throw a SyntaxError exception.
-22. If any element of the BoundNames of parameters also occurs in the LexicallyDeclaredNames of body, throw a SyntaxError exception.
-23. If body Contains SuperCall is true, throw a SyntaxError exception.
-24. If parameters Contains SuperCall is true, throw a SyntaxError exception.
-25. If body Contains SuperProperty is true, throw a SyntaxError exception.
-26. If parameters Contains SuperProperty is true, throw a SyntaxError exception.
-27. If kind is "generator" or "async generator", then
-    1. If parameters Contains YieldExpression is true, throw a SyntaxError exception.
-28. If kind is "async" or "async generator", then
-    1. If parameters Contains AwaitExpression is true, throw a SyntaxError exception.
-29. If strict is true, then
-    1. If BoundNames of parameters contains any duplicate elements, throw a SyntaxError exception.
-30. Let proto be ? GetPrototypeFromConstructor(newTarget, fallbackProto).
-31. Let F be FunctionAllocate(proto, strict, kind).
-32. Let realmF be F.[[Realm]].
-33. Let scope be realmF.[[GlobalEnv]].
-34. Perform FunctionInitialize(F, Normal, parameters, body, scope).
-35. If kind is "generator", then
-    1. Let prototype be ObjectCreate(%GeneratorPrototype%).
-    2. Perform DefinePropertyOrThrow(F, "prototype", PropertyDescriptor { [[Value]]: prototype, [[Writable]]: true, [[Enumerable]]: false, [[Configurable]]: false }).
-36. Else if kind is "async generator", then
-     1. Let prototype be ObjectCreate(%AsyncGeneratorPrototype%).
-     2. Perform DefinePropertyOrThrow(F, "prototype", PropertyDescriptor { [[Value]]: prototype, [[Writable]]: true, [[Enumerable]]: false, [[Configurable]]: false }).
-37. Else if kind is "normal", perform MakeConstructor(F).
-38. NOTE: Async functions are not constructable and do not have a [[Construct]] internal method or a "prototype" property.
-39. Perform SetFunctionName(F, "anonymous").
-40. Let prefix be the prefix associated with kind in Table 47.
-41. Let sourceText be the string-concatenation of prefix, " anonymous(", P, 0x000A (LINE FEED), ") {",
-     0x000A (LINE FEED), bodyText, 0x000A (LINE FEED), and "}".
-42. Set F.[[SourceText]] to sourceText.
-43. Return F.
+1. 断言：执行上下文堆栈至少具有两个元素。
+2. 令 callerContext 为执行上下文堆栈的第二个元素。
+3. 令 callerRealm 为 callerContext 的作用域.
+4. 令 calleeRealm 为大年作用域记录
+5. 执行 ? HostEnsureCanCompileStrings(callerRealm, calleeRealm).
+6. 若 newTarget 是 undefined, 设置 newTarget 为 constructor.
+7. 若 kind 是 "normal"，那么
+    1. 令 goal 为语法标记 FunctionBody[~Yield, ~Await] .
+    2. 令 parameterGoal 为语法标记 FormalParameters[~Yield, ~Await] .
+    3. 令 fallbackProto 为 "%FunctionPrototype%".
+8. 否则，若 kind 是 "generator"，那么
+    1. 令 goal 为语法标记 GeneratorBody.
+    2. 令 parameterGoal 为语法标记 FormalParameters[+Yield, ~Await] .
+    3. 令 fallbackProto 为 "%Generator%".
+9. 否则，若 kind 是 "async"，那么
+    1. 令 goal 为语法标记 AsyncFunctionBody.
+    2. 令 parameterGoal 为语法标记 FormalParameters[~Yield, +Await] .
+    3. 令 fallbackProto 为 "%AsyncFunctionPrototype%".
+10. 否则，
+    1. 断言：kind 是 "async generator".
+    2. 令 goal 为语法标记 AsyncGeneratorBody.
+    3. 令 parameterGoal 为语法标记 FormalParameters[+Yield, +Await] .
+    4. 令 fallbackProto 为 "%AsyncGenerator%".
+11. 令 argCount 为 args 中的元素数。
+12. 令 P 为空字符串。
+13. 若 argCount = 0, 令 bodyText 为空字符串
+14. 否则，若 argCount = 1, 令 bodyText 为 args[0].
+15. 否则，argCount > 1,
+    1. 令 firstArg 为 args[0].
+    2. 设置 P 为 ? ToString(firstArg).
+    3. 令 k 为 1.
+    4. 重复， 当 k < argCount - 1
+        1. 令 nextArg 为 args[k].
+        2. 令 nextArgString 为 ? ToString(nextArg).
+        3. 设置 P 为 P, "," (a comma), and nextArgString 的先前值的字符串连接的值
+        4. k 增加 1.
+    5. 令 bodyText 为 args[k].
+16. 设置 bodyText 为 ? ToString(bodyText).
+17. 令 parameters 为使用parameterGoal作为目标符号的解析P的结果，解释为6.1.4中描述的UTF-16编码的Unicode文本。如果解析失败，则抛出SyntaxError异常。
+18. 令 body 为解析bodyText的结果，使用目标作为目标符号，解释为6.1.4中描述的UTF-16编码的Unicode文本。如果解析失败，则抛出SyntaxError异常。
+19. 令 strict 为 body 的 ContainsUseStrict。
+20. 如果检测到参数或主体的任何静态语义错误，则根据错误的类型，抛出SyntaxError或ReferenceError异常。如果strict为true，则将应用UniqueFormalParameters：FormalParameters的Early Error规则。解析和早期错误检测可以以依赖于实现的方式混合在一起。
+21. 如果strict为true而IsSimpleParameterList为假, 抛出 SyntaxError 异常。
+22. 如果parameters的BoundNames的任何元素也出现在body的LexicallyDeclaredNames中，抛出 SyntaxError 异常。
+23. 若 body 包含 SuperCall 是 true, 抛出 SyntaxError 异常。
+24. 若 parameters 包含 SuperCall 是 true, 抛出 SyntaxError 异常。
+25. 若 body 包含 SuperProperty 是 true, 抛出 SyntaxError 异常。
+26. 若 parameters 包含 SuperProperty 是 true, 抛出 SyntaxError 异常。
+27. 若 kind 是 "generator" 或  "async generator"，那么
+    1. 若 parameters 包含 YieldExpression 是 true, 抛出 SyntaxError 异常。
+28. 若 kind 是 "async" 或 "async generator"，那么
+    1. 若 parameters 包含 AwaitExpression 是 true, 抛出 SyntaxError 异常。
+29. 若 strict 是 true，那么
+    1. 如果parameters的BoundNames包含任何重复的元素，抛出 SyntaxError 异常。
+30. 令 proto 为 ? GetPrototypeFromConstructor(newTarget, fallbackProto).
+31. 令 F 为 FunctionAllocate(proto, strict, kind).
+32. 令 realmF 为 F.[[Realm]].
+33. 令 scope 为 realmF.[[GlobalEnv]].
+34. 执行 FunctionInitialize(F, Normal, parameters, body, scope).
+35. 若 kind 是 "generator"，那么
+    1. 令 prototype 为 ObjectCreate(%GeneratorPrototype%).
+    2. 执行 DefinePropertyOrThrow(F, "prototype", PropertyDescriptor { [[Value]]: prototype, [[Writable]]: true, [[Enumerable]]: false, [[Configurable]]: false }).
+36. 否则，若 kind 是 "async generator"，那么
+     1. 令 prototype 为 ObjectCreate(%AsyncGeneratorPrototype%).
+     2. 执行 DefinePropertyOrThrow(F, "prototype", PropertyDescriptor { [[Value]]: prototype, [[Writable]]: true, [[Enumerable]]: false, [[Configurable]]: false }).
+37. 否则，若 kind 是 "normal", 执行 MakeConstructor(F).
+38. 注意：异步函数不是可构造的，也没有[[Construct]]内部方法或“prototype”属性
+39. 执行 SetFunctionName(F, "anonymous").
+40. 令 prefix 为表47中与kind相关的前缀。
+41. 令 sourceText 为 prefix, " anonymous(", P, 0x000A (LINE FEED), ") {", 0x000A (LINE FEED), bodyText, 0x000A (LINE FEED), and "}" 的字符串连接
+42. 设置 F.[[SourceText]] 为 sourceText.
+43. 返回 F.
 
-> NOTE A prototype property is created for every non-async function created using CreateDynamicFunction to provide for the possibility that the function will be used as a constructor.
+> 注意，对于使用CreateDynamicFunction创建的每个非异步函数，都会创建一个prototype属性，以提供将该函数用作构造函数的可能性。
 
-Table 47: Dynamic Function SourceText Prefixes
+表47:动态函数SourceText前缀
 
 | Kind              | Prefix            |
 | ----------------- | ----------------- |
@@ -484,108 +481,108 @@ Table 47: Dynamic Function SourceText Prefixes
 
 ### 19.2.2 Function 构造器属性 <div id="sec-properties-of-the-function-constructor"></div>
 
-The Function constructor:
+构造函数的函数:
 
-- is itself a built-in function object.
-- has a [[Prototype]] internal slot whose value is the intrinsic object %FunctionPrototype%.
-- has the following properties:
+- 本身就是一个内置函数对象。
+- 有一个[[Prototype]]内部槽，其值为内部对象%FunctionPrototype%。
+- 具有以下特性:
 
 #### 19.2.2.1 Function.length <div id="sec-function.length"></div>
 
-This is a data property with a value of 1. This property has the attributes { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: true }.
+这是一个值为1的数据属性。该属性的属性为 { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }。
 
 #### 19.2.2.2 Function.prototype <div id="sec-function.prototype"></div>
 
-The value of Function.prototype is %FunctionPrototype%, the intrinsic Function prototype object.
+Function.prototyp的值为%FunctionPrototype%，即内部函数原型对象。
 
-This property has the attributes { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }.
+此属性具有属性 { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }.
 
 ### 19.2.3 Function 原型对象属性 <div id="sec-properties-of-the-function-prototype-object"></div>
 
-The Function prototype object:
+函数原型对象：
 
-- is the intrinsic object %FunctionPrototype%.
-- is itself a built-in function object.
-- accepts any arguments and returns undefined when invoked.
-- does not have a [[Construct]] internal method; it cannot be used as a constructor with the new operator.
-- has a [[Prototype]] internal slot whose value is the intrinsic object %ObjectPrototype%.
-- does not have a prototype property.
-- has a "length" property whose value is 0.
-- has a name property whose value is the empty String.
+- 是内部对象%FunctionPrototype%。
+- 本身就是一个内置函数对象。
+- 接受任何参数并在调用时返回未定义的值。
+- 没有[[Construct]]内部方法；它不能与新操作符一起用作构造函数。
+- 有一个[[Prototype]]内部槽，其值为内部对象%ObjectPrototype%。
+- 没有原型属性。
+- 具有“length”属性，其值为0。
+- 具有name属性，其值为空字符串。
 
 > NOTE The Function prototype object is specified to be a function object to ensure compatibility with ECMAScript code that was created prior to the ECMAScript 2015 specification.
 
 #### 19.2.3.1 Function.prototype.apply ( thisArg, argArray ) <div id="sec-function.prototype.apply"></div>
 
-When the apply method is called with arguments thisArg and argArray, the following steps are taken:
+当使用参数thisArg和argArray调用apply方法时，需要执行以下步骤:
 
-1. Let func be the this value.
-2. If IsCallable(func) is false, throw a TypeError exception.
-3. If argArray is undefined or null, then
-   1. Perform PrepareForTailCall().
-   2. Return ? Call(func, thisArg).
-4. Let argList be ? CreateListFromArrayLike(argArray).
-5. Perform PrepareForTailCall().
-6. Return ? Call(func, thisArg, argList).
+1. 令 func 为 this 值.
+2. 若 IsCallable(func) 是 false, 抛出 TypeError 异常。
+3. 若 argArray 是 undefined 或 null，那么
+   1. 执行 PrepareForTailCall().
+   2. 返回 ? Call(func, thisArg).
+4. 令 argList 为 ? CreateListFromArrayLike(argArray).
+5. 执行 PrepareForTailCall().
+6. 返回 ? Call(func, thisArg, argList).
 
->NOTE 1 The thisArg value is passed without modification as the this value. This is a change from Edition 3, where an undefined or null thisArg is replaced with the global object and ToObject is applied to all other values and that result is passed as the this value. Even though the thisArg is passed without modification, non-strict functions still perform these transformations upon entry to the function.
+>注 1：将thisArg值作为this值传递，而不进行任何修改。这是版本3的一个变化，其中undefined或null thisArg被替换为全局对象，ToObject应用于所有其他值，结果作为This值传递。即使没有修改就传递了thisArg，非严格函数仍然在进入函数时执行这些转换。
 
-> NOTE 2 If func is an arrow function or a bound function then the thisArg will be ignored by the function [[Call]] in step 5.
+> 注 2：如果func是一个箭头函数或绑定函数，那么这个thisArg将被第5步中的函数[[Call]]忽略
 
 #### 19.2.3.2 Function.prototype.bind ( thisArg, ...args ) <div id="sec-function.prototype.bind"></div>
 
-When the bind method is called with argument thisArg and zero or more args, it performs the following steps:
+当绑定方法被参数thisArg和零个或多个args调用时，它执行以下步骤:
 
-1. Let Target be the this value.
-2. If IsCallable(Target) is false, throw a TypeError exception.
-3. Let args be a new (possibly empty) List consisting of all of the argument values provided after thisArg in order.
-4. Let F be ? BoundFunctionCreate(Target, thisArg, args).
-5. Let targetHasLength be ? HasOwnProperty(Target, "length").
-6. If targetHasLength is true, then
-1. Let targetLen be ? Get(Target, "length").
-2. If Type(targetLen) is not Number, let L be 0.
-3. Else,
-  1. Set targetLen to ! ToInteger(targetLen).
-  2. Let L be the larger of 0 and the result of targetLen minus the number of elements of args.
-7. Else, let L be 0.
-8. Perform ! SetFunctionLength(F, L).
-9. Let targetName be ? Get(Target, "name").
-10. If Type(targetName) is not String, set targetName to the empty string.
-11. Perform SetFunctionName(F, targetName, "bound").
-12. Return F.
+1. 令 Target 为 this 值.
+2. 若 IsCallable(Target) 是 false, 抛出 TypeError 异常。
+3. 令 args 为一个新的(可能是空的)列表，由thisArg之后提供的所有参数值按顺序组成。
+4. 令 F 为 ? BoundFunctionCreate(Target, thisArg, args).
+5. 令 targetHasLength 为 ? HasOwnProperty(Target, "length").
+6. 若 targetHasLength 是 true，那么
+   1. 令 targetLen 为 ? Get(Target, "length").
+   2. 若 Type(targetLen) 不是 Number, 令 L 为 0.
+   3. 否则,
+        1. 设置 targetLen 为 ! ToInteger(targetLen).
+        2. 令 L 为0和targetLen的结果减去args的元素数中较大的数。
+7. 否则，令 L 为 0.
+8. 执行 ! SetFunctionLength(F, L).
+9. 令 targetName 为 ? Get(Target, "name").
+10. 若 Type(targetName) 不是 String, 设置 targetName 为空字符串
+11. 执行 SetFunctionName(F, targetName, "bound").
+12. 返回 F.
 
-> NOTE 1 Function objects created using Function.prototype.bind are exotic objects. They also do not have a prototype property.
+> 注 1：使用Function.prototype创建的Function.prototype.bind是异类对象。它们也没有原型属性。
 
-> NOTE 2 If Target is an arrow function or a bound function then the thisArg passed to this method will not be used by subsequent calls to F.
+> 注 2：如果Target是一个箭头函数或绑定函数，那么传递给这个方法的thisArg将不会被后续的F调用所使用
 
 #### 19.2.3.3 Function.prototype.call ( thisArg, ...args ) <div id="sec-function.prototype.call"></div>
 
-When the call method is called with argument thisArg and zero or more args, the following steps are taken:
+当使用参数thisArg和零个或多个args调用调用方法时，将采取以下步骤:
 
-1. Let func be the this value.
-2. If IsCallable(func) is false, throw a TypeError exception.
-3. Let argList be a new empty List.
-4. If this method was called with more than one argument, then in left to right order, starting with the second argument, append each argument as the last element of argList.
-5. Perform PrepareForTailCall().
-6. Return ? Call(func, thisArg, argList).
+1. 令 func 为 this 值.
+2. 若 IsCallable(func) 是 false, 抛出 TypeError 异常。
+3. 令 argList 为新的空列表
+4. 如果使用多个参数调用此方法，则按照从左到右的顺序，从第二个参数开始，将每个参数附加为argList的最后一个元素。
+5. 执行 PrepareForTailCall().
+6. 返回 ? Call(func, thisArg, argList).
 
-> NOTE 1 The thisArg value is passed without modification as the this value. This is a change from Edition 3, where an undefined or null thisArg is replaced with the global object and ToObject is applied to all other values and that result is passed as the this value. Even though the thisArg is passed without modification, non-strict functions still perform these transformations upon entry to the function.
+> 注 1：将thisArg值作为this值传递，而不进行任何修改。这是版本3的一个变化，其中未定义的或null thisArg被替换为全局对象，ToObject应用于所有其他值，结果作为This值传递。即使没有修改就传递了thisArg，非严格函数仍然在进入函数时执行这些转换。
 
-> NOTE 2 If func is an arrow function or a bound function then the thisArg will be ignored by the function [[Call]] in step 5.
+> 注 2：如果func是一个箭头函数或绑定函数，那么这个thisArg将被第5步中的函数[[Call]]忽略。
 
 #### 19.2.3.4 Function.prototype.constructor <div id="sec-function.prototype.constructor"></div>
 
-The initial value of Function.prototype.constructor is the intrinsic object %Function%.
+Function.prototype.constructor的初始值是内部对象%Function%。
 
 #### 19.2.3.5 Function.prototype.toString ( ) <div id="sec-function.prototype.tostring"></div>
 
-When the toString method is called, the following steps are taken:
+当toString方法被调用时，需要执行以下步骤:
 
-1. Let func be the this value.
-2. If func is a Bound Function exotic object or a built-in function object, then return an implementation-dependent String source code representation of func. The representation must have the syntax of a NativeFunction. Additionally, if func is a Well-known Intrinsic Object and is not identified as an anonymous function, the portion of the returned String that would be matched by PropertyName must be the initial value of the name property of func.
-3. If Type(func) is Object and func has a [[SourceText]] internal slot and Type(func.[[SourceText]]) is String and ! HostHasSourceTextAvailable(func) is true, then return func.[[SourceText]].
-4. If Type(func) is Object and IsCallable(func) is true, then return an implementation-dependent String source code representation of func. The representation must have the syntax of a NativeFunction.
-5. Throw a TypeError exception.
+1. 令 func 为 this 值.
+2. 如果func是绑定函数异类对象或内置函数对象，则返回依赖于实现的 func 的字符串源代码表示。该表示形式必须具有NativeFunction的语法。此外，如果func是众所周知的内在对象，并且未标识为匿名函数，则返回的String中与PropertyName匹配的部分必须是func的name属性的初始值。
+3. 如果Type(func)是Object并且func具有[[SourceText]]内部插槽，并且Type(func.[[SourceText]])是String和 ! HostHasSourceTextAvailable(func)为true，那么返回func.[[SourceText]]
+4. 若 Type(func) 是 Object 并且 IsCallable(func) 是 true，那么 返回返回func的与实现相关的String源代码表示形式。该表示形式必须具有NativeFunction的语法。
+5. 抛出 TypeError 异常。
 
 ```
 NativeFunction :
@@ -595,155 +592,153 @@ native code ] }
 
 #### 19.2.3.6 Function.prototype [ @@hasInstance ] ( V ) <div id="sec-function.prototype-@@hasinstance"></div>
 
-When the @@hasInstance method of an object F is called with value V, the following steps are taken:
+当使用值V调用对象F的@@hasInstance方法时，将执行以下步骤：
 
-1. Let F be the this value.
-2. Return ? OrdinaryHasInstance(F, V).
+1. 令 F 为 this 值.
+2. 返回 ? OrdinaryHasInstance(F, V).
 
-The value of the name property of this function is "[Symbol.hasInstance]".
+该函数的名称属性的值为“ [Symbol.hasInstance]”。
 
-This property has the attributes { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }.
+该属性具有以下特性 { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }.
 
-> NOTE This is the default implementation of @@hasInstance that most functions inherit. @@hasInstance is called by the instanceof operator to determine whether a value is an instance of a specific constructor. An expression such as
+> 注：这是大多数函数继承的@@hasInstance的默认实现。 @@hasInstance由instanceof运算符调用，以确定某个值是否为特定构造函数的实例。诸如
 >
 > v instanceof F
 >
-> evaluates as
+> 解释执行为
 >
 > F\[@@hasInstance](v)
 >
-> A constructor function can control which objects are recognized as its instances by instanceof by exposing a different @@hasInstance method on the function.
+> 构造函数可以通过在函数上暴露不同的@@hasInstance方法来控制instanceof将哪些对象识别为其实例。
 
-This property is non-writable and non-configurable to prevent tampering that could be used to globally expose the target function of a bound function.
+此属性是不可写的且不可配置的，以防止可能被用来全局公开绑定函数的目标函数的篡改。
 
 ### 19.2.4 Function 实例 <div id="sec-function-instances"></div>
 
-Every Function instance is an ECMAScript function object and has the internal slots listed in Table 27. Function objects created using the Function.prototype.bind method (19.2.3.2) have the internal slots listed in Table 28.
+每个Function实例都是ECMAScript函数对象，并且具有在表27中列出的内部插槽。使用Function.prototype.bind方法（19.2.3.2）创建的函数对象具有在表28中列出的内部插槽。
 
-Function instances have the following properties:
+函数实例具有以下属性：
 
 #### 19.2.4.1 length <div id="sec-function-instances-length"></div>
 
-The value of the "length" property is an integer that indicates the typical number of arguments expected by the function. However, the language permits the function to be invoked with some other number of arguments. The behaviour of a function when invoked on a number of arguments other than the number specified by its "length" property depends on the function. This property has the attributes { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: true }.
+“ length”属性的值是一个整数，表示该函数期望的典型参数数量。但是，该语言允许使用其他一些参数来调用该函数。当函数调用多个参数而不是由其“ length”属性指定的数字时，其行为取决于函数。此属性具有属性{[[[Writable]]：false，[[Enumerable]]：false，[[Configurable]]：true}。
 
 #### 19.2.4.2 name <div id="sec-function-instances-name"></div>
 
-Anonymous functions objects that do not have a contextual name associated with them by this specification do not have a name own property but inherit the name property of %FunctionPrototype%.
+没有与此规范关联的上下文名称的匿名函数对象不具有名称拥有的属性，而是继承％FunctionPrototype％的name属性。
 
 #### 19.2.4.3 prototype <div id="sec-function-instances-prototype"></div>
 
-Function instances that can be used as a constructor have a prototype property. Whenever such a Function instance is created another ordinary object is also created and is the initial value of the function's prototype property. Unless otherwise specified, the value of the prototype property is used to initialize the [[Prototype]] internal slot of the object created when that function is invoked as a constructor.
+可用作构造函数的函数实例具有prototype属性。每当创建这样的Function实例时，也会创建另一个普通对象，该对象是函数的prototype属性的初始值。除非另有说明，否则原型属性的值将用于初始化在将该函数作为构造函数调用时创建的对象的[[Prototype]]内部插槽。
 
-This property has the attributes { [[Writable]]: true, [[Enumerable]]: false, [[Configurable]]: false }.
+该属性具有以下特性 { [[Writable]]: true, [[Enumerable]]: false, [[Configurable]]: false }.
 
-> NOTE Function objects created using Function.prototype.bind, or by evaluating a MethodDefinition (that is not a GeneratorMethod or AsyncGeneratorMethod) or an ArrowFunction do not have a prototype property.
+> 注：使用Function.prototype.bind或通过解释执行MethodDefinition（不是GeneratorMethod或AsyncGeneratorMethod）或ArrowFunction创建的函数对象没有原型属性。
 
 ### 19.2.5 HostHasSourceTextAvailable ( func ) <div id="sec-hosthassourcetextavailable"></div>
 
-HostHasSourceTextAvailable is an implementation-defined abstract operation that allows host environments to prevent the source text from being provided for a given function.
+HostHasSourceTextAvailable是实现定义的抽象操作，允许主机环境阻止为给定功能提供源文本。
 
-An implementation of HostHasSourceTextAvailable must complete normally in all cases. This operation must be deterministic with respect to its parameters. Each time it is called with a specific func as its argument, it must return the same completion record. The default implementation of HostHasSourceTextAvailable is to unconditionally return a normal completion with a value of true.
+在所有情况下，HostHasSourceTextAvailable的实现都必须正常完成。该操作必须在参数方面具有确定性。每次使用特定函数作为参数调用它时，它都必须返回相同的完成记录。 HostHasSourceTextAvailable的默认实现是无条件返回值为true的正常完成。
 
 ## 19.3 Boolean 对象 <div id="sec-boolean-objects"></div>
 ### 19.3.1 Boolean 构造器 <div id="sec-boolean-constructor"></div>
 
-The Boolean constructor:
+布尔构造函数:
 
-- is the intrinsic object %Boolean%.
+- 是内部对象％Boolean％。
 
-- is the initial value of the Boolean property of the global object.
+- 是全局对象的Boolean属性的初始值。
 
-- creates and initializes a new Boolean object when called as a constructor.
+- 在作为构造函数调用时创建并初始化一个新的布尔对象。
 
-- performs a type conversion when called as a function rather than as a constructor.
+- 当作为函数而不是构造函数调用时执行类型转换。
 
-- is designed to be subclassable. It may be used as the value of an extends clause of a class definition. 
+- 设计为可归类的。它可以用作类定义的extends子句的值。打算继承指定的Boolean行为的子类构造函数必须包括对Boolean构造函数的super调用，以使用[[BooleanData]]内部插槽创建和初始化子类实例。
 
-  Subclass constructors that intend to inherit the specified Boolean behaviour must include a super call to the Boolean constructor to create and initialize the subclass instance with a [[BooleanData]] internal slot.
 
 #### 19.3.1.1 Boolean ( value ) <div id="sec-boolean-constructor-boolean-value"></div>
 
-When Boolean is called with argument value, the following steps are taken:
+当使用参数值调用Boolean时，将执行以下步骤：
 
-1. Let b be ToBoolean(value).
-2. If NewTarget is undefined, return b.
-3. Let O be ? OrdinaryCreateFromConstructor(NewTarget, "%BooleanPrototype%", « [[BooleanData]] »).
-4. Set O.[[BooleanData]] to b.
-5. Return O.
+1. 令 b 为 ToBoolean(value).
+2. 若 NewTarget 是 undefined, 返回 b.
+3. 令 O 为 ? OrdinaryCreateFromConstructor(NewTarget, "%BooleanPrototype%", « [[BooleanData]] »).
+4. 设置 O.[[BooleanData]] 为 b.
+5. 返回 O.
 
 ### 19.3.2 Boolean 构造器属性 <div id="sec-properties-of-the-boolean-constructor"></div>
 
-The Boolean constructor:
+布尔构造函数：
 
-- has a [[Prototype]] internal slot whose value is the intrinsic object %FunctionPrototype%.
-- has the following properties:
+- 有一个[[Prototype]]内部插槽，其值是内部对象％FunctionPrototype％。
+- 具有以下属性：
 
 #### 19.3.2.1 Boolean.prototype <div id="sec-boolean.prototype"></div>
 
-The initial value of Boolean.prototype is the intrinsic object %BooleanPrototype%.
+Boolean.prototype的初始值为内部对象％BooleanPrototype％。
 
-This property has the attributes { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }.
+该属性具有以下特性 { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }.
 
 ### 19.3.3 Boolean 原型对象属性 <div id="sec-properties-of-the-boolean-prototype-object"></div>
 
-The Boolean prototype object:
+布尔原型对象：
 
-- is the intrinsic object %BooleanPrototype%.
-- is an ordinary object.
-- is itself a Boolean object; it has a [[BooleanData]] internal slot with the value false.
-- has a [[Prototype]] internal slot whose value is the intrinsic object %ObjectPrototype%.
+- 是内部对象％BooleanPrototype％。
+- 是一个普通的对象。
+- 它本身是一个布尔对象；它具有一个[[BooleanData]]内部插槽，其值为false。
+- 有一个[[Prototype]]内部插槽，其值是内部对象％ObjectPrototype％。
 
-The abstract operation thisBooleanValue(value) performs the following steps:
+抽象操作thisBooleanValue（value）执行以下步骤：
 
-1. If Type(value) is Boolean, return value.
-2. If Type(value) is Object and value has a [[BooleanData]] internal slot, then
-1. Let b be value.[[BooleanData]].
-2. Assert: Type(b) is Boolean.
-3. Return b.
-3. Throw a TypeError exception.
+1. 若 Type(value) 是 Boolean, 返回 value.
+2. 若 Type(value) 是 Object and value has a [[BooleanData]] internal slot，那么
+    1. 令 b 为 value.[[BooleanData]].
+    2. 断言：Type(b) is Boolean.
+    3. 返回 b.
+3. 抛出 TypeError 异常。
 
 #### 19.3.3.1 Boolean.prototype.constructor <div id="sec-boolean.prototype.constructor"></div>
 
-The initial value of Boolean.prototype.constructor is the intrinsic object %Boolean%.
+Boolean.prototype.constructor的初始值为内部对象％Boolean％。
 
 #### 19.3.3.2 Boolean.prototype.toString ( ) <div id="sec-boolean.prototype.tostring"></div>
 
-The following steps are taken:
+采取以下步骤：
 
-1. Let b be ? thisBooleanValue(this value).
-2. If b is true, return "true"; else return "false".
+1. 令 b 为 ? thisBooleanValue(this value).
+2. 若 b 是 true, 返回 "true"; 否则，返回 "false".
 
 #### 19.3.3.3 Boolean.prototype.valueOf ( ) <div id="sec-boolean.prototype.valueof"></div>
 
-The following steps are taken:
+采取以下步骤：
 
-1. Return ? thisBooleanValue(this value).
+1. 返回 ? thisBooleanValue(this value).
 
 ### 19.3.4 Boolean 实例属性 <div id="sec-properties-of-boolean-instances"></div>
 
-Boolean instances are ordinary objects that inherit properties from the Boolean prototype object. Boolean instances have a [[BooleanData]] internal slot. The [[BooleanData]] internal slot is the Boolean value represented by this Boolean object.
+布尔实例是从布尔原型对象继承属性的普通对象。布尔型实例具有一个[[BooleanData]]内部插槽。内部插槽[[BooleanData]]是此布尔对象表示的布尔值。
 
 ## 19.4 Symbol 对象 <div id="sec-symbol-objects"></div>
 ### 19.4.1 Symbol 构造器 <div id="sec-symbol-constructor"></div>
 
-The Symbol constructor:
+Symbol构造函数：
 
-- is the intrinsic object %Symbol%.
-- is the initial value of the Symbol property of the global object.
-- returns a new Symbol value when called as a function.
-- is not intended to be used with the new operator.
-- is not intended to be subclassed.
-- may be used as the value of an extends clause of a class definition but a super call to it will cause an
-  exception.
+- 是内部对象％Symbol％。
+- 是全局对象的Symbol属性的初始值。
+- 作为函数调用时，返回一个新的Symbol值。
+- 不适用于新运算符。
+- 不打算被子类化。
+- 可以用作类定义的extends子句的值，但是对其的超级调用将导致例外。
 
 #### 19.4.1.1 Symbol ( [ description ] ) <div id="sec-symbol-description"></div>
 
-When Symbol is called with optional argument description, the following steps are taken:
+使用可选参数description调用Symbol时, 采取以下步骤：
 
-1. If NewTarget is not undefined, throw a TypeError exception.
-2. If description is undefined, let descString be undefined.
-3. Else, let descString be ? ToString(description).
-4. Return a new unique Symbol value whose [[Description]] value is descString.
+1. 若 NewTarget 不是 undefined, 抛出 TypeError 异常。
+2. 若 description 是 undefined, 令 descString 为 undefined.
+3. 否则，令 descString 为 ? ToString(description).
+4. 返回 a new unique Symbol value whose [[Description]] value is descString.
 
 ### 19.4.2 Symbol 构造器属性 <div id="sec-properties-of-the-symbol-constructor"></div>
 
@@ -756,21 +751,21 @@ The Symbol constructor:
 
 The initial value of Symbol.asyncIterator is the well known symbol @@asyncIterator (Table 1).
 
-This property has the attributes { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }.
+该属性具有以下特性 { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }.
 
 #### 19.4.2.2 Symbol.for ( key ) <div id="sec-symbol.for"></div>
 
 When Symbol.for is called with argument key it performs the following steps:
 
-1. Let stringKey be ? ToString(key).
+1. 令 stringKey 为 ? ToString(key).
 2. For each element e of the GlobalSymbolRegistry List, do
-1. If SameValue(e.[[Key]], stringKey) is true, return e.[[Symbol]].
-3. Assert: GlobalSymbolRegistry does not currently contain an entry for stringKey.
-4. Let newSymbol be a new unique Symbol value whose [[Description]] value is stringKey.
+1. 若 SameValue(e.[[Key]], stringKey) 是 true, 返回 e.[[Symbol]].
+3. 断言：GlobalSymbolRegistry does not currently contain an entry for stringKey.
+4. 令 newSymbol 为 a new unique Symbol value whose [[Description]] value is stringKey.
 5. Append the Record { [[Key]]: stringKey, [[Symbol]]: newSymbol } to the GlobalSymbolRegistry List.
-6. Return newSymbol.
+6. 返回 newSymbol.
 
-The GlobalSymbolRegistry is a List that is globally available. It is shared by all realms. Prior to the evaluation of any ECMAScript code it is initialized as a new empty List. Elements of the GlobalSymbolRegistry are Records with the structure defined in Table 48.
+The GlobalSymbolRegistry is a List that is globally available. It is shared by all realms. Prior to the evaluation of any ECMAScript code it is initialized as新的空列表 Elements of the GlobalSymbolRegistry are Records with the structure defined in Table 48.
 
 Table 48: GlobalSymbolRegistry Record Fields
 
@@ -783,83 +778,83 @@ Table 48: GlobalSymbolRegistry Record Fields
 
 The initial value of Symbol.hasInstance is the well-known symbol @@hasInstance (Table 1).
 
-This property has the attributes { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }.
+该属性具有以下特性 { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }.
 
 #### 19.4.2.4 Symbol.isConcatSpreadable <div id="sec-symbol.isconcatspreadable"></div>
 
 The initial value of Symbol.isConcatSpreadable is the well-known symbol @@isConcatSpreadable (Table 1).
 
-This property has the attributes { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }.
+该属性具有以下特性 { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }.
 
 #### 19.4.2.5 Symbol.iterator <div id="sec-symbol.iterator"></div>
 
 The initial value of Symbol.iterator is the well-known symbol @@iterator (Table 1).
 
-This property has the attributes { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }.
+该属性具有以下特性 { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }.
 
 #### 19.4.2.6 Symbol.keyFor ( sym ) <div id="sec-symbol.keyfor"></div>
 
 When Symbol.keyFor is called with argument sym it performs the following steps:
 
-1. If Type(sym) is not Symbol, throw a TypeError exception.
+1. 若 Type(sym) 不是 Symbol, 抛出 TypeError 异常。
 2. For each element e of the GlobalSymbolRegistry List (see 19.4.2.2), do
-1. If SameValue(e.[[Symbol]], sym) is true, return e.[[Key]].
-3. Assert: GlobalSymbolRegistry does not currently contain an entry for sym.
-4. Return undefined.
+1. 若 SameValue(e.[[Symbol]], sym) 是 true, 返回 e.[[Key]].
+3. 断言：GlobalSymbolRegistry does not currently contain an entry for sym.
+4. 返回 undefined.
 
 #### 19.4.2.7 Symbol.match <div id="sec-symbol.match"></div>
 
 The initial value of Symbol.match is the well-known symbol @@match (Table 1).
 
-This property has the attributes { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }.
+该属性具有以下特性 { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }.
 
 #### 19.4.2.8 Symbol.prototype <div id="sec-symbol.prototype"></div>
 
 The initial value of Symbol.prototype is the intrinsic object %SymbolPrototype%.
 
-This property has the attributes { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }.
+该属性具有以下特性 { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }.
 
 #### 19.4.2.9 Symbol.replace <div id="sec-symbol.replace"></div>
 
 The initial value of Symbol.replace is the well-known symbol @@replace (Table 1).
 
-This property has the attributes { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }.
+该属性具有以下特性 { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }.
 
 #### 19.4.2.10 Symbol.search <div id="sec-symbol.search"></div>
 
 The initial value of Symbol.search is the well-known symbol @@search (Table 1).
 
-This property has the attributes { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }.
+该属性具有以下特性 { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }.
 
 #### 19.4.2.11 Symbol.species <div id="sec-symbol.species"></div>
 
 The initial value of Symbol.species is the well-known symbol @@species (Table 1).
 
-This property has the attributes { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }
+该属性具有以下特性 { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }
 
 #### 19.4.2.12 Symbol.split <div id="sec-symbol.split"></div>
 
 The initial value of Symbol.split is the well-known symbol @@split (Table 1).
 
-This property has the attributes { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }
+该属性具有以下特性 { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }
 
 #### 19.4.2.13 Symbol.toPrimitive <div id="sec-symbol.toprimitive"></div>
 
 The initial value of Symbol.toPrimitive is the well-known symbol @@toPrimitive (Table 1).
 
-This property has the attributes { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }.
+该属性具有以下特性 { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }.
 
 #### 19.4.2.14 Symbol.toStringTag <div id="sec-symbol.tostringtag"></div>
 
 The initial value of Symbol.toStringTag is the well-known symbol @@toStringTag (Table 1).
 
-This property has the attributes { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }.
+该属性具有以下特性 { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }.
 
 #### 19.4.2.15 Symbol.unscopables <div id="sec-symbol.unscopables"></div>
 
 The initial value of Symbol.unscopables is the well-known symbol @@unscopables (Table 1).
 
-This property has the attributes { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }
+该属性具有以下特性 { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }
 
 ### 19.4.3 Symbol 原型对象属性 <div id="sec-properties-of-the-symbol-prototype-object"></div>
 
@@ -872,12 +867,12 @@ The Symbol prototype object:
 
 The abstract operation thisSymbolValue(value) performs the following steps:
 
-1. If Type(value) is Symbol, return value.
-2. If Type(value) is Object and value has a [[SymbolData]] internal slot, then
-1. Let s be value.[[SymbolData]].
-2. Assert: Type(s) is Symbol.
-3. Return s.
-3. Throw a TypeError exception.
+1. 若 Type(value) 是 Symbol, 返回 value.
+2. 若 Type(value) 是 Object and value has a [[SymbolData]] internal slot，那么
+1. 令 s 为 value.[[SymbolData]].
+2. 断言：Type(s) is Symbol.
+3. 返回 s.
+3. 抛出 TypeError 异常。
 
 #### 19.4.3.1 Symbol.prototype.constructor <div id="sec-symbol.prototype.constructor"></div>
 
@@ -887,50 +882,50 @@ The initial value of Symbol.prototype.constructor is the intrinsic object %Symbo
 
 Symbol.prototype.description is an accessor property whose set accessor function is undefined. Its get accessor function performs the following steps:
 
-1. Let s be the this value.
-2. Let sym be ? thisSymbolValue(s).
-3. Return sym.[[Description]].
+1. 令 s 为 this 值.
+2. 令 sym 为 ? thisSymbolValue(s).
+3. 返回 sym.[[Description]].
 
 #### 19.4.3.3 Symbol.prototype.toString ( ) <div id="sec-symbol.prototype.tostring"></div>
 
-The following steps are taken:
+采取以下步骤：
 
-1. Let sym be ? thisSymbolValue(this value).
-2. Return SymbolDescriptiveString(sym).
+1. 令 sym 为 ? thisSymbolValue(this value).
+2. 返回 SymbolDescriptiveString(sym).
 
 ##### 19.4.3.3.1 RS: SymbolDescriptiveString ( sym ) <div id="sec-symboldescriptivestring"></div>
 
-When the abstract operation SymbolDescriptiveString is called with argument sym, the following steps are taken:
+When the abstract operation SymbolDescriptiveString is called with argument sym, 采取以下步骤：
 
-1. Assert: Type(sym) is Symbol.
-2. Let desc be sym's [[Description]] value.
-3. If desc is undefined, set desc to the empty string.
-4. Assert: Type(desc) is String.
-5. Return the string-concatenation of "Symbol(", desc, and ")"
+1. 断言：Type(sym) is Symbol.
+2. 令 desc 为 sym's [[Description]] value.
+3. 若 desc 是 undefined, 设置 desc 为空字符串
+4. 断言：Type(desc) is String.
+5. 返回 the string-concatenation of "Symbol(", desc, and ")"
 
 #### 19.4.3.4 Symbol.prototype.valueOf ( ) <div id="sec-symbol.prototype.valueof"></div>
 
-The following steps are taken:
+采取以下步骤：
 
-1. Return ? thisSymbolValue(this value).
+1. 返回 ? thisSymbolValue(this value).
 
 #### 19.4.3.5 Symbol.prototype [ @@toPrimitive ] ( hint ) <div id="sec-symbol.prototype-@@toprimitive"></div>
 
 This function is called by ECMAScript language operators to convert a Symbol object to a primitive value. The allowed values for hint are "default", "number", and "string".
 
-When the @@toPrimitive method is called with argument hint, the following steps are taken:
+When the @@toPrimitive method is called with argument hint, 采取以下步骤：
 
-1. Return ? thisSymbolValue(this value)
+1. 返回 ? thisSymbolValue(this value)
 
 The value of the name property of this function is "[Symbol.toPrimitive]".
 
-This property has the attributes { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: true }.
+该属性具有以下特性 { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: true }.
 
 #### 19.4.3.6 Symbol.prototype [ @@toStringTag ] <div id="sec-symbol.prototype-@@tostringtag"></div>
 
 The initial value of the @@toStringTag property is the String value "Symbol".
 
-This property has the attributes { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: true }
+该属性具有以下特性 { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: true }
 
 ### 19.4.4 Symbol 实例属性 <div id="sec-properties-of-symbol-instances"></div>
 
@@ -950,16 +945,17 @@ The Error constructor:
 
 #### 19.5.1.1 Error ( message ) <div id="sec-error-message"></div>
 
-When the Error function is called with argument message, the following steps are taken:
+When the Error function is called with argument message, 采取以下步骤：
 
-1. If NewTarget is undefined, let newTarget be the active function object, else let newTarget be NewTarget.
-2. Let O be ? OrdinaryCreateFromConstructor(newTarget, "%ErrorPrototype%", « [[ErrorData]] »).
-3. If message is not undefined, then
-  1. Let msg be ? ToString(message).
-  2. Let msgDesc be the PropertyDescriptor { [[Value]]: msg, [[Writable]]: true, [[Enumerable]]: false,
+1. 若 NewTarget 是 undefined, 令 newTarget 为 the active function object, 否则，令 newTarget 为 NewTarget.
+2. 令 O 为 ? OrdinaryCreateFromConstructor(newTarget, "%ErrorPrototype%", « [[ErrorData]] »).
+3. 若 message 不是 undefined，那么
+  1. 令 msg 为 ? ToString(message).
+  2. 令 msgDesc 为 the PropertyDescriptor { [[Value]]: msg, [[Writable]]: true, [[Enumerable]]: false,
+
     [[Configurable]]: true }.
-  3. Perform ! DefinePropertyOrThrow(O, "message", msgDesc).
-4. Return O.
+  3. 执行 ! DefinePropertyOrThrow(O, "message", msgDesc).
+4. 返回 O.
 
 ### 19.5.2 Properties of the Error 构造器属性 <div id="sec-properties-of-the-error-constructor"></div>
 
@@ -972,7 +968,7 @@ The Error constructor:
 
 The initial value of Error.prototype is the intrinsic object %ErrorPrototype%.
 
-This property has the attributes { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }.
+该属性具有以下特性 { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }.
 
 ### 19.5.3 Properties of the Error 原型对象属性 <div id="sec-properties-of-the-error-prototype-object"></div>
 
@@ -989,7 +985,7 @@ The initial value of Error.prototype.constructor is the intrinsic object %Error%
 
 #### 19.5.3.2 Error.prototype.message <div id="sec-error.prototype.message"></div>
 
-The initial value of Error.prototype.message is the empty String.
+The initial value of Error.prototype.message is空字符串
 
 #### 19.5.3.3 Error.prototype.name <div id="sec-error.prototype.name"></div>
 
@@ -997,17 +993,17 @@ The initial value of Error.prototype.name is "Error".
 
 #### 19.5.3.4 Error.prototype.toString ( ) <div id="sec-error.prototype.tostring"></div>
 
-The following steps are taken:
+采取以下步骤：
 
-1. Let O be the this value.
-2. If Type(O) is not Object, throw a TypeError exception.
-3. Let name be ? Get(O, "name").
-4. If name is undefined, set name to "Error"; otherwise set name to ? ToString(name).
-5. Let msg be ? Get(O, "message").
-6. If msg is undefined, set msg to the empty String; otherwise set msg to ? ToString(msg).
-7. If name is the empty String, return msg.
-8. If msg is the empty String, return name.
-9. Return the string-concatenation of name, the code unit 0x003A (COLON), the code unit 0x0020 (SPACE), and msg.
+1. 令 O 为 this 值.
+2. 若 Type(O) 不是 Object, 抛出 TypeError 异常。
+3. 令 name 为 ? Get(O, "name").
+4. 若 name 是 undefined, set name to "Error"; otherwise set name to ? ToString(name).
+5. 令 msg 为 ? Get(O, "message").
+6. 若 msg 是 undefined, set msg to空字符串 otherwise set msg to ? ToString(msg).
+7. 若 name 是空字符串 返回 msg.
+8. 若 msg 是空字符串 返回 name.
+9. 返回 the string-concatenation of name, the code unit 0x003A (COLON), the code unit 0x0020 (SPACE), and msg.
 
 ### 19.5.4 Properties of Error 实例属性 <div id="sec-properties-of-error-instances"></div>
 
@@ -1057,16 +1053,16 @@ Each NativeError constructor:
 
 ##### 19.5.6.1.1 NativeError ( message ) <div id="sec-nativeerror"></div>
 
-When a NativeError function is called with argument message, the following steps are taken:
+When a NativeError function is called with argument message, 采取以下步骤：
 
-1. If NewTarget is undefined, let newTarget be the active function object, else let newTarget be NewTarget.
-2. Let O be ? OrdinaryCreateFromConstructor(newTarget, "%NativeErrorPrototype%", « [[ErrorData]] »).
-3. If message is not undefined, then
-1. Let msg be ? ToString(message).
-2. Let msgDesc be the PropertyDescriptor { [[Value]]: msg, [[Writable]]: true, [[Enumerable]]: false,
-  [[Configurable]]: true }.
-3. Perform ! DefinePropertyOrThrow(O, "message", msgDesc).
-4. Return O.
+1. 若 NewTarget 是 undefined, 令 newTarget 为 the active function object, 否则，令 newTarget 为 NewTarget.
+2. 令 O 为 ? OrdinaryCreateFromConstructor(newTarget, "%NativeErrorPrototype%", « [[ErrorData]] »).
+3. 若 message 不是 undefined，那么
+1. 令 msg 为 ? ToString(message).
+2. 令 msgDesc 为 the PropertyDescriptor { [[Value]]: msg, [[Writable]]: true, [[Enumerable]]: false,
+    [[Configurable]]: true }.
+3. 执行 ! DefinePropertyOrThrow(O, "message", msgDesc).
+4. 返回 O.
 
 The actual value of the string passed in step 2 is either "%EvalErrorPrototype%", "%RangeErrorPrototype%", "%ReferenceErrorPrototype%", "%SyntaxErrorPrototype%", "%TypeErrorPrototype%", or "%URIErrorPrototype%" corresponding to which NativeError constructor is being defined.
 
@@ -1083,7 +1079,7 @@ Each NativeError constructor:
 The initial value of NativeError.prototype is a NativeError prototype object (19.5.6.3). Each NativeError
 constructor has a distinct prototype object.
 
-This property has the attributes { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }.
+该属性具有以下特性 { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }.
 
 #### 19.5.6.3 NativeError 原型对象属性 <div id="sec-properties-of-the-nativeerror-prototype-objects"></div>
 
@@ -1099,7 +1095,10 @@ The initial value of the constructor property of the prototype for a given Nativ
 
 ##### 19.5.6.3.2 NativeError.prototype.message <div id="sec-nativeerror.prototype.message"></div>
 
-The initial value of the message property of the prototype for a given NativeError constructor is the empty String.
+
+- is the intrinsic object %Object%.
+- is the initial value of the Object property of the global object.
+- creates The Object constructor:
 
 ##### 19.5.6.3.3 NativeError.prototype.name <div id="sec-nativeerror.prototype.name"></div>
 
