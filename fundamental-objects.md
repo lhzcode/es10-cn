@@ -14,7 +14,7 @@
 
 使用可选参数值调用对象函数时，采取以下步骤:
 
-1. 如果NewTarget既不是未定义的，也不是活动函数，则
+1. 如果NewTarget既不是undefined的，也不是活动函数，则
    1. 返回 ? OrdinaryCreateFromConstructor(NewTarget, "%ObjectPrototype%").
 2. 若 value 是 null, undefined 或不提供, 返回 ObjectCreate(%ObjectPrototype%).
 3. 返回 ! ToObject(value).
@@ -37,7 +37,7 @@ Assign函数用于将所有可枚举的自身属性的值从一个或多个源�
 2. 如果仅传递了一个参数, 返回 to.
 3. 令 sources 为从第二个参数开始的参数值列表。
 4. 对于每个元素nextsource的源，按升序排列，执行
-    1. 如果nextSource既未定义也不为null，那么
+    1. 如果nextSource既undefined也不为null，那么
         1. 令 from 为 ! ToObject(nextSource).
         2. 令 keys 为 ? from.\[\[OwnPropertyKeys]]().
         3. 对于按列表顺序的键的每个元素nextKey，执行
@@ -503,7 +503,7 @@ Function.prototyp的值为%FunctionPrototype%，即内部函数原型对象。
 
 - 是内部对象%FunctionPrototype%。
 - 本身就是一个内置函数对象。
-- 接受任何参数并在调用时返回未定义的值。
+- 接受任何参数并在调用时返回undefined的值。
 - 没有[[Construct]]内部方法；它不能与新操作符一起用作构造函数。
 - 有一个[[Prototype]]内部槽，其值为内部对象%ObjectPrototype%。
 - 没有原型属性。
@@ -566,7 +566,7 @@ Function.prototyp的值为%FunctionPrototype%，即内部函数原型对象。
 5. 执行 PrepareForTailCall().
 6. 返回 ? Call(func, thisArg, argList).
 
-> 注 1：将thisArg值作为this值传递，而不进行任何修改。这是版本3的一个变化，其中未定义的或null thisArg被替换为全局对象，ToObject应用于所有其他值，结果作为This值传递。即使没有修改就传递了thisArg，非严格函数仍然在进入函数时执行这些转换。
+> 注 1：将thisArg值作为this值传递，而不进行任何修改。这是版本3的一个变化，其中undefined的或null thisArg被替换为全局对象，ToObject应用于所有其他值，结果作为This值传递。即使没有修改就传递了thisArg，非严格函数仍然在进入函数时执行这些转换。
 
 > 注 2：如果func是一个箭头函数或绑定函数，那么这个thisArg将被第5步中的函数[[Call]]忽略。
 
@@ -579,7 +579,7 @@ Function.prototype.constructor的初始值是内部对象%Function%。
 当toString方法被调用时，需要执行以下步骤:
 
 1. 令 func 为 this 值.
-2. 如果func是绑定函数异类对象或内置函数对象，则返回依赖于实现的 func 的字符串源代码表示。该表示形式必须具有NativeFunction的语法。此外，如果func是众所周知的内在对象，并且未标识为匿名函数，则返回的String中与PropertyName匹配的部分必须是func的name属性的初始值。
+2. 如果func是绑定函数异类对象或内置函数对象，则返回依赖于实现的 func 的字符串源代码表示。该表示形式必须具有NativeFunction的语法。此外，如果func是常见的内在对象，并且未标识为匿名函数，则返回的String中与PropertyName匹配的部分必须是func的name属性的初始值。
 3. 如果Type(func)是Object并且func具有[[SourceText]]内部插槽，并且Type(func.[[SourceText]])是String和 ! HostHasSourceTextAvailable(func)为true，那么返回func.[[SourceText]]
 4. 若 Type(func) 是 Object 并且 IsCallable(func) 是 true，那么 返回返回func的与实现相关的String源代码表示形式。该表示形式必须具有NativeFunction的语法。
 5. 抛出 TypeError 异常。
@@ -597,7 +597,7 @@ native code ] }
 1. 令 F 为 this 值.
 2. 返回 ? OrdinaryHasInstance(F, V).
 
-该函数的名称属性的值为“ [Symbol.hasInstance]”。
+该函数的name属性的值为“ [Symbol.hasInstance]”。
 
 该属性具有以下特性 { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }.
 
@@ -637,7 +637,7 @@ native code ] }
 
 ### 19.2.5 HostHasSourceTextAvailable ( func ) <div id="sec-hosthassourcetextavailable"></div>
 
-HostHasSourceTextAvailable是实现定义的抽象操作，允许主机环境阻止为给定功能提供源文本。
+HostHasSourceTextAvailable是实现定义的抽象操作，允许主机环境阻止为给定函数提供源文本。
 
 在所有情况下，HostHasSourceTextAvailable的实现都必须正常完成。该操作必须在参数方面具有确定性。每次使用特定函数作为参数调用它时，它都必须返回相同的完成记录。 HostHasSourceTextAvailable的默认实现是无条件返回值为true的正常完成。
 
@@ -729,7 +729,7 @@ Symbol构造函数：
 - 作为函数调用时，返回一个新的Symbol值。
 - 不适用于新运算符。
 - 不打算被子类化。
-- 可以用作类定义的extends子句的值，但是对其的超级调用将导致例外。
+- 可以用作类定义的extends子句的值，但是对其的super调用将导致例外。
 
 #### 19.4.1.1 Symbol ( [ description ] ) <div id="sec-symbol-description"></div>
 
@@ -738,73 +738,71 @@ Symbol构造函数：
 1. 若 NewTarget 不是 undefined, 抛出 TypeError 异常。
 2. 若 description 是 undefined, 令 descString 为 undefined.
 3. 否则，令 descString 为 ? ToString(description).
-4. 返回 a new unique Symbol value whose [[Description]] value is descString.
+4. 返回一个新的唯一Symbol值，其[[Description]]值为descString。
 
 ### 19.4.2 Symbol 构造器属性 <div id="sec-properties-of-the-symbol-constructor"></div>
 
-The Symbol constructor:
+Symbol构造函数：
 
-- has a [[Prototype]] internal slot whose value is the intrinsic object %FunctionPrototype%.
-- has the following properties:
+- 有一个[[Prototype]]内部插槽，其值是内部对象％FunctionPrototype％。
+- 具有以下属性：
 
 #### 19.4.2.1 Symbol.asyncIterator <div id="sec-symbol.asynciterator"></div>
 
-The initial value of Symbol.asyncIterator is the well known symbol @@asyncIterator (Table 1).
+Symbol.asyncIterator的初始值为常见的符号@@asyncIterator（表1）。
 
 该属性具有以下特性 { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }.
 
 #### 19.4.2.2 Symbol.for ( key ) <div id="sec-symbol.for"></div>
 
-When Symbol.for is called with argument key it performs the following steps:
+使用参数键调用Symbol.for时，它将执行以下步骤：
 
 1. 令 stringKey 为 ? ToString(key).
-2. For each element e of the GlobalSymbolRegistry List, do
+2. 对于GlobalSymbolRegistry列表中的每个元素e，执行
 1. 若 SameValue(e.[[Key]], stringKey) 是 true, 返回 e.[[Symbol]].
-3. 断言：GlobalSymbolRegistry does not currently contain an entry for stringKey.
-4. 令 newSymbol 为 a new unique Symbol value whose [[Description]] value is stringKey.
-5. Append the Record { [[Key]]: stringKey, [[Symbol]]: newSymbol } to the GlobalSymbolRegistry List.
+3. 断言：GlobalSymbolRegistry当前不包含stringKey的条目。
+4. 令 newSymbol 为一个新的唯一Symbol值，其[[Description]]值为stringKey。
+5. 追加记录 { [[Key]]: stringKey, [[Symbol]]: newSymbol } 到 GlobalSymbolRegistry 列表。
 6. 返回 newSymbol.
 
-The GlobalSymbolRegistry is a List that is globally available. It is shared by all realms. Prior to the evaluation of any ECMAScript code it is initialized as新的空列表 Elements of the GlobalSymbolRegistry are Records with the structure defined in Table 48.
+GlobalSymbolRegistry是一个全局可用的列表。它是所有作用域共享的。在解释执行任何ECMAScript代码之前，它会初始化为一个新的空列表。 GlobalSymbolRegistry的元素是具有表48中定义的结构的记录。
 
-Table 48: GlobalSymbolRegistry Record Fields
+表48：GlobalSymbolRegistry记录字段
 
-| Field Name | Value    | Usage                                            |
-| ---------- | -------- | ------------------------------------------------ |
-| [[Key]]    | A String | A string key used to globally identify a Symbol. |
-| [[Symbol]] | A Symbol | A symbol that can be retrieved from any realm.   |
+| 字段名     | 值     | 用法                           |
+| ---------- | ------ | ------------------------------ |
+| [[Key]]    | String | 用于全局标识Symbol的字符串键。 |
+| [[Symbol]] | Symbol | 可以从任何作用域检索的symbol。 |
 
 #### 19.4.2.3 Symbol.hasInstance <div id="sec-symbol.hasinstance"></div>
 
-The initial value of Symbol.hasInstance is the well-known symbol @@hasInstance (Table 1).
-
-该属性具有以下特性 { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }.
+Symbol.hasInstance的初始值为常见的符号@@hasInstance（表1）。该属性具有以下特性 { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }.
 
 #### 19.4.2.4 Symbol.isConcatSpreadable <div id="sec-symbol.isconcatspreadable"></div>
 
-The initial value of Symbol.isConcatSpreadable is the well-known symbol @@isConcatSpreadable (Table 1).
+Symbol.isConcatSpread的初始值为常见的符号@@isConcatSpread（表1）。
 
 该属性具有以下特性 { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }.
 
 #### 19.4.2.5 Symbol.iterator <div id="sec-symbol.iterator"></div>
 
-The initial value of Symbol.iterator is the well-known symbol @@iterator (Table 1).
+Symbol.iterator 的初始值为常见的符号 @@iterator（表1）。
 
 该属性具有以下特性 { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }.
 
 #### 19.4.2.6 Symbol.keyFor ( sym ) <div id="sec-symbol.keyfor"></div>
 
-When Symbol.keyFor is called with argument sym it performs the following steps:
+当使用参数sym调用Symbol.keyFor时，它将执行以下步骤：
 
 1. 若 Type(sym) 不是 Symbol, 抛出 TypeError 异常。
-2. For each element e of the GlobalSymbolRegistry List (see 19.4.2.2), do
-1. 若 SameValue(e.[[Symbol]], sym) 是 true, 返回 e.[[Key]].
-3. 断言：GlobalSymbolRegistry does not currently contain an entry for sym.
+2. 对于GlobalSymbolRegistry列表中的每个元素e（请参见19.4.2.2），执行
+   1. 若 SameValue(e.[[Symbol]], sym) 是 true, 返回 e.[[Key]].
+3. 断言：GlobalSymbolRegistry当前不包含sym的条目。
 4. 返回 undefined.
 
 #### 19.4.2.7 Symbol.match <div id="sec-symbol.match"></div>
 
-The initial value of Symbol.match is the well-known symbol @@match (Table 1).
+Symbol.match 的初始值为常见的符号 @@match（表1）。
 
 该属性具有以下特性 { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }.
 
@@ -816,71 +814,71 @@ The initial value of Symbol.prototype is the intrinsic object %SymbolPrototype%.
 
 #### 19.4.2.9 Symbol.replace <div id="sec-symbol.replace"></div>
 
-The initial value of Symbol.replace is the well-known symbol @@replace (Table 1).
+Symbol.replace 的初始值为常见的符号 @@replace（表1）。
 
 该属性具有以下特性 { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }.
 
 #### 19.4.2.10 Symbol.search <div id="sec-symbol.search"></div>
 
-The initial value of Symbol.search is the well-known symbol @@search (Table 1).
+Symbol.search 的初始值为常见的符号 @@search（表1）。
 
 该属性具有以下特性 { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }.
 
 #### 19.4.2.11 Symbol.species <div id="sec-symbol.species"></div>
 
-The initial value of Symbol.species is the well-known symbol @@species (Table 1).
+Symbol.species 的初始值为常见的符号 @@species（表1）。
 
 该属性具有以下特性 { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }
 
 #### 19.4.2.12 Symbol.split <div id="sec-symbol.split"></div>
 
-The initial value of Symbol.split is the well-known symbol @@split (Table 1).
+Symbol.split 的初始值为常见的符号 @@split（表1）。
 
 该属性具有以下特性 { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }
 
 #### 19.4.2.13 Symbol.toPrimitive <div id="sec-symbol.toprimitive"></div>
 
-The initial value of Symbol.toPrimitive is the well-known symbol @@toPrimitive (Table 1).
+Symbol.toPrimitive 的初始值为常见的符号 @@toPrimitive（表1）。
 
 该属性具有以下特性 { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }.
 
 #### 19.4.2.14 Symbol.toStringTag <div id="sec-symbol.tostringtag"></div>
 
-The initial value of Symbol.toStringTag is the well-known symbol @@toStringTag (Table 1).
+Symbol.toStringTag 的初始值为常见的符号 @@toStringTag（表1）。
 
 该属性具有以下特性 { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }.
 
 #### 19.4.2.15 Symbol.unscopables <div id="sec-symbol.unscopables"></div>
 
-The initial value of Symbol.unscopables is the well-known symbol @@unscopables (Table 1).
+Symbol.unscopables 的初始值为常见的符号 @@unscopables（表1）。
 
 该属性具有以下特性 { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }
 
 ### 19.4.3 Symbol 原型对象属性 <div id="sec-properties-of-the-symbol-prototype-object"></div>
 
-The Symbol prototype object:
+Symbol原型对象：
 
-- is the intrinsic object %SymbolPrototype%.
-- is an ordinary object.
-- is not a Symbol instance and does not have a [[SymbolData]] internal slot.
-- has a [[Prototype]] internal slot whose value is the intrinsic object %ObjectPrototype%.
+- 是内部对象％SymbolPrototype％。
+- 是一个普通的对象。
+- 不是Symbol实例，并且没有[[SymbolData]]内部插槽。
+- 有一个[[Prototype]]内部插槽，其值是内部对象％ObjectPrototype％。
 
-The abstract operation thisSymbolValue(value) performs the following steps:
+抽象操作thisSymbolValue（value）执行以下步骤：
 
 1. 若 Type(value) 是 Symbol, 返回 value.
-2. 若 Type(value) 是 Object and value has a [[SymbolData]] internal slot，那么
-1. 令 s 为 value.[[SymbolData]].
-2. 断言：Type(s) is Symbol.
-3. 返回 s.
+2. 若 Type(value) 是对象和值具有一个[[SymbolData]]内部插槽，那么
+   1. 令 s 为 value.[[SymbolData]].
+   2. 断言：Type(s) 是 Symbol.
+   3. 返回 s.
 3. 抛出 TypeError 异常。
 
 #### 19.4.3.1 Symbol.prototype.constructor <div id="sec-symbol.prototype.constructor"></div>
 
-The initial value of Symbol.prototype.constructor is the intrinsic object %Symbol%.
+Symbol.prototype.constructor的初始值为内部对象％Symbol％。
 
 #### 19.4.3.2 get Symbol.prototype.description <div id="sec-symbol.prototype.description"></div>
 
-Symbol.prototype.description is an accessor property whose set accessor function is undefined. Its get accessor function performs the following steps:
+Symbol.prototype.description是一个访问器属性，其设置的访问器函数undefined。它的get访问器函数执行以下步骤：
 
 1. 令 s 为 this 值.
 2. 令 sym 为 ? thisSymbolValue(s).
@@ -895,7 +893,7 @@ Symbol.prototype.description is an accessor property whose set accessor function
 
 ##### 19.4.3.3.1 RS: SymbolDescriptiveString ( sym ) <div id="sec-symboldescriptivestring"></div>
 
-When the abstract operation SymbolDescriptiveString is called with argument sym, 采取以下步骤：
+使用参数sym调用抽象操作SymbolDescriptiveString时, 采取以下步骤：
 
 1. 断言：Type(sym) is Symbol.
 2. 令 desc 为 sym's [[Description]] value.
@@ -911,85 +909,83 @@ When the abstract operation SymbolDescriptiveString is called with argument sym,
 
 #### 19.4.3.5 Symbol.prototype [ @@toPrimitive ] ( hint ) <div id="sec-symbol.prototype-@@toprimitive"></div>
 
-This function is called by ECMAScript language operators to convert a Symbol object to a primitive value. The allowed values for hint are "default", "number", and "string".
+ECMAScript语言操作员调用此函数以将Symbol对象转换为原始值。hint的允许值为“默认”，“数字”和“字符串”。
 
-When the @@toPrimitive method is called with argument hint, 采取以下步骤：
+使用参数hint调用@@toPrimitive方法时, 采取以下步骤：
 
 1. 返回 ? thisSymbolValue(this value)
 
-The value of the name property of this function is "[Symbol.toPrimitive]".
+该函数的name属性的值为“ [Symbol.toPrimitive]”。
 
 该属性具有以下特性 { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: true }.
 
 #### 19.4.3.6 Symbol.prototype [ @@toStringTag ] <div id="sec-symbol.prototype-@@tostringtag"></div>
 
-The initial value of the @@toStringTag property is the String value "Symbol".
+@@toStringTag属性的初始值为字符串值“ Symbol”。
 
 该属性具有以下特性 { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: true }
 
 ### 19.4.4 Symbol 实例属性 <div id="sec-properties-of-symbol-instances"></div>
 
-Symbol instances are ordinary objects that inherit properties from the Symbol prototype object. Symbol instances have a [[SymbolData]] internal slot. The [[SymbolData]] internal slot is the Symbol value represented by this Symbol object.
+符号实例是从Symbol原型对象继承属性的普通对象。符号实例具有一个[[SymbolData]]内部插槽。 [[SymbolData]]内部插槽是此Symbol对象表示的Symbol值。
 
 ## 19.5 Error 对象 <div id="sec-error-objects"></div>
-Instances of Error objects are thrown as exceptions when runtime errors occur. The Error objects may also serve as base objects for user-defined exception classes.
+当发生运行时错误时，将Error对象的实例作为异常抛出。 Error对象还可以用作用户定义的异常类的基础对象。
 
 ### 19.5.1 The Error 构造器 <div id="sec-error-constructor"></div>
 
-The Error constructor:
+错误构造函数：
 
-- is the intrinsic object %Error%.
-- is the initial value of the Error property of the global object.
-- creates and initializes a new Error object when called as a function rather than as a constructor. Thus the function call Error(…) is equivalent to the object creation expression new Error(…) with the same arguments.
-- is designed to be subclassable. It may be used as the value of an extends clause of a class definition. Subclass constructors that intend to inherit the specified Error behaviour must include a super call to the Error constructor to create and initialize subclass instances with an [[ErrorData]] internal slot.
+- 是内部对象％Error％。
+- 是全局对象的Error属性的初始值。
+- 当作为函数而不是构造函数调用时，创建并初始化一个新的Error对象。因此，函数调用Error（…）等效于具有相同参数的对象创建表达式new Error（…）。
+- 设计为可归类的。它可以用作类定义的extends子句的值。打算继承指定的Error行为的子类构造函数必须包括对Error构造函数的super调用，以使用[[ErrorData]]内部插槽创建和初始化子类实例。
 
 #### 19.5.1.1 Error ( message ) <div id="sec-error-message"></div>
 
-When the Error function is called with argument message, 采取以下步骤：
+使用参数消息调用Error函数时, 采取以下步骤：
 
-1. 若 NewTarget 是 undefined, 令 newTarget 为 the active function object, 否则，令 newTarget 为 NewTarget.
+1. 若 NewTarget 是 undefined, 令 newTarget 为活动函数对象, 否则，令 newTarget 为 NewTarget.
 2. 令 O 为 ? OrdinaryCreateFromConstructor(newTarget, "%ErrorPrototype%", « [[ErrorData]] »).
 3. 若 message 不是 undefined，那么
-  1. 令 msg 为 ? ToString(message).
-  2. 令 msgDesc 为 the PropertyDescriptor { [[Value]]: msg, [[Writable]]: true, [[Enumerable]]: false,
-
-    [[Configurable]]: true }.
-  3. 执行 ! DefinePropertyOrThrow(O, "message", msgDesc).
+     1. 令 msg 为 ? ToString(message).
+     2. 令 msgDesc 为 PropertyDescriptor { [[Value]]: msg, [[Writable]]: true, [[Enumerable]]: false, [[Configurable]]: true }.
+     3. 执行 ! DefinePropertyOrThrow(O, "message", msgDesc).
 4. 返回 O.
 
 ### 19.5.2 Properties of the Error 构造器属性 <div id="sec-properties-of-the-error-constructor"></div>
 
-The Error constructor:
+错误构造函数：
 
-- has a [[Prototype]] internal slot whose value is the intrinsic object %FunctionPrototype%.
-- has the following properties:
+- 有一个[[Prototype]]内部插槽，其值是内部对象％FunctionPrototype％。
+- 具有以下属性：
 
 #### 19.5.2.1 Error.prototype <div id="sec-error.prototype"></div>
 
-The initial value of Error.prototype is the intrinsic object %ErrorPrototype%.
+Error.prototype的初始值为内部对象％ErrorPrototype％。
 
 该属性具有以下特性 { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }.
 
 ### 19.5.3 Properties of the Error 原型对象属性 <div id="sec-properties-of-the-error-prototype-object"></div>
 
-The Error prototype object:
+错误构造函数：
 
-- is the intrinsic object %ErrorPrototype%.
-- is an ordinary object.
-- is not an Error instance and does not have an [[ErrorData]] internal slot.
-- has a [[Prototype]] internal slot whose value is the intrinsic object %ObjectPrototype%.
+- 是内部对象％ErrorPrototype％。
+- 是一个普通的对象。
+- 不是Error实例，并且没有[[ErrorData]]内部插槽。
+- 有一个[[Prototype]]内部插槽，其值是内部对象％ObjectPrototype％。
 
 #### 19.5.3.1 Error.prototype.constructor <div id="sec-error.prototype.constructor"></div>
 
-The initial value of Error.prototype.constructor is the intrinsic object %Error%.
+Error.prototype.constructor的初始值为内部对象％Error％。
 
 #### 19.5.3.2 Error.prototype.message <div id="sec-error.prototype.message"></div>
 
-The initial value of Error.prototype.message is空字符串
+Error.prototype.message的初始值为空字符串。
 
 #### 19.5.3.3 Error.prototype.name <div id="sec-error.prototype.name"></div>
 
-The initial value of Error.prototype.name is "Error".
+Error.prototype.name的初始值为“ Error”。
 
 #### 19.5.3.4 Error.prototype.toString ( ) <div id="sec-error.prototype.tostring"></div>
 
@@ -998,112 +994,112 @@ The initial value of Error.prototype.name is "Error".
 1. 令 O 为 this 值.
 2. 若 Type(O) 不是 Object, 抛出 TypeError 异常。
 3. 令 name 为 ? Get(O, "name").
-4. 若 name 是 undefined, set name to "Error"; otherwise set name to ? ToString(name).
+4. 若 name 是 undefined, 设置 name 为 "Error"; 否则，设置 name 为 ? ToString(name).
 5. 令 msg 为 ? Get(O, "message").
-6. 若 msg 是 undefined, set msg to空字符串 otherwise set msg to ? ToString(msg).
+6. 若 msg 是 undefined, 设置 msg 为空字符串，否则设置 msg 为 ? ToString(msg).
 7. 若 name 是空字符串 返回 msg.
 8. 若 msg 是空字符串 返回 name.
-9. 返回 the string-concatenation of name, the code unit 0x003A (COLON), the code unit 0x0020 (SPACE), and msg.
+9. 返回 名称 的字符串连接，代码单元0x003A（:），代码单元0x0020（空格）和msg。
 
 ### 19.5.4 Properties of Error 实例属性 <div id="sec-properties-of-error-instances"></div>
 
-Error instances are ordinary objects that inherit properties from the Error prototype object and have an [[ErrorData]] internal slot whose value is undefined. The only specified uses of [[ErrorData]] is to identify Error and NativeError instances as Error objects within Object.prototype.toString.
+错误实例是继承自错误原型对象的属性并具有[[ErrorData]]内部插槽（其值undefined）的普通对象。 [[ErrorData]]的唯一指定用途是将Error和NativeError实例标识为Object.prototype.toString中的Error对象。
 
 ### 19.5.5 本标准值中使用的原生错误类型 <div id="sec-native-error-types-used-in-this-standard"></div>
 
-A new instance of one of the NativeError objects below is thrown when a runtime error is detected. All of these objects share the same structure, as described in 19.5.6.
+当检测到运行时错误时，将引发以下NativeError对象之一的新实例。所有这些对象都共享相同的结构，如19.5.6中所述。
 
 #### 19.5.5.1 EvalError <div id="sec-native-error-types-used-in-this-standard-evalerror"></div>
 
-This exception is not currently used within this specification. This object remains for compatibility with previous editions of this specification.
+此规范当前未使用此异常。保留该目的是为了与本规范的先前版本兼容。
 
 #### 19.5.5.2 RangeError <div id="sec-native-error-types-used-in-this-standard-rangeerror"></div>
 
-Indicates a value that is not in the set or range of allowable values.
+表示不在允许值范围内的值。
 
 #### 19.5.5.3 ReferenceError <div id="sec-native-error-types-used-in-this-standard-referenceerror"></div>
 
-Indicate that an invalid reference value has been detected.
+表示已检测到无效参考值。
 
 #### 19.5.5.4 SyntaxError <div id="sec-native-error-types-used-in-this-standard-syntaxerror"></div>
 
-Indicates that a parsing error has occurred.
+表示已发生解析错误。
 
 #### 19.5.5.5 TypeError <div id="sec-native-error-types-used-in-this-standard-typeerror"></div>
 
-TypeError is used to indicate an unsuccessful operation when none of the other NativeError objects are an appropriate indication of the failure cause.
+当其他NativeError对象都不是失败原因的适当指示时，TypeError用于指示操作失败。
 
 #### 19.5.5.6 URIError <div id="sec-native-error-types-used-in-this-standard-urierror"></div>
 
-Indicates that one of the global URI handling functions was used in a way that is incompatible with its definition.
+表示使用一种全局URI处理函数与其定义不兼容。
 
 ### 19.5.6 NativeError 对象结构 <div id="sec-nativeerror-object-structure"></div>
 
-When an ECMAScript implementation detects a runtime error, it throws a new instance of one of the NativeError objects defined in 19.5.5. Each of these objects has the structure described below, differing only in the name used as the constructor name instead of NativeError, in the name property of the prototype object, and in the implementationdefined message property of the prototype object.
+当ECMAScript实现检测到运行时错误时，它将引发19.5.5中定义的NativeError对象之一的新实例。这些对象中的每一个都具有以下描述的结构，仅在原型对象的name属性和原型对象的实现定义的消息属性方面有所不同，只是用作构造函数名称的名称而不是NativeError。
 
-For each error object, references to NativeError in the definition should be replaced with the appropriate error object name from 19.5.5.
+对于每个错误对象，应使用19.5.5中的相应错误对象名称替换对定义中对NativeError的引用。
 
 #### 19.5.6.1 NativeError 构造器 <div id="sec-nativeerror-constructors"></div>
 
-Each NativeError constructor:
+每个NativeError构造函数：
 
-- creates and initializes a new NativeError object when called as a function rather than as a constructor. A call of the object as a function is equivalent to calling it as a constructor with the same arguments. Thus the function call NativeError(…) is equivalent to the object creation expression new NativeError(…) with the same arguments.
+- 当作为函数而不是构造函数调用时，创建并初始化一个新的NativeError对象。将对象作为函数调用等效于将其作为具有相同参数的构造函数调用。因此，函数调用NativeError（...）等效于具有相同参数的对象创建表达式new NativeError（...）。
 
-- is designed to be subclassable. It may be used as the value of an extends clause of a class definition. Subclass constructors that intend to inherit the specified NativeError behaviour must include a super call to the NativeError constructor to create and initialize subclass instances with an [[ErrorData]] internal slot.
+- 设计为可归类的。它可以用作类定义的extends子句的值。打算继承指定的NativeError行为的子类构造函数必须包括对NativeError构造函数的super调用，以使用[[ErrorData]]内部插槽创建和初始化子类实例。
 
 ##### 19.5.6.1.1 NativeError ( message ) <div id="sec-nativeerror"></div>
 
-When a NativeError function is called with argument message, 采取以下步骤：
+使用参数消息调用NativeError函数时, 采取以下步骤：
 
-1. 若 NewTarget 是 undefined, 令 newTarget 为 the active function object, 否则，令 newTarget 为 NewTarget.
+1. 若 NewTarget 是 undefined, 令 newTarget 为 活动函数对象, 否则，令 newTarget 为 NewTarget.
 2. 令 O 为 ? OrdinaryCreateFromConstructor(newTarget, "%NativeErrorPrototype%", « [[ErrorData]] »).
 3. 若 message 不是 undefined，那么
-1. 令 msg 为 ? ToString(message).
-2. 令 msgDesc 为 the PropertyDescriptor { [[Value]]: msg, [[Writable]]: true, [[Enumerable]]: false,
-    [[Configurable]]: true }.
-3. 执行 ! DefinePropertyOrThrow(O, "message", msgDesc).
+    1. 令 msg 为 ? ToString(message).
+    2. 令 msgDesc 为 the PropertyDescriptor { [[Value]]: msg, [[Writable]]: true, [[Enumerable]]: false,
+        [[Configurable]]: true }.
+    3. 执行 ! DefinePropertyOrThrow(O, "message", msgDesc).
 4. 返回 O.
 
-The actual value of the string passed in step 2 is either "%EvalErrorPrototype%", "%RangeErrorPrototype%", "%ReferenceErrorPrototype%", "%SyntaxErrorPrototype%", "%TypeErrorPrototype%", or "%URIErrorPrototype%" corresponding to which NativeError constructor is being defined.
+在步骤2中传递的字符串的实际值是“％EvalErrorPrototype％”，“％RangeErrorPrototype％”，“％ReferenceErrorPrototype％”，“％SyntaxErrorPrototype％”，“％TypeErrorPrototype％”或“％URIErrorPrototype％”，即对应于正在定义哪个NativeError构造函数。
 
 #### 19.5.6.2 NativeError 构造器属性 <div id="sec-properties-of-the-nativeerror-constructors"></div>
 
-Each NativeError constructor:
+每个NativeError构造函数：
 
-- has a [[Prototype]] internal slot whose value is the intrinsic object %Error%.
-- has a name property whose value is the String value `"NativeError"`.
-- has the following properties:
+- 有一个[[Prototype]]内部插槽，其值是内部对象％Error％。
+- 有一个name属性，其值是字符串值“ NativeError”。
+- 具有以下属性：
 
 ##### 19.5.6.2.1 NativeError.prototype <div id="sec-nativeerror.prototype"></div>
 
-The initial value of NativeError.prototype is a NativeError prototype object (19.5.6.3). Each NativeError
-constructor has a distinct prototype object.
+NativeError.prototype的初始值为NativeError原型对象（19.5.6.3）。每个NativeError
+构造函数有一个独特的原型对象。
 
 该属性具有以下特性 { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }.
 
 #### 19.5.6.3 NativeError 原型对象属性 <div id="sec-properties-of-the-nativeerror-prototype-objects"></div>
 
-Each NativeError prototype object:
+每个NativeError原型对象：
 
-- is an ordinary object.
-- is not an Error instance and does not have an [[ErrorData]] internal slot.
-- has a [[Prototype]] internal slot whose value is the intrinsic object %ErrorPrototype%
+- 是一个普通的对象。
+- 不是Error实例，并且没有[[ErrorData]]内部插槽。
+- 有一个[[Prototype]]内部插槽，其值是内部对象％ErrorPrototype％
 
 ##### 19.5.6.3.1 NativeError.prototype.constructor <div id="sec-nativeerror.prototype.constructor"></div>
 
-The initial value of the constructor property of the prototype for a given NativeError constructor is the corresponding intrinsic object %NativeError% (19.5.6.1).
+给定NativeError构造函数的原型构造函数属性的初始值为相应的内部对象％NativeError％（19.5.6.1）。
 
 ##### 19.5.6.3.2 NativeError.prototype.message <div id="sec-nativeerror.prototype.message"></div>
 
 
-- is the intrinsic object %Object%.
-- is the initial value of the Object property of the global object.
-- creates The Object constructor:
+- 是内部对象％Object％。
+- 是全局对象的Object属性的初始值。
+- 创建对象构造函数：
 
 ##### 19.5.6.3.3 NativeError.prototype.name <div id="sec-nativeerror.prototype.name"></div>
 
-The initial value of the name property of the prototype for a given NativeError constructor is the String value consisting of the name of the constructor (the name used instead of NativeError).
+给定NativeError构造函数的原型name属性的初始值是String值，该值由构造函数的名称（用于代替NativeError的名称）组成。
 
 #### 19.5.6.4 NativeError 实例属性 <div id="sec-properties-of-nativeerror-instances"></div>
 
-NativeError instances are ordinary objects that inherit properties from their NativeError prototype object and have an [[ErrorData]] internal slot whose value is undefined. The only specified use of [[ErrorData]] is by Object.prototype.toString (19.1.3.6) to identify Error or NativeError instances.
+NativeError实例是从其NativeError原型对象继承属性并具有[[ErrorData]]内部插槽（其值undefined）的普通对象。 [[ErrorData]]的唯一指定用途是由Object.prototype.toString（19.1.3.6）来标识Error或NativeError实例。
