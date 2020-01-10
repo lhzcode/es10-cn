@@ -859,11 +859,11 @@ ECMAScript使用冗长的格里高利历将日期编号映射为年份编号，�
 
 ​	DayWithinYear(t) = Day(t) - DayFromYear(YearFromTime(t))
 
-月份值为0表示一月； 1表示2月； 2表示3月； 3表示四月； 4表示五月； 5表示6月； 6表示7月； 7表示8月； 8表示9月； 9表示十月； 10指定11月；和11指定12月。请注意，MonthFromTime（0）= 0，对应于1970年1月1日，星期四。
+月份值为0表示一月； 1表示2月； 2表示3月； 3表示四月； 4表示五月； 5表示6月； 6表示7月； 7表示8月； 8表示9月； 9表示十月； 10表示11月；和11表示12月。请注意，MonthFromTime（0）= 0，对应于1970年1月1日，星期四。
 
 #### 20.3.1.5 日期数 <div id="sec-date-number"></div>
 
-A date number is identified by an integer in the range 1 through 31, inclusive. The mapping DateFromTime(t) from a time value t to a date number is defined by:
+日期编号由范围 1 到 31 中的整数标识。从时间值 t 到日期编号的映射 DateFromTime(t) 由以下定义：
 
 ​	DateFromTime(t)
 ​		= DayWithinYear(t) + 1 if MonthFromTime(t) = 0
@@ -881,58 +881,59 @@ A date number is identified by an integer in the range 1 through 31, inclusive. 
 
 #### 20.3.1.6 周数 <div id="sec-week-day"></div>
 
-The weekday for a particular time value t is defined as
+特定时间值 t 的个工作日定义为
 
 ​	WeekDay(t) = (Day(t) + 4) modulo 7
 
-A weekday value of 0 specifies Sunday; 1 specifies Monday; 2 specifies Tuesday; 3 specifies Wednesday; 4 specifies Thursday; 5 specifies Friday; and 6 specifies Saturday. Note that WeekDay(0) = 4, corresponding to Thursday, 01 January, 1970.
+工作日的值 0 表示星期日；1 表示星期一；2 表示星期二；3 表示星期三；4 表示星期四；5 表示星期五；6 表示星期六。请注意，WeekDay（0）= 4，对应于 1970 年 1 月 1 日星期四。
 
 #### 20.3.1.7 LocalTZA ( t, isUTC ) <div id="sec-local-time-zone-adjustment"></div>
 
-LocalTZA( t, isUTC ) is an implementation-defined algorithm that must 返回 a number representing milliseconds suitable for adding to a Time Value. The local political rules for standard time and daylight saving time in effect at t should be used to determine the result in the way specified in the following three paragraphs.
+LocalTZA（t，isUTC）是一种实现定义的算法，必须返回一个表示毫秒的数字，该数字适合加到时间值上。应该使用以下三段中指定的方式使用当地的有关标准时间和夏令时的政治规则来确定结果。
 
-When isUTC is true, LocalTZA( t, true ) should 返回 the offset of the local time zone from UTC measured in milliseconds at time represented by time value t (UTC). When 结果为 added to t (UTC), it should yield the local time.
+当 isUTC 为 true 时，LocalTZA（t，true） 应返回本地时区的偏移量，以时间值 t （UTC） 表示的时间以毫秒为单位。当结果添加到 t （UTC） 时，应生成本地时间。当 isUTC 为 true 时，LocalTZA（t，true） 应返回本地时区的偏移量，以时间值 t （UTC） 表示的时间以毫秒为单位。当结果添加到 t （UTC） 时，应生成本地时间。
 
-When isUTC is false, LocalTZA( t, false ) should 返回 the offset of the local time zone from UTC measured in milliseconds at local time represented by time value t local = t. When 结果为 subtracted from the local time t local, it should yield the corresponding UTC.
+当 isUTC 为 false 时，LocalTZA（t，false）应返回本地时区的偏移量，以本地时间以毫秒为单位，以时间值 t 本地 = t 表示。当从本地时间 t 本地减去结果时，应生成相应的 UTC。
 
-When t local represents local time repeating multiple times at a negative time zone transition (e.g. when the daylight saving time ends or the time zone adjustment is decreased due to a time zone rule change) or skipped local time at a positive time zone transitions (e.g. when the daylight saving time starts or the time zone adjustment is increased due to a time zone rule change), t local must be interpreted with the time zone adjustment before the transition.
+当t local表示本地时间在负时区转换时重复多次（例如，夏时制结束或由于时区规则更改而导致时区调整减少）或在正时区转换时跳过本地时间（例如，当夏令时开始或由于时区规则更改而增加时区调整时），必须在转换前用时区调整来解释本地时间。
 
-若 an implementation does not support a conversion described above or if political rules for time t are not available within the implementation，the result must be 0.
+如果实现不支持上述转换，或者在实现内没有时间t的政治规则，则结果必须为0。
 
->NOTE It is recommended that implementations use the time zone information of the IANA Time Zone Database https://www.iana.org/time-zones/. 
+>注：建议实现使用IANA时区数据库 https://www.iana.org/time-zones/ 的时区信息。 
 >
->1:30 AM on November 5, 2017 in America/New_York is repeated twice (fall backward), but it must be interpreted as 1:30 AM UTC-04 instead of 1:30 AM UTC-05. LocalTZA(TimeClip(MakeDate(MakeDay(2017, 10, 5), MakeTime(1, 30, 0, 0))), false) is -4 × msPerHour. 
+>2017年11月5日在美国/纽约，上午1:30重复了两次（倒退），但必须将其解释为UTC-04 AM 1:30，而不是UTC-05 AM 30。 LocalTZA（TimeClip（MakeDate（MakeDay（2017，10，5），MakeTime（1，30，0，0））），false）为-4×msPerHour。
 >
->2:30 AM on March 12, 2017 in America/New_York does not exist, but it must be interpreted as 2:30 AM UTC-05 (equivalent to 3:30 AM UTC-04). LocalTZA(TimeClip(MakeDate(MakeDay(2017, 2, 12), MakeTime(2, 30, 0, 0))), false) is -5 × msPerHour.
+>2017年3月12日上午2:30在美国/纽约州不存在，但必须将其解释为UTC-05 2:30 AM（相当于UTC-04 AM 3:30）。 LocalTZA（TimeClip（MakeDate（MakeDay（2017，2，12），MakeTime（2，30，0，0））），false）是-5×msPerHour。
 
 #### 20.3.1.8 LocalTime ( t ) <div id="sec-localtime"></div>
 
-The abstract operation LocalTime with argument t converts t from UTC to local time by performing the following steps:
+参数为t的抽象操作LocalTime通过执行以下步骤将t从UTC转换为本地时间：
 
 1. 返回 t + LocalTZA(t, true).
 
-> NOTE Two different time values (t (UTC)) are converted to the same local time t local at a negative time zone transition when there are repeated times (e.g. the daylight saving time ends or the time zone adjustment is decreased.).
+> 注：当重复次数较多时（例如，夏令时结束或时区调整减少），两个不同的时间值（t（UTC））在负时区转换时转换为相同的本地时间t local。
 
 #### 20.3.1.9 UTC ( t ) <div id="sec-utc-t"></div>
 
-The abstract operation UTC with argument t converts t from local time to UTC. It performs the following steps:
+参数为t的抽象运算UTC将t从本地时间转换为UTC。它执行以下步骤：
 
 1. 返回 t - LocalTZA(t, false).
 
-> NOTE UTC(LocalTime(t)) is not necessarily always equal to t. LocalTime(UTC(t local)) is not necessarily always equal to t local, either.
+> 注：UTC（LocalTime（t））不一定总是等于t。 LocalTime（UTC（t local））也不一定总是等于t local。
 
 #### 20.3.1.10 小时，分钟，秒和毫秒 <div id="sec-hours-minutes-second-and-milliseconds"></div>
 
-The following abstract operations are useful in decomposing time values:
+以下抽象操作在分解时间值时很有用：
 
 ​	HourFromTime(t) = floor(t / msPerHour) modulo HoursPerDay
 ​	MinFromTime(t) = floor(t / msPerMinute) modulo MinutesPerHour
 ​	SecFromTime(t) = floor(t / msPerSecond) modulo SecondsPerMinute
 ​	msFromTime(t) = t modulo msPerSecond
 
-where
+此处
 
-​	HoursPerDay = 24MinutesPerHour = 60
+​	HoursPerDay = 24
+​	MinutesPerHour = 60
 ​	SecondsPerMinute = 60
 ​	msPerSecond = 1000
 ​	msPerMinute = 60000 = msPerSecond × SecondsPerMinute
@@ -940,69 +941,70 @@ where
 
 #### 20.3.1.11 MakeTime ( hour, min, sec, ms ) <div id="sec-maketime"></div>
 
-The abstract operation MakeTime calculates a number of milliseconds from its four arguments, which must be ECMAScript Number values. This operator functions as follows:
+抽象操作MakeTime根据其四个参数计算毫秒数，这些参数必须是ECMAScript Number值。该运算符的功能如下：
 
-1. 若 hour 不是 finite or min is not finite or sec is not finite or ms is not finite，返回 NaN.
+1. 若 hour 不是有限或 min 不是有限的，或者 sec 不是有限的，或者 ms 不是有限的，返回 NaN.
 2. 令 h 为 ! ToInteger(hour).
 3. 令 m 为 ! ToInteger(min).
 4. 令 s 为 ! ToInteger(sec).
 5. 令 milli 为 ! ToInteger(ms).
-6. 令 t 为 h * msPerHour + m * msPerMinute + s * msPerSecond + milli, performing the arithmetic according to IEEE 754-2008 rules (that is, as if using the ECMAScript operators * and +).
+6. 令 t 为 h * msPerHour + m * msPerMinute + s * msPerSecond + milli, 根据IEEE 754-2008规则执行算术(也就是说，就像使用ECMAScript运算符*和+).
 7. 返回 t.
 
 #### 20.3.1.12 MakeDay ( year, month, date ) <div id="sec-makeday"></div>
 
-The abstract operation MakeDay calculates a number of days from its three arguments, which must be ECMAScript Number values. This operator functions as follows:
+抽象操作MakeDay通过其三个参数（必须为ECMAScript Number值）来计算天数。该运算符的功能如下：
 
-1. 若 year 不是 finite or month is not finite or date is not finite，返回 NaN.
+1. 若 year 不是有限或 month 不是有限的或 date 不是有限的，返回 NaN.
 2. 令 y 为 ! ToInteger(year).
 3. 令 m 为 ! ToInteger(month).
 4. 令 dt 为 ! ToInteger(date).
 5. 令 ym 为 y + floor(m / 12).
 6. 令 mn 为 m modulo 12.
-7. Find a value t such that YearFromTime(t) is ym and MonthFromTime(t) is mn and DateFromTime(t) is 1; but 若 this 不是 possible (because some argument is out of range)，返回 NaN.
+7. 找到一个值t使得 YearFromTime(t) 是 ym，MonthFromTime(t) 是 mn，DateFromTime(t) 是 1; 但是如果这不可能（因为某些参数超出范围），返回 NaN.
 8. 返回 Day(t) + dt - 1.
 
 #### 20.3.1.13 MakeDate ( day, time ) <div id="sec-makedate"></div>
 
-The abstract operation MakeDate calculates a number of milliseconds from its two arguments, which must be ECMAScript Number values. This operator functions as follows:
+抽象操作MakeDate根据其两个参数计算毫秒数，该参数必须为ECMAScript Number值。该运算符的功能如下：
 
-1. 若 day 不是 finite or time is not finite，返回 NaN.
+1. 若 day 不是有限的，或 time 不是有限的，返回 NaN.
 2. 返回 day × msPerDay + time.
 
 #### 20.3.1.14 TimeClip ( time ) <div id="sec-timeclip"></div>
 
-The abstract operation TimeClip calculates a number of milliseconds from its argument, which must be an ECMAScript Number value. This operator functions as follows:
+抽象操作TimeClip根据其参数计算毫秒数，该参数必须为ECMAScript Number值。该运算符的功能如下：
 
-1. 若 time 不是 finite，返回 NaN.
+1. 若 time 不是无限，返回 NaN.
 2. 若 abs(time) > 8.64 × 1015，返回 NaN.
 3. 令 clippedTime 为 ! ToInteger(time).
 4. 若 clippedTime 是 -0，设置 clippedTime 为 +0.
 5. 返回 clippedTime.
 
-> NOTE The point of step 4 is that an implementation is permitted a choice of internal representations of time values, for example as a 64-bit signed integer or as a 64-bit floating-point value. Depending on the implementation, this internal representation may or may not distinguish -0 and +0.
+> 注：步骤4的要点是允许实现选择时间值的内部表示形式，例如，以64位有符号整数或64位浮点值的形式表示。根据实现的不同，此内部表示形式可能会也可能不会区分-0和+0。
 
 #### 20.3.1.15 日期时间字符串格式 <div id="sec-date-time-string-format"></div>
 
-ECMAScript defines a string interchange format for date-times based upon a simplification of the ISO 8601 calendar date extended format. The format is as follows: YYYY-MM-DDTHH:mm:ss.sssZ
+ECMAScript基于简化的ISO 8601日历日期扩展格式，为日期时间定义了字符串交换格式。格式如下：YYYY-MM-DDTHH:mm:ss.sssZ
 
-Where the fields are as follows:
+字段如下：
 
-| `YYYY` | is the decimal digits of the year 0000 to 9999 in the Gregorian calendar. |
-| ------ | ------------------------------------------------------------ |
-| `-`    | `"-"` (hyphen) appears literally twice in the string.        |
-| `MM`   | is the month of the year from 01 (January) to 12 (December). |
-| `DD`   | is the day of the month from 01 to 31.                       |
-| `T`    | `"T"` appears literally in the string, to indicate the beginning of the time element. |
-| `HH`   | is the number of complete hours that have passed since midnight as two decimal digits from 00 to 24. |
-| `:`    | `":"` (colon) appears literally twice in the string.         |
-| `mm`   | is the number of complete minutes since the start of the hour as two decimal digits from 00 to 59. |
-| `ss`   | is the number of complete seconds since the start of the minute as two decimal digits from 00 to 59. |
-| `.`    | `"."` (dot) appears literally in the string.                 |
-| `sss`  | is the number of complete milliseconds since the start of the second as three decimal digits. |
-| `Z`    | is the time zone offset specified as `"Z"` (for UTC) or either `"+"` or `"-"` followed by a time expression `HH:mm` |
+| | |
+| ---- | ---- |
+| `YYYY` | 是公历中从0000到9999年的十进制数字。                         |
+| `-`    | `"-"`（连字符）在字符串中实际出现两次。                      |
+| `MM`   | 是一年中从01（一月）到12（十二月）的月份。                   |
+| `DD`   | 是从01到31的月份。                                           |
+| `T`    | `"T"` 实际出现在字符串中，以指示时间元素的开始。             |
+| `HH`   | 是自午夜以来经过的完整小时数，从00到24的两位十进制数字。 |
+| `:`    | `":"`（冒号）在字符串中实际出现两次。 |
+| `mm`   | 是从小时开始到现在的完整分钟数，从00到59的两位十进制数字。 |
+| `ss`   | 是从分钟开始算起的完整秒数，从00到59的两位十进制数字。 |
+| `.`    | `"."`（点）字面上出现在字符串中。   |
+| `sss`  | 是从秒的开始算起的完整毫秒数，为三个十进制数字。 |
+| `Z`    | 是指定为` "Z"`（对于UTC）或`"+"`或`"-"`后跟时间表达式`HH:mm`的时区偏移量 |
 
-This format includes date-only forms:
+此格式包括仅日期形式：
 
 ```
 YYYY
@@ -1010,7 +1012,7 @@ YYYY-MM
 YYYY-MM-DD
 ```
 
-It also includes “date-time” forms that consist of one of the above date-only forms immediately followed by one of the following time forms with an optional time zone offset appended:
+它还包括“日期时间”格式，该格式由上述仅日期格式之一构成，后跟以下时间格式之一，并附加了可选的时区偏移量：
 
 ```
 THH:mm
@@ -1018,19 +1020,19 @@ THH:mm:ss
 THH:mm:ss.sss
 ```
 
-All numbers must be base 10. 若 the MM or DD fields are absent "01" is used as the value. 若 the HH, mm，or ss fields are absent "00" is used as the value and the value of an absent sss field is "000". When the time zone offset 是 absent，date-only forms are interpreted as a UTC time and date-time forms are interpreted as a local time.
+所有数字都必须以10为底。如果缺少MM或DD字段，则将“ 01”用作值。如果HH，mm或ss字段不存在，则将“ 00”用作值，而将sss字段不存在的值设为“ 000”。如果没有时区偏移，则仅日期形式将被解释为UTC时间，而日期时间形式将被解释为本地时间。
 
-A string containing out-of-bounds or nonconforming fields is not a valid instance of this format.
+包含超出范围或不符合要求的字段的字符串不是此格式的有效实例。
 
-> NOTE 1 As every day both starts and ends with midnight, the two notations 00:00 and 24:00 are available to distinguish the two midnights that can be associated with one date. This means that the following two notations refer to exactly the same point in time: 1995-02-04T24:00 and 1995-02-05T00:00. This interpretation of the latter form as "end of a calendar day" is consistent with ISO 8601, even though that specification reserves it for describing time intervals and does not permit it within representations of single points in time. 
+> 注1：由于每天都是从午夜开始和结束，所以可以使用两种表示法 00:00 和 24:00 来区分可以与一个日期关联的两个午夜。这意味着以下两个符号指的是完全相同的时间点：1995-02-04T24:00和1995-02-05T00:00。后一种形式的这种解释为“日历日结束”与ISO 8601一致，即使该规范保留了它来描述时间间隔，也不允许在单个时间点表示中使用它。
 
-> NOTE 2 There exists no international standard that specifies abbreviations for civil time zones like CET, EST, etc. and sometimes the same abbreviation is even used for two very different time zones. For this reason, both ISO 8601 and this format specify numeric representations of time zone offsets.
+> 注2：尚无国际标准规定民用时区（如CET，EST等）的缩写，有时甚至在两个截然不同的时区使用相同的缩写。因此，ISO 8601和此格式均指定时区偏移量的数字表示。
 
 ##### 20.3.1.15.1 年扩展 <div id="sec-expanded-years"></div>
 
-Covering the full time value range of approximately 273,790 years forward or backward from 01 January, 1970 (20.3.1.1) requires representing years before 0 or after 9999. ISO 8601 permits expansion of the year representation, but only by mutual agreement of the partners in information interchange. In the simplified ECMAScript format, such an expanded year representation shall have 6 digits and is always prefixed with a + or - sign. The year 0 is considered positive and hence prefixed with a + sign. Strings matching the Date Time String Format with expanded years representing instants in time outside the range of a time value are treated as unrecognizable by Date.parse and cause that function to 返回 NaN without falling back to implementation-specific behavior or heuristics
+从1970年1月1日（20.3.1.1）开始，向前或向后覆盖大约273,790年的全部时间值范围，则需要表示0之前或9999之后的年份。ISO8601允许扩展年份表示，但前提是必须与合作伙伴达成共识信息交流。在简化的ECMAScript格式中，这种扩展的年份表示形式应为6位数字，并始终以+或-开头。 0年被认为是正数，因此以+号开头。与Date Time字符串格式匹配的字符串，如果扩展的年份表示超出时间值范围的时间，则Date.parse将其视为无法识别，并导致该函数返回NaN而不退回到实现特定的行为或启发式方法
 
->NOTE Examples of date-time values with expanded years:
+>注：带有扩展年份的日期时间值示例：
 >
 >-271821-04-20T00:00:00Z 271822 B.C.
 >-000001-01-01T00:00:00Z 2 B.C.
@@ -1042,39 +1044,39 @@ Covering the full time value range of approximately 273,790 years forward or bac
 
 ### 20.3.2 Date 构造器 <div id="sec-date-constructor"></div>
 
-The Date constructor:
+Date构造函数：
 
-- is the intrinsic object %Date%.
-- is the initial value of the Date property of the global object.
-- creates and initializes a new Date object when called as a constructor.
-- returns a String representing the current time (UTC) when called as a function rather than as a constructor.
-- is a single function whose behaviour is overloaded based upon the number and types of its arguments.
-- is designed to be subclassable. It may be used as the value of an extends clause of a class definition. Subclass constructors that intend to inherit the specified Date behaviour must include a super call to the Date constructor to create and initialize the subclass instance with a [[DateValue]] internal slot.
-- has a "length" property whose value is 7.
+- 是内部对象％Date％。
+- 是全局对象的Date属性的初始值。
+- 在作为构造函数调用时创建并初始化一个新的Date对象。
+- 当作为函数而不是构造函数调用时，返回表示当前时间（UTC）的字符串。
+- 是一个函数，其行为根据其参数的数量和类型而重载。
+- 设计为可归类的。它可以用作类定义的extends子句的值。打算继承指定的Date行为的子类构造函数必须包括对Date构造函数的超级调用，以使用[[DateValue]]内部插槽创建和初始化子类实例。
+- 具有 "length" 属性，其值为7。
 
 #### 20.3.2.1 Date ( year, month [ , date [ , hours [ , minutes [ , seconds [ , ms ] ] ] ] ] ) <div id="sec-date-year-month-date-hours-minutes-seconds-ms"></div>
 
-This description applies only if the Date constructor is called with at least two arguments.
+仅当使用至少两个参数调用Date构造函数时，此描述才适用。
 
-When the Date function is called, the following steps are taken:
+调用Date函数时，将执行以下步骤：
 
-1. 令 numberOfArgs 为 the number of arguments passed to this function call.
+1. 令 numberOfArgs 为传递给此函数调用的参数数量。
 2. 断言：numberOfArgs ≥ 2.
 3. 若 NewTarget 是 undefined，那么
-    1. 令 now 为 the Number that is the time value (UTC) identifying the current time.
+    1. 令 now 为Number，它是标识当前时间的时间值（UTC）。
     2. 返回 ToDateString(now).
 4. 否则，
     1. 令 y 为 ? ToNumber(year).
     2. 令 m 为 ? ToNumber(month).
-    3. 若 date 是 present，令 dt 为 ? ToNumber(date); else 令 dt 为 1.
-    4. 若 hours 是 present，令 h 为 ? ToNumber(hours); else 令 h 为 0.
-    5. 若 minutes 是 present，令 min 为 ? ToNumber(minutes); else 令 min 为 0.
-    6. 若 seconds 是 present，令 s 为 ? ToNumber(seconds); else 令 s 为 0.
-    7. 若 ms 是 present，令 milli 为 ? ToNumber(ms); else 令 milli 为 0.
+    3. 若 date 存在，令 dt 为 ? ToNumber(date); 否则，令 dt 为 1.
+    4. 若 hours 存在，令 h 为 ? ToNumber(hours); 否则，令 h 为 0.
+    5. 若 minutes 存在，令 min 为 ? ToNumber(minutes); 否则，令 min 为 0.
+    6. 若 seconds 存在，令 s 为 ? ToNumber(seconds); 否则，令 s 为 0.
+    7. 若 ms 存在，令 milli 为 ? ToNumber(ms); 否则，令 milli 为 0.
     8. 若 y 是 NaN，令 yr 为 NaN.
     9. 否则，
         1. 令 yi 为 ! ToInteger(y).
-        2. 若 0 ≤ yi ≤ 99, 令 yr 为 1900 + yi; otherwise，令 yr 为 y.
+        2. 若 0 ≤ yi ≤ 99, 令 yr 为 1900 + yi; 除此之外，令 yr 为 y.
     10. 令 finalDate 为 MakeDate(MakeDay(yr, m, dt), MakeTime(h, min, s, milli)).
     11. 令 O 为 ? OrdinaryCreateFromConstructor(NewTarget, "%DatePrototype%", « [[DateValue]] »).
     12. 设置 O.[[DateValue]] 为 TimeClip(UTC(finalDate)).
@@ -1082,23 +1084,23 @@ When the Date function is called, the following steps are taken:
 
 #### 20.3.2.2 Date ( value ) <div id="sec-date-value"></div>
 
-This description applies only if the Date constructor is called with exactly one argument
+仅当使用仅一个参数调用Date构造函数时，此描述才适用
 
-When the Date function is called, the following steps are taken:
+调用Date函数时，将执行以下步骤：
 
-1. 令 numberOfArgs 为 the number of arguments passed to this function call.
+1. 令 numberOfArgs 为传递给此函数调用的参数数量。
 2. 断言：numberOfArgs = 1.
 3. 若 NewTarget 是 undefined，那么
-1. 令 now 为 the Number that is the time value (UTC) identifying the current time.
-2. 返回 ToDateString(now).
+    1. 令 now 为Number，它是标识当前时间的时间值（UTC）。
+    2. 返回 ToDateString(now).
 4. 否则，
-    1. 若 Type(value) 是 Object and value has a [[DateValue]] internal slot，那么
+    1. 若 Type(value) 是对象，并且value具有一个[[DateValue]]内部插槽，那么
         1. 令 tv 为 thisTimeValue(value).
     2. 否则，
         1. 令 v 为 ? ToPrimitive(value).
         2. 若 Type(v) 是 String，那么
-            1. 断言：The next step never returns an abrupt completion because Type(v) is String.
-            2. 令 tv 为 the result of parsing v as a date, in exactly the same manner as for the parse method (20.3.3.2).
+            1. 断言：下一步永远不会返回突然完成，因为Type（v）是String。
+            2. 令 tv 为 将v解析为日期的结果，与解析方法（20.3.3.2）完全相同。
         3. 否则，
             1. 令 tv 为 ? ToNumber(v).
     3. 令 O 为 ? OrdinaryCreateFromConstructor(NewTarget, "%DatePrototype%", « [[DateValue]] »).
@@ -1107,36 +1109,36 @@ When the Date function is called, the following steps are taken:
 
 #### 20.3.2.3 Date ( ) <div id="sec-date-constructor-date"></div>
 
-This description applies only if the Date constructor is called with no arguments.
+仅当不带参数调用Date构造函数时，此描述才适用。
 
-When the Date function is called, the following steps are taken:
+调用Date函数时，将执行以下步骤：
 
-1. 令 numberOfArgs 为 the number of arguments passed to this function call.
+1. 令 numberOfArgs 为传递给此函数调用的参数数量。
 2. 断言：numberOfArgs = 0.
 3. 若 NewTarget 是 undefined，那么
-    1. 令 now 为 the Number that is the time value (UTC) identifying the current time.
+    1. 令 now 为Number，它是标识当前时间的时间值（UTC）。
     2. 返回 ToDateString(now).
 4. 否则，
     1. 令 O 为 ? OrdinaryCreateFromConstructor(NewTarget, "%DatePrototype%", « [[DateValue]] »).
-    2. 设置 O.[[DateValue]] 为 the time value (UTC) identifying the current time.
+    2. 设置 O.[[DateValue]] 为标识当前时间的时间值（UTC）。
     3. 返回 O.
 
 ### 20.3.3 Date 构造器属性 <div id="sec-properties-of-the-date-constructor"></div>
 
-The Date constructor:
+Date构造函数：
 
-- has a [[Prototype]] internal slot whose value is the intrinsic object %FunctionPrototype%.
-- has the following properties:
+- 有一个[[Prototype]]内部插槽，其值是固有对象％FunctionPrototype％。
+- 具有以下属性：
 
 #### 20.3.3.1 Date.now ( ) <div id="sec-date.now"></div>
 
-The now function returns a Number value that is the time value designating the UTC date and time of the occurrence of the call to now.
+now函数返回一个Number值，该值是指定对now进行回调的UTC日期和时间的时间值。
 
 #### 20.3.3.2 Date.parse ( string ) <div id="sec-date.parse"></div>
 
-The parse function applies the ToString operator to its argument. 若 ToString results in an abrupt completion the Completion Record 是 immediately 返回ed. 否则，parse interprets the resulting String as a date and time; it returns a Number, the UTC time value corresponding to the date and time. The String may be interpreted as a local time, a UTC time，或 a time in some other time zone, depending on the contents of the String. The function first attempts to parse the String according to the format described in Date Time String Format (20.3.1.15)，including expanded years. If the String does not conform to that format the function may fall back to any implementation-specific heuristics or implementation-specific date formats. Strings that are unrecognizable or contain out-of-bounds format field values shall cause Date.parse to 返回 NaN.
+解析函数将ToString运算符应用于其参数。如果ToString导致突然完成，则立即返回完成记录。否则parse将结果String解释为日期和时间。它返回一个数字，即与日期和时间相对应的UTC时间值。根据字符串的内容，字符串可以解释为本地时间，UTC时间或其他时区中的时间。该函数首先尝试根据日期时间字符串格式（20.3.1.15）中描述的格式（包括扩展年份）解析字符串。如果字符串不符合该格式，则该函数可能会退回到任何特定于实现的启发式或特定于实现的日期格式。无法识别的字符串或包含超出范围的格式字段值的字符串应使Date.parse返回NaN。
 
-若 x 是 any Date object whose milliseconds amount is zero within a particular implementation of ECMAScript, then all of the following expressions should produce the same numeric value in that implementation，if all the properties referenced have their initial values:
+如果x是在特定ECMAScript实现中毫秒数为零的任何Date对象，则如果引用的所有属性都有其初始值，则以下所有表达式在该实现中应产生相同的数值：
 
 ```
 x.valueOf()
@@ -1145,63 +1147,63 @@ Date.parse(x.toUTCString())
 Date.parse(x.toISOString())
 ```
 
-However, the expression
+但是，表达式
 
 ```
 Date.parse(x.toLocaleString())
 ```
 
-is not required to produce the same Number value as the preceding three expressions and, in general, the value produced by Date.parse is implementation-dependent when given any String value that does not conform to the Date Time String Format (20.3.1.15) and that could not be produced in that implementation by the toString or toUTCString method
+不需要产生与前面三个表达式相同的Number值，并且通常，如果给定任何不符合Date Time字符串格式（20.3.1.15）的String值，则Date.parse产生的值取决于实现。而toString或toUTCString方法无法在该实现中产生
 
 #### 20.3.3.3 Date.prototype <div id="sec-date.prototype"></div>
 
-The initial value of Date.prototype is the intrinsic object %DatePrototype%.
+Date.prototype的初始值为内部对象％DatePrototype％。
 
 该属性具有以下特性 { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }.
 
 #### 20.3.3.4 Date.UTC ( year [ , month [ , date [ , hours [ , minutes [ , seconds [ , ms ] ] ] ] ] ] ) <div id="sec-date.utc"></div>
 
-When the UTC function is called, the following steps are taken:
+调用UTC函数时，将执行以下步骤：
 
 1. 令 y 为 ? ToNumber(year).
-2. 若 month 是 present，令 m 为 ? ToNumber(month); else 令 m 为 0.
-3. 若 date 是 present，令 dt 为 ? ToNumber(date); else 令 dt 为 1.
-4. 若 hours 是 present，令 h 为 ? ToNumber(hours); else 令 h 为 0.
-5. 若 minutes 是 present，令 min 为 ? ToNumber(minutes); else 令 min 为 0.
-6. 若 seconds 是 present，令 s 为 ? ToNumber(seconds); else 令 s 为 0.
-7. 若 ms 是 present，令 milli 为 ? ToNumber(ms); else 令 milli 为 0.
+2. 若 month 存在，令 m 为 ? ToNumber(month); 否则，令 m 为 0.
+3. 若 date 存在，令 dt 为 ? ToNumber(date); 否则，令 dt 为 1.
+4. 若 hours 存在，令 h 为 ? ToNumber(hours); 否则，令 h 为 0.
+5. 若 minutes 存在，令 min 为 ? ToNumber(minutes); 否则，令 min 为 0.
+6. 若 seconds 存在，令 s 为 ? ToNumber(seconds); 否则，令 s 为 0.
+7. 若 ms 存在，令 milli 为 ? ToNumber(ms); 否则，令 milli 为 0.
 8. 若 y 是 NaN，令 yr 为 NaN.
 9. 否则，
 1. 令 yi 为 ! ToInteger(y).
-2. 若 0 ≤ yi ≤ 99, 令 yr 为 1900 + yi; otherwise，令 yr 为 y.
+2. 若 0 ≤ yi ≤ 99, 令 yr 为 1900 + yi; 除此之外，令 yr 为 y.
 10. 返回 TimeClip(MakeDate(MakeDay(yr, m, dt), MakeTime(h, min, s, milli))).
 
-The "length" property of the UTC function is 7.
+UTC函数的 "length" 属性为7。
 
-> NOTE The UTC function differs from the Date constructor in two ways: it returns a time value as a Number, rather than creating a Date object, and it interprets the arguments in UTC rather than as local time.
+> 注：UTC函数与Date构造函数有两个不同之处：它以数字形式返回时间值，而不是创建Date对象，并且将UTC中的参数解释为本地时间。
 
 ### 20.3.4 Date 原型对象属性 <div id="sec-properties-of-the-date-prototype-object"></div>
 
-The Date prototype object:
+Date原型对象：
 
-- is the intrinsic object %DatePrototype%.
-- is itself an ordinary object.
-- is not a Date instance and does not have a [[DateValue]] internal slot.
-- has a [[Prototype]] internal slot whose value is the intrinsic object %ObjectPrototype%.
+- 是内部对象％DatePrototype％。
+- 本身就是一个普通的对象。
+- 不是Date实例，并且没有[[DateValue]]内部插槽。
+- 有一个[[Prototype]]内部插槽，其值是内部对象％ObjectPrototype％。
 
-Unless explicitly defined 否则，the methods of the Date prototype object defined below are not generic and the this value passed to them must be an object that has a [[DateValue]] internal slot that has been initialized to a time value.
+除非明确定义，否则以下定义的Date原型对象的方法不是通用的，并且传递给它们的this值必须是具有[[DateValue]]内部插槽且已初始化为时间值的对象。
 
-The abstract operation thisTimeValue(value) performs the following steps:
+抽象操作 thisTimeValue（value）执行以下步骤：
 
-1. 若 Type(value) 是 Object and value has a [[DateValue]] internal slot，那么
+1. 若 Type(value) 是对象，并且value具有一个[[DateValue]]内部插槽，那么
 1. 返回 value.[[DateValue]].
 2. 抛出 TypeError 异常
 
-In following descriptions of functions that are properties of the Date prototype object, the phrase “this Date object” refers to the object that is the this value for the invocation of the function. 若 the Type of the this value 不是 Object，a TypeError exception is thrown. The phrase “this time value” within the specification of a method refers to the result 返回ed by calling the abstract operation thisTimeValue with the this value of the method invocation passed as the argument.
+在对作为Date原型对象的属性的函数的以下描述中，短语“ this Date object”是指作为函数调用的this值的对象。如果此值的类型不是Object，则抛出TypeError异常。方法规范中的短语“此时间值”是指通过调用抽象操作thisTimeValue并将方法调用的this值作为参数传递而返回的结果。
 
 #### 20.3.4.1 Date.prototype.constructor <div id="sec-date.prototype.constructor"></div>
 
-The initial value of Date.prototype.constructor is the intrinsic object %Date%
+Date.prototype.constructor的初始值为内部对象％Date％
 
 #### 20.3.4.2 Date.prototype.getDate ( ) <div id="sec-date.prototype.getdate"></div>
 
@@ -1353,7 +1355,7 @@ The following steps are performed
 2. 令 dt 为 ? ToNumber(date).
 3. 令 newDate 为 MakeDate(MakeDay(YearFromTime(t), MonthFromTime(t), dt), TimeWithinDay(t)).
 4. 令 u 为 TimeClip(UTC(newDate)).
-5. 设置 the [[DateValue]] internal slot of this Date object 为 u.
+5. 设置 the [[DateValue]]此Date对象的内部插槽为 u.
 6. 返回 u.
 
 #### 20.3.4.21 Date.prototype.setFullYear ( year [ , month [ , date ] ] ) <div id="sec-date.prototype.setfullyear"></div>
@@ -1361,18 +1363,18 @@ The following steps are performed
 执行以下步骤：
 
 1. 令 t 为 ? thisTimeValue(this value).
-2. 若 t 是 NaN, 设置 t to +0; otherwise，set t 为 LocalTime(t).
+2. 若 t 是 NaN, 设置 t to +0; 除此之外，set t 为 LocalTime(t).
 3. 令 y 为 ? ToNumber(year).
-4. 若 month 不存在, 令 m 为 MonthFromTime(t); otherwise，令 m 为 ? ToNumber(month).
-5. 若 date 不存在, 令 dt 为 DateFromTime(t); otherwise，令 dt 为 ? ToNumber(date).
+4. 若 month 不存在, 令 m 为 MonthFromTime(t); 除此之外，令 m 为 ? ToNumber(month).
+5. 若 date 不存在, 令 dt 为 DateFromTime(t); 除此之外，令 dt 为 ? ToNumber(date).
 6. 令 newDate 为 MakeDate(MakeDay(y, m, dt), TimeWithinDay(t)).
 7. 令 u 为 TimeClip(UTC(newDate)).
-8. 设置 the [[DateValue]] internal slot of this Date object 为 u.
+8. 设置 the [[DateValue]]此Date对象的内部插槽为 u.
 9. 返回 u.
 
-The "length" property of the setFullYear method is 3.
+setFullYear方法的 "length" 属性为3。
 
-> NOTE 若 month 不存在, this method behaves as if month was present with the value getMonth(). If date is not present，it behaves as if date was present with the value getDate().
+> 注意：如果不存在month，则此方法的行为就好像存在一个具有值getMonth（）的month一样。如果date不存在，则其行为就好像存在值getDate（）的date一样。
 
 #### 20.3.4.22 Date.prototype.setHours ( hour [ , min [ , sec [ , ms ] ] ] ) <div id="sec-date.prototype.sethours"></div>
 
@@ -1380,17 +1382,17 @@ The "length" property of the setFullYear method is 3.
 
 1. 令 t 为 LocalTime(? thisTimeValue(this value)).
 2. 令 h 为 ? ToNumber(hour).
-3. 若 min 不存在, 令 m 为 MinFromTime(t); otherwise，令 m 为 ? ToNumber(min).
-4. 若 sec 不存在, 令 s 为 SecFromTime(t); otherwise，令 s 为 ? ToNumber(sec).
-5. 若 ms 不存在, 令 milli 为 msFromTime(t); otherwise，令 milli 为 ? ToNumber(ms).
+3. 若 min 不存在, 令 m 为 MinFromTime(t); 除此之外，令 m 为 ? ToNumber(min).
+4. 若 sec 不存在, 令 s 为 SecFromTime(t); 除此之外，令 s 为 ? ToNumber(sec).
+5. 若 ms 不存在, 令 milli 为 msFromTime(t); 除此之外，令 milli 为 ? ToNumber(ms).
 6. 令 date 为 MakeDate(Day(t), MakeTime(h, m, s, milli)).
 7. 令 u 为 TimeClip(UTC(date)).
-8. 设置 the [[DateValue]] internal slot of this Date object 为 u.
+8. 设置 the [[DateValue]]此Date对象的内部插槽为 u.
 9. 返回 u.
 
-The "length" property of the setHours method is 4.
+setHours方法的 "length" 属性为4。
 
-> NOTE 若 min 不存在, this method behaves as 若 min was present with the value getMinutes(). If sec 不存在，it behaves as if sec was present with the value getSeconds(). If ms is not present，it behaves as if ms was present with the value getMilliseconds().
+> 注：如果不存在min，则此方法的行为就像使用值getMinutes（）存在min一样。如果sec不存在，则其行为就好像sec存在，其值是getSeconds（）。如果不存在ms，则其行为就好像存在ms且其值为getMilliseconds（）。
 
 #### 20.3.4.23 Date.prototype.setMilliseconds ( ms ) <div id="sec-date.prototype.setmilliseconds"></div>
 
@@ -1400,7 +1402,7 @@ The "length" property of the setHours method is 4.
 2. 设置 ms 为 ? ToNumber(ms).
 3. 令 time 为 MakeTime(HourFromTime(t), MinFromTime(t), SecFromTime(t), ms).
 4. 令 u 为 TimeClip(UTC(MakeDate(Day(t), time))).
-5. 设置 the [[DateValue]] internal slot of this Date object 为 u.
+5. 设置 the [[DateValue]]此Date对象的内部插槽为 u.
 6. 返回 u
 
 #### 20.3.4.24 Date.prototype.setMinutes ( min [ , sec [ , ms ] ] ) <div id="sec-date.prototype.setminutes"></div>
@@ -1409,16 +1411,16 @@ The "length" property of the setHours method is 4.
 
 1. 令 t 为 LocalTime(? thisTimeValue(this value)).
 2. 令 m 为 ? ToNumber(min).
-3. 若 sec 不存在, 令 s 为 SecFromTime(t); otherwise，令 s 为 ? ToNumber(sec).
-4. 若 ms 不存在, 令 milli 为 msFromTime(t); otherwise，令 milli 为 ? ToNumber(ms).
+3. 若 sec 不存在, 令 s 为 SecFromTime(t); 除此之外，令 s 为 ? ToNumber(sec).
+4. 若 ms 不存在, 令 milli 为 msFromTime(t); 除此之外，令 milli 为 ? ToNumber(ms).
 5. 令 date 为 MakeDate(Day(t), MakeTime(HourFromTime(t), m, s, milli)).
 6. 令 u 为 TimeClip(UTC(date)).
-7. 设置 the [[DateValue]] internal slot of this Date object 为 u.
+7. 设置 the [[DateValue]]此Date对象的内部插槽为 u.
 8. 返回 u
 
-The "length" property of the setMinutes method is 3.
+setMinutes 方法的 "length" 属性为3。
 
->NOTE 若 sec 不存在, this method behaves as if sec was present with the value getSeconds(). If ms is not present，this behaves as if ms was present with the value getMilliseconds().
+>注：如果不存在sec，则此方法的行为就像sec存在，其值是getSeconds（）。如果不存在ms，则其行为就好像ms的值是getMilliseconds（）。
 
 #### 20.3.4.25 Date.prototype.setMonth ( month [ , date ] ) <div id="sec-date.prototype.setmonth"></div>
 
@@ -1426,15 +1428,15 @@ The "length" property of the setMinutes method is 3.
 
 1. 令 t 为 LocalTime(? thisTimeValue(this value)).
 2. 令 m 为 ? ToNumber(month).
-3. 若 date 不存在, 令 dt 为 DateFromTime(t); otherwise，令 dt 为 ? ToNumber(date).
+3. 若 date 不存在, 令 dt 为 DateFromTime(t); 除此之外，令 dt 为 ? ToNumber(date).
 4. 令 newDate 为 MakeDate(MakeDay(YearFromTime(t), m, dt), TimeWithinDay(t)).
 5. 令 u 为 TimeClip(UTC(newDate)).
-6. 设置 the [[DateValue]] internal slot of this Date object 为 u.
+6. 设置 the [[DateValue]]此Date对象的内部插槽为 u.
 7. 返回 u.
 
-The "length" property of the setMonth method is 2.
+setMonth 方法的 "length" 属性为2。
 
-> NOTE 若 date 不存在，this method behaves as if date was present with the value getDate().
+> 注：如果不存在date，则此方法的行为就像使用值getDate（）存在date一样。
 
 #### 20.3.4.26 Date.prototype.setSeconds ( sec [ , ms ] ) <div id="sec-date.prototype.setseconds"></div>
 
@@ -1442,15 +1444,15 @@ The "length" property of the setMonth method is 2.
 
 1. 令 t 为 LocalTime(? thisTimeValue(this value)).
 2. 令 s 为 ? ToNumber(sec).
-3. 若 ms 不存在, 令 milli 为 msFromTime(t); otherwise，令 milli 为 ? ToNumber(ms).
+3. 若 ms 不存在, 令 milli 为 msFromTime(t); 除此之外，令 milli 为 ? ToNumber(ms).
 4. 令 date 为 MakeDate(Day(t), MakeTime(HourFromTime(t), MinFromTime(t), s, milli)).
 5. 令 u 为 TimeClip(UTC(date)).
-6. 设置 the [[DateValue]] internal slot of this Date object 为 u.
+6. 设置 the [[DateValue]]此Date对象的内部插槽为 u.
 7. 返回 u.
 
-The "length" property of the setSeconds method is 2.
+setSeconds 方法的 "length" 属性为2。
 
-> NOTE 若 ms 不存在，this method behaves as if ms was present with the value getMilliseconds().
+> 注：如果不存在ms，则此方法的行为就像ms存在，其值是getMilliseconds（）。
 
 #### 20.3.4.27 Date.prototype.setTime ( time ) <div id="sec-date.prototype.settime"></div>
 
@@ -1459,7 +1461,7 @@ The "length" property of the setSeconds method is 2.
 1. Perform ? thisTimeValue(this value).
 2. 令 t 为 ? ToNumber(time).
 3. 令 v 为 TimeClip(t).
-4. 设置 the [[DateValue]] internal slot of this Date object 为 v.
+4. 设置 the [[DateValue]]此Date对象的内部插槽为 v.
 5. 返回 v.
 
 #### 20.3.4.28 Date.prototype.setUTCDate ( date ) <div id="sec-date.prototype.setutcdate"></div>
@@ -1470,7 +1472,7 @@ The "length" property of the setSeconds method is 2.
 2. 令 dt 为 ? ToNumber(date).
 3. 令 newDate 为 MakeDate(MakeDay(YearFromTime(t), MonthFromTime(t), dt), TimeWithinDay(t)).
 4. 令 v 为 TimeClip(newDate).
-5. 设置 the [[DateValue]] internal slot of this Date object 为 v.
+5. 设置 the [[DateValue]]此Date对象的内部插槽为 v.
 6. 返回 v
 
 #### 20.3.4.29 Date.prototype.setUTCFullYear ( year [ , month [ , date ] ] ) <div id="sec-date.prototype.setutcfullyear"></div>
@@ -1480,16 +1482,16 @@ The "length" property of the setSeconds method is 2.
 1. 令 t 为 ? thisTimeValue(this value).
 2. 若 t 是 NaN，设置 t 为 +0.
 3. 令 y 为 ? ToNumber(year).
-4. 若 month 不存在, 令 m 为 MonthFromTime(t); otherwise，令 m 为 ? ToNumber(month).
-5. 若 date 不存在, 令 dt 为 DateFromTime(t); otherwise，令 dt 为 ? ToNumber(date).
+4. 若 month 不存在, 令 m 为 MonthFromTime(t); 除此之外，令 m 为 ? ToNumber(month).
+5. 若 date 不存在, 令 dt 为 DateFromTime(t); 除此之外，令 dt 为 ? ToNumber(date).
 6. 令 newDate 为 MakeDate(MakeDay(y, m, dt), TimeWithinDay(t)).
 7. 令 v 为 TimeClip(newDate).
-8. 设置 the [[DateValue]] internal slot of this Date object 为 v.
+8. 设置 the [[DateValue]]此Date对象的内部插槽为 v.
 9. 返回 v
 
-The "length" property of the setUTCFullYear method is 3
+setUTCFullYear 方法的 "length" 属性为3。
 
-> NOTE 若 month 不存在, this method behaves as if month was present with the value getUTCMonth(). If date is not present，it behaves as if date was present with the value getUTCDate().
+> 注：如果不存在month，则此方法的行为就像使用值getUTCMonth（）一样存在month。如果date不存在，则其行为就好像存在值getUTCDate（）的date一样。
 
 #### 20.3.4.30 Date.prototype.setUTCHours ( hour [ , min [ , sec [ , ms ] ] ] ) <div id="sec-date.prototype.setutchours"></div>
 
@@ -1497,17 +1499,18 @@ The "length" property of the setUTCFullYear method is 3
 
 1. 令 t 为 ? thisTimeValue(this value).
 2. 令 h 为 ? ToNumber(hour).
-3. 若 min 不存在, 令 m 为 MinFromTime(t); otherwise，令 m 为 ? ToNumber(min).
-4. 若 sec 不存在, 令 s 为 SecFromTime(t); otherwise，令 s 为 ? ToNumber(sec).
-5. 若 ms 不存在, 令 milli 为 msFromTime(t); otherwise，令 milli 为 ? ToNumber(ms).
+3. 若 min 不存在, 令 m 为 MinFromTime(t); 除此之外，令 m 为 ? ToNumber(min).
+4. 若 sec 不存在, 令 s 为 SecFromTime(t); 除此之外，令 s 为 ? ToNumber(sec).
+5. 若 ms 不存在, 令 milli 为 msFromTime(t); 除此之外，令 milli 为 ? ToNumber(ms).
 6. 令 newDate 为 MakeDate(Day(t), MakeTime(h, m, s, milli)).
 7. 令 v 为 TimeClip(newDate).
-8. 设置 the [[DateValue]] internal slot of this Date object 为 v.
+8. 设置 the [[DateValue]]此Date对象的内部插槽为 v.
 9. 返回 v
 
-The "length" property of the setUTCHours method is 4.
+setUTCHours 方法的 "length" 属性为4。
 
-> NOTE 若 min 不存在, this method behaves as 若 min was present with the value getUTCMinutes(). If sec 不存在，it behaves as if sec was present with the value getUTCSeconds(). If ms is not present，it behaves as if ms was present with the value getUTCMilliseconds().
+> 注：如果不存在min，则此方法的行为就好像存在值getUTCMinutes（）的min一样。如果秒不是
+> 如果存在，则其行为就像sec存在，其值是getUTCSeconds（）。如果不存在ms，则其行为就好像ms的值是getUTCMilliseconds（）。
 
 #### 20.3.4.31 Date.prototype.setUTCMilliseconds ( ms ) <div id="sec-date.prototype.setutcmilliseconds"></div>
 
@@ -1517,7 +1520,7 @@ The "length" property of the setUTCHours method is 4.
 2. 令 milli 为 ? ToNumber(ms).
 3. 令 time 为 MakeTime(HourFromTime(t), MinFromTime(t), SecFromTime(t), milli).
 4. 令 v 为 TimeClip(MakeDate(Day(t), time)).
-5. 设置 the [[DateValue]] internal slot of this Date object 为 v.
+5. 设置 the [[DateValue]]此Date对象的内部插槽为 v.
 6. 返回 v.
 
 #### 20.3.4.32 Date.prototype.setUTCMinutes ( min [ , sec [ , ms ] ] ) <div id="sec-date.prototype.setutcminutes"></div>
@@ -1534,12 +1537,12 @@ The "length" property of the setUTCHours method is 4.
     1. 令 milli 为 ? ToNumber(ms).
 7. 令 date 为 MakeDate(Day(t), MakeTime(HourFromTime(t), m, s, milli)).
 8. 令 v 为 TimeClip(date).
-9. 设置 the [[DateValue]] internal slot of this Date object 为 v.
+9. 设置 the [[DateValue]]此Date对象的内部插槽为 v.
 10. 返回 v.
 
-The "length" property of the setUTCMinutes method is 3
+setUTCMinutes 方法的 "length" 属性为3。
 
-> NOTE 若 sec 不存在, this method behaves as if sec was present with the value getUTCSeconds(). If ms is not present，it function behaves as if ms was present with the value 返回 by getUTCMilliseconds().
+> 注：如果不存在sec，则此方法的行为就像sec存在，其值是getUTCSeconds（）。如果不存在ms，则该函数的行为就好像存在ms，且其值由getUTCMilliseconds（）返回。
 
 #### 20.3.4.33 Date.prototype.setUTCMonth ( month [ , date ] ) <div id="sec-date.prototype.setutcmonth"></div>
 
@@ -1552,12 +1555,12 @@ The "length" property of the setUTCMinutes method is 3
     1. 令 dt 为 ? ToNumber(date).
 5. 令 newDate 为 MakeDate(MakeDay(YearFromTime(t), m, dt), TimeWithinDay(t)).
 6. 令 v 为 TimeClip(newDate).
-7. 设置 the [[DateValue]] internal slot of this Date object 为 v.
+7. 设置 the [[DateValue]]此Date对象的内部插槽为 v.
 8. 返回 v
 
-The "length" property of the setUTCMonth method is 2.
+setUTCMonth 方法的 "length" 属性为2。
 
-> NOTE 若 date 不存在，this method behaves as if date was present with the value getUTCDate().
+> 注：如果不存在date，则此方法的行为就像使用值getUTCDate（）存在date一样。
 
 #### 20.3.4.34 Date.prototype.setUTCSeconds ( sec [ , ms ] ) <div id="sec-date.prototype.setutcseconds"></div>
 
@@ -1570,12 +1573,12 @@ The "length" property of the setUTCMonth method is 2.
     1. 令 milli 为 ? ToNumber(ms).
 5. 令 date 为 MakeDate(Day(t), MakeTime(HourFromTime(t), MinFromTime(t), s, milli)).
 6. 令 v 为 TimeClip(date).
-7. 设置 the [[DateValue]] internal slot of this Date object 为 v.
+7. 设置 the [[DateValue]]此Date对象的内部插槽为 v.
 8. 返回 v.
 
-The "length" property of the setUTCSeconds method is 2
+setUTCSeconds 方法的 "length" 属性为2。
 
-> NOTE 若 ms 不存在，this method behaves as if ms was present with the value getUTCMilliseconds().
+> 注：如果不存在ms，则此方法的行为就像ms存在，其值是getUTCMilliseconds（）。
 
 #### 20.3.4.35 Date.prototype.toDateString ( ) <div id="sec-date.prototype.todatestring"></div>
 
@@ -1589,46 +1592,46 @@ The "length" property of the setUTCSeconds method is 2
 
 #### 20.3.4.36 Date.prototype.toISOString ( ) <div id="sec-date.prototype.toisostring"></div>
 
-This function returns a String value representing the instance in time corresponding to this time value. The format of the String is the Date Time string format defined in 20.3.1.15. All fields are present in the String. The time zone is always UTC, denoted by the suffix Z. 若 this time value is not a finite Number or if the year 不是 a value that can be represented in that format (if necessary using expanded year format)，a RangeError exception is thrown.
+此函数返回一个String值，该值表示与该时间值相对应的时间中的实例。字符串的格式是20.3.1.15中定义的日期时间字符串格式。所有字段都存在于字符串中。如果此时间值不是有限数字，或者年份不是可以用该格式表示的值（如果需要，则使用扩展年份格式），将抛出RangeError异常。
 
 #### 20.3.4.37 Date.prototype.toJSON ( key ) <div id="sec-date.prototype.tojson"></div>
 
-This function provides a String representation of a Date object for use by JSON.stringify (24.5.2).
+此函数提供JSON.stringify（24.5.2）使用的Date对象的String表示形式。
 
-When the toJSON method is called with argument key, the following steps are taken:
+使用参数键调用toJSON方法时，将执行以下步骤：
 
 1. 令 O 为 ? ToObject(this value).
 2. 令 tv 为 ? ToPrimitive(O, hint Number).
 3. 若 Type(tv) is Number and tv 不是 finite，返回 null.
 4. 返回 ? Invoke(O, "toISOString")
 
-> NOTE 1 The argument is ignored.
+> 注1：该参数被忽略。
 
-> NOTE 2 The toJSON function is intentionally generic; it does not require that its this value be a Date object. Therefore, it can be transferred to other kinds of objects for use as a method. However, it does require that any such object have a toISOString method.
+> 注2：toJSON函数是有意通用的。它不需要其此值是Date对象。因此，可以将其转移到其他种类的对象中用作方法。但是，它确实要求任何此类对象都具有toISOString方法。
 
 #### 20.3.4.38 Date.prototype.toLocaleDateString ( [ reserved1 [ , reserved2 ] ] ) <div id="sec-date.prototype.tolocaledatestring"></div>
 
-An ECMAScript implementation that includes the ECMA-402 Internationalization API must implement the Date.prototype.toLocaleDateString method as specified in the ECMA-402 specification. If an ECMAScript implementation does not include the ECMA-402 API the following specification of the toLocaleDateString method is used
+包含ECMA-402国际化API的ECMAScript实现必须实现ECMA-402规范中指定的Date.prototype.toLocaleDateString方法。如果ECMAScript实现不包含ECMA-402 API，则使用以下toLocaleDateString方法的规范
 
-This function returns a String value. The contents of the String are implementation-dependent, but are intended to represent the “date” portion of the Date in the current time zone in a convenient, human-readable form that corresponds to the conventions of the host environment's current locale.
+该函数返回一个字符串值。 String的内容与实现有关，但是旨在以一种方便的，易于理解的形式表示当前时区中Date的“ date”部分，该形式对应于宿主环境的当前语言环境的约定。
 
-The meaning of the optional parameters to this method are defined in the ECMA-402 specification; implementations that do not include ECMA-402 support must not use those parameter positions for anything else.
+ECMA-402规范中定义了此方法的可选参数的含义；不包含ECMA-402支持的实现不得将这些参数位置用于其他任何用途。
 
 #### 20.3.4.39 Date.prototype.toLocaleString ( [ reserved1 [ , reserved2 ] ] ) <div id="sec-date.prototype.tolocalestring"></div>
 
-An ECMAScript implementation that includes the ECMA-402 Internationalization API must implement the Date.prototype.toLocaleString method as specified in the ECMA-402 specification. If an ECMAScript implementation does not include the ECMA-402 API the following specification of the toLocaleString method is used.
+包含ECMA-402国际化API的ECMAScript实现必须实现ECMA-402规范中指定的Date.prototype.toLocaleString方法。如果ECMAScript实现不包含ECMA-402 API，则使用以下toLocaleString方法的规范。
 
-This function returns a String value. The contents of the String are implementation-dependent, but are intended to represent the Date in the current time zone in a convenient, human-readable form that corresponds to the conventions of the host environment's current locale.
+该函数返回一个字符串值。 String的内容取决于实现，但是旨在以一种方便且易于阅读的形式表示当前时区中的Date，该形式对应于主机环境当前语言环境的约定。
 
-The meaning of the optional parameters to this method are defined in the ECMA-402 specification; implementations that do not include ECMA-402 support must not use those parameter positions for anything else.
+ECMA-402规范中定义了此方法的可选参数的含义；不包含ECMA-402支持的实现不得将这些参数位置用于其他任何用途。
 
 #### 20.3.4.40 Date.prototype.toLocaleTimeString ( [ reserved1 [ , reserved2 ] ] ) <div id="sec-date.prototype.tolocaletimestring"></div>
 
-An ECMAScript implementation that includes the ECMA-402 Internationalization API must implement the Date.prototype.toLocaleTimeString method as specified in the ECMA-402 specification. If an ECMAScript implementation does not include the ECMA-402 API the following specification of the toLocaleTimeString method is used.
+包含ECMA-402国际化API的ECMAScript实现必须实现ECMA-402规范中指定的Date.prototype.toLocaleTimeString方法。如果ECMAScript实现不包含ECMA-402 API，则使用以下toLocaleTimeString方法的规范。
 
-This function returns a String value. The contents of the String are implementation-dependent, but are intended to represent the “time” portion of the Date in the current time zone in a convenient, human-readable form that corresponds to the conventions of the host environment's current locale.
+该函数返回一个字符串值。 String的内容与实现有关，但是旨在以一种方便的，易于理解的形式表示当前时区中Date的“时间”部分，该形式与宿主环境的当前语言环境的约定相对应。
 
-The meaning of the optional parameters to this method are defined in the ECMA-402 specification; implementations that do not include ECMA-402 support must not use those parameter positions for anything else.
+ECMA-402规范中定义了此方法的可选参数的含义；不包含ECMA-402支持的实现不得将这些参数位置用于其他任何用途。
 
 #### 20.3.4.41 Date.prototype.toString ( ) <div id="sec-date.prototype.tostring"></div>
 
@@ -1637,9 +1640,9 @@ The meaning of the optional parameters to this method are defined in the ECMA-40
 1. 令 tv 为 ? thisTimeValue(this value).
 2. 返回 ToDateString(tv).
 
-> NOTE 1 For any Date object d whose milliseconds amount is zero, the result of Date.parse(d.toString()) is equal to d.valueOf(). See 20.3.3.2.
+> 注1：对于任何毫秒数为零的Date对象d，Date.parse（d.toString（））的结果等于d.valueOf（）。见20.3.3.2。
 
-> NOTE 2 The toString function is not generic; it throws a TypeError exception 若 its this value 不是 a Date object. Therefore，it cannot be transferred to other kinds of objects for use as a method.
+> 注2：toString函数不是通用的；如果此值不是Date对象，则抛出TypeError异常。因此，不能将其作为方法传递给其他类型的对象。
 
 ##### 20.3.4.41.1 RS: TimeString ( tv ) <div id="sec-timestring"></div>
 
@@ -1647,57 +1650,57 @@ The meaning of the optional parameters to this method are defined in the ECMA-40
 
 1. 断言：Type(tv) is Number.
 2. 断言：tv is not NaN.
-3. 令 hour 为 the String representation of HourFromTime(tv), formatted as a two-digit decimal number, padded to the left with a zero if necessary.
-4. 令 minute 为 the String representation of MinFromTime(tv), formatted as a two-digit decimal number, padded to the left with a zero if necessary.
-5. 令 second 为 the String representation of SecFromTime(tv), formatted as a two-digit decimal number, padded to the left with a zero if necessary.
-6. 返回 the string-concatenation of hour, ":", minute, ":", second, the code unit 0x0020 (SPACE), and "GMT".
+3. 令 hour 为 HourFromTime（tv）的字符串表示形式，格式为两位十进制数字，如有必要，在左侧填充零。
+4. 令 minute 为 MinFromTime（tv）的字符串表示形式，格式为两位十进制数字，如有必要，在左侧填充零。
+5. 令 second 为 SecFromTime（tv）的字符串表示形式，格式为两位十进制数字，如有必要，在左侧填充零。
+6. 返回小时，“:”，分钟，“:”，秒，代码单元0x0020（SPACE）和“ GMT”的字符串连接。
 
 ##### 20.3.4.41.2 RS: DateString ( tv ) <div id="sec-datestring"></div>
 
 执行以下步骤：
 
-1. 断言：Type(tv) is Number.
+1. 断言：Type(tv) 是 Number.
 
-2. 断言：tv is not NaN.
+2. 断言：tv 不是 NaN.
 
-3. 令 weekday 为 the Name of the entry in Table 49 with the Number WeekDay(tv).
+3. 令 weekday 为表 49 中带有数字WeekDay（tv）的条目的名称。
 
-4. 令 month 为 the Name of the entry in Table 50 with the Number MonthFromTime(tv).
+4. 令 month 为表 50 中条目的名称，其编号为MonthFromTime（tv）。
 
-5. 令 day 为 the String representation of DateFromTime(tv), formatted as a two-digit decimal number, padded to the left with a zero if necessary.
+5. 令 day 为 DateFromTime（tv）的字符串表示形式，格式为两位十进制数字，如有必要，在左侧填充零。
 
-6. 令 year 为 the String representation of YearFromTime(tv), formatted as a decimal number of at least four digits, padded to the left with zeroes if necessary.
+6. 令 year 为 YearFromTime（tv）的字符串表示形式，格式为至少四位数的十进制数字，如有必要，在左侧用零填充。
 
-7. 返回 the string-concatenation of weekday, the code unit 0x0020 (SPACE), month, the code unit 0x0020 (SPACE), day, the code unit 0x0020 (SPACE), and year.
+7. 返回 星期几，代码单位0x0020（空格），月份，代码单位0x0020（空格），日期，代码单位0x0020（空格）和年份的字符串连接。ar.
 
-Table 49: Names of days of the week
+表49：星期几的名称
 
-| Number | Name  |
-| ------ | ----- |
-| 0      | "Sun" |
-| 1      | "Mon" |
-| 2      | "Tue" |
-| 3      | "Wed" |
-| 4      | "Thu" |
-| 5      | "Fri" |
-| 6      | "Sat" |
+| 数字 | 名称  |
+| ---- | ----- |
+| 0    | "Sun" |
+| 1    | "Mon" |
+| 2    | "Tue" |
+| 3    | "Wed" |
+| 4    | "Thu" |
+| 5    | "Fri" |
+| 6    | "Sat" |
 
-Table 50: Names of months of the year
+表50：一年中的月份名称
 
-| Number | Name  |
-| ------ | ----- |
-| 0      | "Jan" |
-| 1      | "Feb" |
-| 2      | "Mar" |
-| 3      | "Apr" |
-| 4      | "May" |
-| 5      | "Jun" |
-| 6      | "Jul" |
-| 7      | "Aug" |
-| 8      | "Sep" |
-| 9      | "Oct" |
-| 10     | "Nov" |
-| 11     | "Dec" |
+| 数字 | 名称  |
+| ---- | ----- |
+| 0    | "Jan" |
+| 1    | "Feb" |
+| 2    | "Mar" |
+| 3    | "Apr" |
+| 4    | "May" |
+| 5    | "Jun" |
+| 6    | "Jul" |
+| 7    | "Aug" |
+| 8    | "Sep" |
+| 9    | "Oct" |
+| 10   | "Nov" |
+| 11   | "Dec" |
 
 ##### 20.3.4.41.3 RS: TimeZoneString ( tv ) <div id="sec-timezoneestring"></div>
 
@@ -1706,11 +1709,11 @@ Table 50: Names of months of the year
 1. 断言：Type(tv) is Number.
 2. 断言：tv is not NaN.
 3. 令 offset 为 LocalTZA(tv, true).
-4. 若 offset ≥ 0, 令 offsetSign 为 "+"; otherwise，令 offsetSign 为 "-".
-5. 令 offsetMin 为 the String representation of MinFromTime(abs(offset)), formatted as a two-digit decimal number, padded to the left with a zero if necessary.
-6. 令 offsetHour 为 the String representation of HourFromTime(abs(offset)), formatted as a two-digit decimal number, padded to the left with a zero if necessary.
-7. 令 tzName 为 an implementation-defined string that is either the empty string or the string concatenation of the code unit 0x0020 (SPACE), the code unit 0x0028 (LEFT PARENTHESIS), an implementation-dependent timezone name, and the code unit 0x0029 (RIGHT PARENTHESIS).
-8. 返回 the string-concatenation of offsetSign, offsetHour, offsetMin, and tzName.
+4. 若 offset ≥ 0, 令 offsetSign 为 "+"; 除此之外，令 offsetSign 为 "-".
+5. 令 offsetMin 为 MinFromTime（abs（offset））的字符串表示形式，格式为两位十进制数，如有必要，在左侧填充零。
+6. 令 offsetHour 为 HourFromTime（abs（offset））的字符串表示形式，格式为两位十进制数字，如有必要，在左侧填充零。
+7. 令 tzName 为实现定义的字符串，可以是代码单元0x0020（空格），代码单元0x0028（左括号），实现相关的时区名称和代码单元0x0029（右括号）的空字符串或字符串串联。
+8. 返回offsetSign，offsetHour，offsetMin和tzName的字符串串联。
 
 ##### 20.3.4.41.4 RS: ToDateString ( tv ) <div id="sec-todatestring"></div>
 
@@ -1719,30 +1722,30 @@ Table 50: Names of months of the year
 1. 断言：Type(tv) is Number.
 2. 若 tv 是 NaN，返回 "Invalid Date".
 3. 令 t 为 LocalTime(tv).
-4. 返回 the string-concatenation of DateString(t), the code unit 0x0020 (SPACE), TimeString(t), and TimeZoneString(tv).
+4. 返回DateString（t），代码单元0x0020（空格），TimeString（t）和TimeZoneString（tv）的字符串连接。
 
 #### 20.3.4.42 Date.prototype.toTimeString ( ) <div id="sec-date.prototype.totimestring"></div>
 
 执行以下步骤：
 
-1. 令 O 为 this Date object.
+1. 令 O 为此Date对象。
 2. 令 tv 为 ? thisTimeValue(O).
 3. 若 tv 是 NaN，返回 "Invalid Date".
 4. 令 t 为 LocalTime(tv).
-5. 返回 the string-concatenation of TimeString(t) and TimeZoneString(tv)
+5. 返回TimeString（t）和TimeZoneString（tv）的字符串连接
 
 #### 20.3.4.43 Date.prototype.toUTCString ( ) <div id="sec-date.prototype.toutcstring"></div>
 
 执行以下步骤：
 
-1. 令 O 为 this Date object.
+1. 令 O 为此Date对象。
 2. 令 tv 为 ? thisTimeValue(O).
 3. 若 tv 是 NaN，返回 "Invalid Date".
-4. 令 weekday 为 the Name of the entry in Table 49 with the Number WeekDay(tv).
-5. 令 month 为 the Name of the entry in Table 50 with the Number MonthFromTime(tv).
-6. 令 day 为 the String representation of DateFromTime(tv), formatted as a two-digit decimal number, padded to the left with a zero if necessary.
-7. 令 year 为 the String representation of YearFromTime(tv), formatted as a decimal number of at least four digits, padded to the left with zeroes if necessary.
-8. 返回 the string-concatenation of weekday, ",", the code unit 0x0020 (SPACE), day, the code unit 0x0020 (SPACE), month, the code unit 0x0020 (SPACE), year, the code unit 0x0020 (SPACE), and TimeString(tv).
+4. 令 weekday 为表49中带有数字WeekDay（tv）的条目的名称。
+5. 令 month 为表50中条目的名称，其编号为MonthFromTime（tv）。
+6. 令 day 为DateFromTime（tv）的字符串表示形式，格式为两位十进制数字，如有必要，在左侧填充零。
+7. 令 year 为YearFromTime（tv）的字符串表示形式，格式为至少四位数的十进制数字，如有必要，在左侧用零填充。
+8. 返回 星期几，“,”，代码单元0x0020（SPACE），日期，代码单元0x0020（SPACE），月份，代码单元0x0020（SPACE），年份，代码单元0x0020（SPACE）和TimeString（tv）的字符串连接。
 
 #### 20.3.4.44 Date.prototype.valueOf ( ) <div id="sec-date.prototype.valueof"></div>
 
@@ -1752,23 +1755,23 @@ Table 50: Names of months of the year
 
 #### 20.3.4.45 Date.prototype [ @@toPrimitive ] ( hint ) <div id="sec-date.prototype-@@toprimitive"></div>
 
-This function is called by ECMAScript language operators to convert a Date object to a primitive value. The allowed values for hint are "default", "number", and "string". Date objects, are unique among built-in ECMAScript object in that they treat "default" as being equivalent to "string", All other built-in ECMAScript objects treat "default" as being equivalent to "number".
+ECMAScript语言操作员调用此函数以将Date对象转换为原始值。提示的允许值为“default”，“number”和“string”。日期对象在内置ECMAScript对象之间是唯一的，因为它们将“default”视为等同于“string”，所有其他内置ECMAScript对象将“default”视为等同于“number”。
 
-When the @@toPrimitive method is called with argument hint, the following steps are taken:
+当使用参数提示调用@@toPrimitive方法时，将执行以下步骤：
 
-1. 令 O 为 the this value.
-2. 若 Type(O) 不是 Object，抛出 TypeError 异常
-3. 若 hint 是 the String value "string" or the String value "default"，那么
+1. 令 O 为 this 值。
+2. 若 Type(O) 不是 Object，抛出 TypeError 异常。
+3. 若 hint 是字符串值 "string" 或字符串值 "default"，那么
     1. 令 tryFirst 为 "string".
-4. Else 若 hint 是 the String value "number"，那么
+4. 否则，若 hint 是字符串值 "number"，那么
     1. 令 tryFirst 为 "number".
 5. 否则，抛出 TypeError 异常
 6. 返回 ? OrdinaryToPrimitive(O, tryFirst).
 
-The value of the name property of this function is "[Symbol.toPrimitive]".
+该函数的名称属性的值为“ [Symbol.toPrimitive]”。
 
 该属性具有以下特性 { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: true }.
 
 ### 20.3.5 Date 实例属性 <div id="sec-properties-of-date-instances"></div>
 
-Date instances are ordinary objects that inherit properties from the Date prototype object. Date instances also have a [[DateValue]] internal slot. The [[DateValue]] internal slot is the time value represented by this Date object.
+Date实例是从Date原型对象继承属性的普通对象。日期实例还具有一个[[DateValue]]内部插槽。内部[[DateValue]]插槽是此Date对象表示的时间值。
