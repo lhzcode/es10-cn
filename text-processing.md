@@ -1312,177 +1312,177 @@ Pattern :: Disjunction 的评估如下：
 
 产生式 Disjunction :: Alternative 如下解释执行：
 
-1. 用参数方向对备选方案进行解释执行，以获得一个匹配器m。
+1. 用参数direction对Alternative求值，得到一个Matcher m1。
 2. 返回 m.
 
 产生式 Disjunction :: Alternative | Disjunction 如下解释执行：
 
-1. Evaluate Alternative with argument direction to obtain a Matcher m1.
-2. Evaluate Disjunction with argument direction to obtain a Matcher m2.
-3. 返回 an internal Matcher closure that takes two arguments, a State x and a Continuation c, and performs the following steps when evaluated:
-1. 调用 m1(x, c) and 令 r 为 its result.
-2. 若 r 不是 failure，返回 r.
-3. 调用 m2(x, c) and return its result.
+1. 用参数direction对Alternative求值，得到一个Matcher m1。
+2. 用参数direction对Disjunction求值，得到一个Matcher m2。
+3. 返回一个内部Matcher闭包，它接受两个参数，一个状态x，一个延续c，并在计算时执行以下步骤:
+   1. 调用 m1(x, c) 并且，令 r 为它自己的结果
+   2. 若 r 不是 failure，返回 r.
+   3. 调用 m2(x, c) 并且返回它自己的结果
 
 > 注
 >
-> The | regular expression operator separates two alternatives. The pattern first tries to match the left Alternative (followed by the sequel of the regular expression); if it fails, it tries to match the right Disjunction (followed by the sequel of the regular expression). If the left Alternative, the right Disjunction, and the sequel all have choice points, all choices in the sequel are tried before moving on to the next choice in the left Alternative. If choices in the left Alternative are exhausted, the right Disjunction is tried instead of the left Alternative. Any capturing parentheses inside a portion of the pattern skipped by | produce undefined values instead of Strings. Thus, for example,
+> |正则表达式运算符将两种选择分开。模式首先尝试匹配左侧的Alternative（随后是正则表达式的后继）；如果失败，它将尝试匹配正确的Disjunction（紧随其后的是正则表达式）。如果左侧的Alternative，右侧的Disjunction和续集都具有选择点，则尝试尝试续集中的所有选择，然后再转到左侧的Alternative中的下一个选项。如果左侧“选择”中的选择已用尽，则尝试使用右侧“分离”而不是左侧“选择”。 |跳过的模式的一部分内的任何捕获括号。产生未定义的值，而不是字符串。因此，例如
 >
 > /a|ab/.exec("abc")
 >
-> returns the result "a" and not "ab". Moreover,
+> 返回结果“ a”而不是“ ab”。此外，
 >
 > /((a)|(ab))((c)|(bc))/.exec("abc")
 >
-> returns the array
+> 返回数组
 >
 > ["abc", "a", "a", undefined, "bc", undefined, "bc"]
 >
-> and not
+> 并不是
 >
 > ["abc", "ab", undefined, "ab", "c", "c", undefined]
 >
-> The order in which the two alternatives are tried is independent of the value of direction.
+> 尝试两种选择的顺序与方向的值无关。
 
 #### 21.2.2.4 选择项 <div id="sec-alternative"></div>
 
-With parameter direction.
+带有参数方向。
 
 产生式 Alternative :: [empty] 如下解释执行：
 
-1. 返回 a Matcher that takes two arguments, a State x and a Continuation c, and returns the result of calling c(x).
+1. 返回一个Matcher，它接受两个参数，即State x和Continuation c，并返回调用c（x）的结果。
 
 产生式 Alternative :: Alternative Term 如下解释执行：
 
-1. Evaluate Alternative with argument direction to obtain a Matcher m1.
-2. Evaluate Term with argument direction to obtain a Matcher m2.
-3. 若 direction 是 equal to +1，那么 
-1. 返回 an internal Matcher closure that takes two arguments, a State x and a Continuation c, and performs the following steps when evaluated:
-  1. 令 d 为 a Continuation that takes a State argument y and returns the result of calling m2(y, c).
-  2. 调用 m1(x, d) and return its result.
-4.  否则，
-  1. 断言：direction is equal to -1.
-  2. 返回 an internal Matcher closure that takes two arguments, a State x and a Continuation c, and performs the following steps when evaluated:
-        1. 令 d 为 a Continuation that takes a State argument y and returns the result of calling m1(y, c).
-            2. 调用 m2(x, d) and return its result.
+1. 用参数direction对Alternative求值，得到一个Matcher m1。
+2. 用参数direction对Term求值，得到一个Matcher m2。
+3. 若 direction 等于 +1，那么 
+      1. 返回一个内部Matcher闭包，该闭包采用两个参数（State x和Continuation c），并在解释执行时执行以下步骤：
+           2. 令 d 为一个接受State参数y并返回调用m2（y，c）的结果的Continuation。
+           2. 调用 m1(x, d)并且返回它的结果
+4. 否则，
+           1. 断言：direction 等于 -1.
+        2. 返回一个内部Matcher闭包，该闭包接受两个参数（State x和Continuation c），并在评估时执行以下步骤：
+              1. 令 d 为一个采用State参数y并返回调用m1（y，c）的结果的Continuation。
+              2. 调用 m2(x, d)并且返回它的结果
 
-> 注 Consecutive Terms try to simultaneously match consecutive portions of Input. When direction is equal to +1, if the left Alternative, the right Term, and the sequel of the regular expression all have choice points, all choices in the sequel are tried before moving on to the next choice in the right Term, and all choices in the right Term are tried before moving on to the next choice in the left Alternative. When direction is equal to -1, the evaluation order of Alternative and Term are reversed.
+> 注：连续字词尝试同时匹配Input的连续部分。当direction等于+1时，如果左侧的Alternative，右侧的Term和正则表达式的后代都具有选择点，则在继续选择右侧Term中的下一个选项之前，将尝试该续集中的所有选择，并且所有在继续进行左侧“替代”中的下一个选择之前，请先尝试正确的“术语”中的选择。当direction等于-1时，Alternate和Term的评估顺序颠倒。
 
 #### 21.2.2.5 匹配项 <div id="sec-term"></div>
 
-With parameter direction.
+带有参数direction.
 
 产生式 Term :: Assertion 如下解释执行：
 
-1. 返回 an internal Matcher closure that takes two arguments, a State x and a Continuation c, and performs the following steps when evaluated:
-  1. Evaluate Assertion to obtain an AssertionTester t.
-  2. 调用 t(x) and 令 r 为 the resulting Boolean value.
+1. 返回一个内部Matcher闭包，该闭包接受两个参数（状态x和连续性c），并在评估时执行以下步骤：
+  1. 解释执行 Assertion 以获得 AssertionTester t。
+  2. 调用 t(x) 并且令 r 为得到的布尔值。
   3. 若 r 是 false，返回 failure.
-  4. 调用 c(x) and return its result
+  4. 调用 c(x)并且返回它的结果
 
-> 注 The AssertionTester is independent of direction.
+> 注：AssertionTester 是独立于 direction 的。
 
 产生式 Term :: Atom 如下解释执行：
 
-1. 返回 the Matcher that is the result of evaluating Atom with argument direction.
+1. 返回 Matcher，即是用参数 direction 对Atom求值的结果。
 
 产生式 Term :: Atom Quantifier 如下解释执行：
 
-1. Evaluate Atom with argument direction to obtain a Matcher m.
-2. Evaluate Quantifier to obtain the three results: an integer min, an integer (or ∞) max, and Boolean greedy.
-3. 断言：If max is finite，那么  max is not less than min.
-4. 令 parenIndex 为 the number of left-capturing parentheses in the entire regular expression that occur to the left of this Term. This is the total number of Atom :: ( GroupSpecifier Disjunction ) Parse Nodes prior to or enclosing this Term.
-5. 令 parenCount 为 the number of left-capturing parentheses in Atom. This is the total number of Atom :: ( GroupSpecifier Disjunction ) Parse Nodes enclosed by Atom.
-6. 返回 an internal Matcher closure that takes two arguments, a State x and a Continuation c, and performs the following steps when evaluated:
-1. 调用 RepeatMatcher(m, min, max, greedy, x, c, parenIndex, parenCount) and return its result.
+1. 用参数direction对Atom求值，得到一个Matcher m。
+2. 解释执行量词以获取三个结果：最小整数，最大整数（或∞）和布尔值greedy。
+3. 断言：若 max 是 finite，那么最大值不小于最小值。
+4. 令 parenIndex 为整个正则表达式中出现在该术语左侧的左捕获括号的数量。这是此术语之前或附带的Atom ::（GroupSpecifier Disjunction）解析节点的总数。
+5. 令 parenCount 为 Atom 中左捕捉括号的数量。这是Atom包围的Atom ::（GroupSpecifier Disjunction）解析节点的总数。
+6. 返回一个内部Matcher闭包，该闭包接受两个参数（状态x和连续性c），并在评估时执行以下步骤：
+   1. 调用 RepeatMatcher(m, min, max, greedy, x, c, parenIndex, parenCount)并且返回它的结果
 
 ##### 21.2.2.5.1 RS: RepeatMatcher ( m, min, max, greedy, x, c, parenIndex, parenCount ) <div id="sec-runtime-semantics-repeatmatcher-abstract-operation"></div>
 
-The abstract operation RepeatMatcher takes eight parameters, a Matcher m, an integer min, an integer (or ∞) max, a Boolean greedy, a State x, a Continuation c, an integer parenIndex, and an integer parenCount, and performs the following steps:
+抽象操作RepeatMatcher采用八个参数，一个Matcher m，一个整数min，一个整数（或∞），一个布尔值greedy，一个State x，一个Continuation c，一个整数parenIndex和一个整数parenCount，并执行以下步骤。 ：
 
 1. 若 max 是 zero，返回 c(x).
-2. 令 d 为 an internal Continuation closure that takes one State argument y and performs the following steps when evaluated:
-1. 若 min is zero and y's endIndex 是 equal to x's endIndex，返回 failure.
-2. 若 min 是 zero, 令 min2 为 zero; otherwise 令 min2 为 min - 1.
-3. 若 max 是 ∞, 令 max2 为 ∞; otherwise 令 max2 为 max - 1.
-4. 调用 RepeatMatcher(m, min2, max2, greedy, y, c, parenIndex, parenCount) and return its result.
-3. 令 cap 为 a copy of x's captures List.
-4. For each integer k that satisfies parenIndex < k and k ≤ parenIndex + parenCount, set cap[k] to undefined.
-5. 令 e 为 x's endIndex.
+2. 令 d 为内部Continuation闭包，它接受一个State参数y并在解释执行时执行以下步骤：
+   1. 若 min为零，y的endIndex等于x的endIndex，返回 failure.
+   2. 若 min 是零, 令 min2 为零; 否则 令 min2 为 min - 1.
+   3. 若 max 是 ∞, 令 max2 为 ∞; 否则 令 max2 为 max - 1.
+   4. 调用 RepeatMatcher(m, min2, max2, greedy, y, c, parenIndex, parenCount)并且返回它的结果
+3. 令 cap 为 x的捕获列表的副本。
+4. 对于满足parenIndex <k和k≤parenIndex + parenCount的每个整数k，将cap [k]设置为undefined。
+5. 令 e 为x的endIndex。
 6. 令 xr 为 the State (e, cap).
 7. 若 min 不是 zero，返回 m(xr, d).
-8. 若 greedy 是 false，那么 
-  1. 调用 c(x) and 令 z 为 its result.
-  2. 若 z 不是 failure，返回 z.
-  3. 调用 m(xr, d) and return its result.
-9. 调用 m(xr, d) and 令 z 为 its result.
-10. 若 z is not failure，返回 z.
-11. 调用 c(x) and return its result.
+   8. 若 greedy 是 false，那么 
+     2. 调用 c(x)，并且令 z 为其结果。
+     3. 若 z 不是 failure，返回 z.
+  3. 调用 m(xr, d)并且返回它的结果
+9. 调用 m(xr, d) 并且令 z 为它的结果。
+10. 若 z 不是 failure，返回 z.
+11. 调用 c(x)并且返回它的结果
 
 > 注 1 
 >
-> An Atom followed by a Quantifier is repeated the number of times specified by the Quantifier. A Quantifier can be nongreedy, in which case the Atom pattern is repeated as few times as possible while still matching the sequel, or it can be greedy, in which case the Atom pattern is repeated as many times as possible while still matching the sequel. The Atom pattern is repeated rather than the input character sequence that it matches, so different repetitions of the Atom can match different input substrings.
+> 原子后面跟着量词的次数重复由量词指定的次数。量词可以是非贪婪的，在这种情况下，Atom模式在仍与续集匹配的情况下被重复最少的次数，也可以是贪婪的情况，在这种情况下，Atom样式在仍与续集匹配的情况下，被重复尽可能多的次数。 Atom模式是重复的，而不是它匹配的输入字符序列，因此Atom的不同重复可以匹配不同的输入子字符串。
 >
 > 注 2
 >
-> If the Atom and the sequel of the regular expression all have choice points, the Atom is first matched as many (or as few, if non-greedy) times as possible. All choices in the sequel are tried before moving on to the next choice in the last repetition of Atom. All choices in the last (nth) repetition of Atom are tried before moving on to the next choice in the next-to-last (n - 1)st repetition of Atom; at which point it may turn out that more or fewer repetitions of Atom are now possible; these are exhausted (again, starting with either as few or as many as possible) before moving on to the next choice in the (n - 1)st repetition of Atom and so on.
+> 如果Atom和正则表达式的后续都有选择点，则首先匹配Atom尽可能多的次数(如果非贪婪，则匹配次数越少越好)。在Atom的最后一次重复中，在进行下一个选择之前，将尝试后续中的所有选择。在原子的次(n - 1)次重复中，在进行下一个选择之前，尝试原子的最后(n)次重复中的所有选择；在这一点上，原子的重复或多或少是可能的；在进行(n - 1)st原子重复的下一个选择之前(同样，从尽可能少的或尽可能多的开始)，这些都已耗尽。
 >
-> Compare
+> 比较
 >
 > /a[a-z]{2,4}/.exec("abcdefghi")
 >
-> which returns "abcde" with
+> 返回“ abcde”
 >
 > /a[a-z]{2,4}?/.exec("abcdefghi")
 >
-> which returns "abc".
+> 返回“ abc”。
 >
-> Consider also
+> 还考虑
 >
 > /(aa|aabaac|ba|b|c)*/.exec("aabaac")
 >
-> which, by the choice point ordering above, returns the array
+> 根据上面的选择点排序，它返回数组
 >
 > ["aaba", "ba"]
 >
-> and not any of:
+> 而不是以下任何一个：
 >
 > ["aabaac", "aabaac"]
 > ["aabaac", "c"]
 >
-> The above ordering of choice points can be used to write a regular expression that calculates the greatest common divisor of two numbers (represented in unary notation). The following example calculates the gcd of 10 and 15: 
+> 选择点的上述排序可用于编写一个正则表达式，该正则表达式计算两个数字的最大公约数（以一元表示法表示）。以下示例计算的gcd为10和15：
 >
 > "aaaaaaaaaa,aaaaaaaaaaaaaaa".replace(/^(a+)\1*,\1+$/, "$1")
 >
-> which returns the gcd in unary notation "aaaaa".
+> 它以一元符号“ aaaaa”返回gcd。
 >
 > 注 3
 >
-> Step 4 of the RepeatMatcher clears Atom's captures each time Atom is repeated. We can see its behaviour in the regular expression
+> 每次重复Atom时，RepeatMatcher的步骤4都会清除Atom的捕获。我们可以在正则表达式中看到它的行为
 >
 > /(z)((a+)?(b+)?(c))*/.exec("zaacbbbcac")
 >
-> which returns the array
+> 返回数组
 >
 > ["zaacbbbcac", "z", "ac", "a", undefined, "c"]
 >
-> and not
+> 并不是
 >
 > ["zaacbbbcac", "z", "ac", "a", "bbb", "c"]
 >
-> because each iteration of the outermost * clears all captured Strings contained in the quantified Atom, which in this case includes capture Strings numbered 2, 3, 4, and 5.
+> 因为最外面的*的每次迭代都会清除量化的Atom中包含的所有捕获的字符串，在这种情况下，该原子包括编号为2、3、4和5的捕获字符串。
 >
 > 注 4
 >
-> Step 1 of the RepeatMatcher's d closure states that, once the minimum number of repetitions has been satisfied, any more expansions of Atom that match the empty character sequence are not considered for further repetitions. This prevents the regular expression engine from falling into an infinite loop on patterns such as:
+> RepeatMatcher d闭包的第1步指出，一旦满足了最小重复次数，则不再考虑与空字符序列匹配的Atom扩展。这样可以防止正则表达式引擎陷入以下模式的无限循环：
 >
 > /(a*)*/.exec("b")
 >
-> or the slightly more complicated:
+> 或者稍微复杂一点：
 >
 > /(a*)b\1+/.exec("baaaac")
 >
-> which returns the array
+> 返回数组
 >
 > ["b", ""]
 
@@ -1490,93 +1490,93 @@ The abstract operation RepeatMatcher takes eight parameters, a Matcher m, an int
 
 产生式 Assertion :: ^ 如下解释执行：
 
-1. 返回 an internal AssertionTester closure that takes a State argument x and performs the following steps when evaluated:
-1. 令 e 为 x's endIndex.
-2. 若 e 是 zero，返回 true.
-3. 若 Multiline 是 false，返回 false.
-4. 若 the character Input[e - 1] 是 one of LineTerminator，返回 true.
-5. 返回 false.
+1. 返回内部AssertionTester闭包，它带有State参数x并在评估时执行以下步骤：
+   1. 令 e 为x的endIndex。
+   2. 若 e 是 zero，返回 true.
+   3. 若 Multiline 是 false，返回 false.
+   4. 若字符输入[e - 1]是LineTerminator之一，返回 true.
+   5. 返回 false.
 
-> 注 Even when the y flag is used with a pattern, ^ always matches only at the beginning of Input, or (if Multiline is true) at the beginning of a line.
+> 注：即使当y标记与模式一起使用时，^也始终只匹配输入的开头，或者(如果Multiline为真)匹配一行的开头。
 
 产生式 Assertion :: $ 如下解释执行：
 
-1. 返回 an internal AssertionTester closure that takes a State argument x and performs the following steps when evaluated:
-1. 令 e 为 x's endIndex.
-2. 若 e 是 equal to InputLength，返回 true.
+1. 返回一个内部AssertionTester闭包，它接受一个状态参数x，并在计算时执行以下步骤:
+1. 令 e 为x的endIndex。
+2. 若 e 等于 InputLength，返回 true.
 3. 若 Multiline 是 false，返回 false.
-4. 若 the character Input[e] 是 one of LineTerminator，返回 true.
+4. 若字符输入[e] 是LineTerminator之一，返回 true.
 5. 返回 false
 
 产生式 Assertion :: \ b 如下解释执行：
 
-1. 返回 an internal AssertionTester closure that takes a State argument x and performs the following steps when evaluated:
-  1. 令 e 为 x's endIndex.
-  2. 调用 IsWordChar(e - 1) and 令 a 为 the Boolean result.
-  3. 调用 IsWordChar(e) and 令 b 为 the Boolean result.
-  4. 若 a is true and b 是 false，返回 true.
-  5. 若 a is false and b 是 true，返回 true.
+1. 返回内部AssertionTester闭包，它带有State参数x并在评估时执行以下步骤：
+  1. 令 e 为x的endIndex。
+  2. 调用 IsWordChar(e - 1)，并且令 a 为布尔结果。
+  3. 调用 IsWordChar(e)，并且令 b 为布尔结果。
+  4. 若 a 是 true，并且 b 是 false，返回 true.
+  5. 若 a 是 false，并且 b 是 true，返回 true.
   6. 返回 false.
 
 产生式 Assertion :: \ B 如下解释执行：
 
-1. 返回 an internal AssertionTester closure that takes a State argument x and performs the following steps when evaluated:
-1. 令 e 为 x's endIndex.
-2. 调用 IsWordChar(e - 1) and 令 a 为 the Boolean result.
-3. 调用 IsWordChar(e) and 令 b 为 the Boolean result.
-4. 若 a is true and b 是 false，返回 false.
-5. 若 a is false and b 是 true，返回 false.
+1. 返回内部AssertionTester闭包，它带有State参数x并在评估时执行以下步骤：
+1. 令 e 为x的endIndex。
+2. 调用 IsWordChar(e - 1)，并且令 a 为布尔结果。
+3. 调用 IsWordChar(e)，并且令 b 为布尔结果。
+4. 若 a 是 true，并且 b 是 false，返回 false.
+5. 若 a 是 false，并且 b 是 true，返回 false.
 6. 返回 true.
 
 产生式 Assertion :: ( ? = Disjunction ) 如下解释执行：
 
-1. Evaluate Disjunction with +1 as its direction argument to obtain a Matcher m.
-2. 返回 an internal Matcher closure that takes two arguments, a State x and a Continuation c, and performs the following steps:
-1. 令 d 为 a Continuation that always returns its State argument as a successful MatchResult.
-2. 调用 m(x, d) and 令 r 为 its result.
+1. 用+1作为其direction参数评估Disjunction，以获得Matcher m。
+2. 返回一个内部Matcher闭包，它使用两个参数（状态x和连续性c），并执行以下步骤：
+1. 令 d 为始终返回其State参数作为成功MatchResult的Continuation。
+2. 调用 m(x, d)，并且令 r 为其结果。
 3. 若 r 是 failure，返回 failure.
-4. 令 y 为 r's State.
-5. 令 cap 为 y's captures List.
-6. 令 xe 为 x's endIndex.
-7. 令 z 为 the State (xe, cap).
-8. 调用 c(z) and return its result.
+4. 令 y 为 r 的 State。
+5. 令 cap 为 y 捕获列表。
+6. 令 xe 为x的endIndex。
+7. 令 z 为 State (xe, cap).
+8. 调用 c(z)并且返回它的结果
 
 产生式 Assertion :: ( ? ! Disjunction ) 如下解释执行：
 
-1. Evaluate Disjunction with +1 as its direction argument to obtain a Matcher m.
-2. 返回 an internal Matcher closure that takes two arguments, a State x and a Continuation c, and performs the following steps:
-1. 令 d 为 a Continuation that always returns its State argument as a successful MatchResult.
-2. 调用 m(x, d) and 令 r 为 its result.
+1. 用+1作为其direction参数评估Disjunction，以获得Matcher m。
+2. 返回一个内部Matcher闭包，它使用两个参数（状态x和连续性c），并执行以下步骤：
+1. 令 d 为始终返回其State参数作为成功MatchResult的Continuation。
+2. 调用 m(x, d)，并且令 r 为其结果.
 3. 若 r 不是 failure，返回 failure.
-4. 调用 c(x) and return its result.
+4. 调用 c(x)并且返回它的结果
 
 产生式 Assertion :: ( ? <= Disjunction ) 如下解释执行：
 
-1. Evaluate Disjunction with -1 as its direction argument to obtain a Matcher m.
-2. 返回 an internal Matcher closure that takes two arguments, a State x and a Continuation c, and performs the following steps:
-  1. 令 d 为 a Continuation that always returns its State argument as a successful MatchResult.
-  2. 调用 m(x, d) and 令 r 为 its result.
-  3. 若 r 是 failure，返回 failure.
-  4. 令 y 为 r's State.
-  5. 令 cap 为 y's captures List.
-  6. 令 xe 为 x's endIndex.
-  7. 令 z 为 the State (xe, cap).
-  8. 调用 c(z) and return its result
+1. 以 -1 作为 direction 参数求 Disjunction，以获得Matcher m。
+2. 返回一个内部Matcher闭包，它使用两个参数（状态x和连续性c），并执行以下步骤：
+     1. 令 d 为始终返回其State参数作为成功MatchResult的Continuation。
+     2. 调用 m(x, d)，并且令 r 为其结果。
+     3. 若 r 是 failure，返回 failure.
+     4. 令 y 为 r 的 State。
+     5. 令 cap 为 y 的捕获列表。
+     6. 令 xe 为 x 的endIndex。
+     7. 令 z 为 State (xe, cap).
+     8. 调用 c(z)并且返回它的结果
 
 产生式 Assertion :: ( ? <! Disjunction ) 如下解释执行：
 
-1. Evaluate Disjunction with -1 as its direction argument to obtain a Matcher m.
-2. 返回 an internal Matcher closure that takes two arguments, a State x and a Continuation c, and performs the following steps:
-1. 令 d 为 a Continuation that always returns its State argument as a successful MatchResult.
-2. 调用 m(x, d) and 令 r 为 its result.
-3. 若 r 不是 failure，返回 failure.
-4. 调用 c(x) and return its result.
+1. 以 -1 作为 direction 参数求 Disjunction，以获得Matcher m。
+2. 返回一个内部Matcher闭包，它使用两个参数（状态x和连续性c），并执行以下步骤：
+   1. 令 d 为始终返回其State参数作为成功MatchResult的Continuation。
+   2. 调用 m(x, d)，并且令 r 为其结果。
+   3. 若 r 不是 failure，返回 failure.
+   4. 调用 c(x)并且返回它的结果
 
 ##### 21.2.2.6.1 RS: WordCharacters ( ) <div id="sec-runtime-semantics-wordcharacters-abstract-operation"></div>
 
-The abstract operation WordCharacters performs the following steps:
+抽象操作WordCharacters执行以下步骤：
 
-1. 令 A 为 a set of characters containing the sixty-three characters:
+1. 令 A 为包含六十三个字符的一组字符：
 
    ```
    a b c d e f g h i j k l m n o p q r s t u v w x y z
@@ -1584,336 +1584,333 @@ The abstract operation WordCharacters performs the following steps:
    0 1 2 3 4 5 6 7 8 9 _
    ```
 
-2. 令 U 为 an empty set.
-3. For each character c not in set A where Canonicalize(c) is in A, add c to U.
-4. 断言：Unless Unicode and IgnoreCase are both true, U is empty.
-5. Add the characters in set U to set A.
+2. 令 U 为一个空集。
+3. 对于不在A中Canonicalize（c）在A中的每个字符c，请将c添加到U中。
+4. 断言：除非Unicode和IgnoreCase都为true，否则U为空。
+5. 将集合U中的字符添加到集合A中。
 6. 返回 A.
 
 ##### 21.2.2.6.2 RS: IsWordChar ( e ) <div id="sec-runtime-semantics-iswordchar-abstract-operation"></div>
 
-The abstract operation IsWordChar takes an integer parameter e and performs the following steps:
+抽象运算IsWordChar使用整数参数e并执行以下步骤：
 
 1. 若 e is -1 or e 是 InputLength，返回 false.
-2. 令 c 为 the character Input[e].
-3. 令 wordChars 为 the result of ! WordCharacters().
-4. 若 c 是 in wordChars，返回 true.
+2. 令 c 为字符输入[e].
+3. 令 wordChars 为 ! WordCharacters() 的结果。
+4. 若 c 在 wordChars 中，返回 true.
 5. 返回 false.
 
 #### 21.2.2.7 量词 <div id="sec-quantifier"></div>
 
 产生式 Quantifier :: QuantifierPrefix 如下解释执行：
 
-1. Evaluate QuantifierPrefix to obtain the two results: an integer min and an integer (or ∞) max.
-2. 返回 the three results min, max, and true.
+1. 评估QuantifierPrefix可获得两个结果：最小整数和最大整数（或∞）。
+2. 返回三个结果min，max和true。
 
 产生式 Quantifier :: QuantifierPrefix ? 如下解释执行：
 
-1. Evaluate QuantifierPrefix to obtain the two results: an integer min and an integer (or ∞) max.
-2. 返回 the three results min, max, and false.
+1. 评估QuantifierPrefix可获得两个结果：最小整数和最大整数（或∞）。
+2. 返回三个结果min，max和false。
 
 产生式 QuantifierPrefix :: * 如下解释执行：
 
-1. 返回 the two results 0 and ∞.
+1. 返回两个结果为0和∞。
 
 产生式 QuantifierPrefix :: + 如下解释执行：
 
-1. 返回 the two results 1 and ∞.
+1. 返回两个结果1和∞。
 
 产生式 QuantifierPrefix :: ? 如下解释执行：
 
-1. 返回 the two results 0 and 1.
+1. 返回两个结果0和1。
 
 产生式 QuantifierPrefix :: { DecimalDigits } 如下解释执行：
 
-1. 令 i 为 the MV of DecimalDigits (see 11.8.3).
-2. 返回 the two results i and i.
+1. 令 i 为DecimalDigits的MV（请参见11.8.3）。
+2. 返回 i 和 i 两个结果。
 
 产生式 QuantifierPrefix :: { DecimalDigits , } 如下解释执行：
 
-1. 令 i 为 the MV of DecimalDigits.
-2. 返回 the two results i and ∞.
+1. 令 i 为DecimalDigits的MV。
+2. 返回两个结果i和∞。
 
 产生式 QuantifierPrefix :: { DecimalDigits , DecimalDigits } 如下解释执行：
 
-1. 令 i 为 the MV of the first DecimalDigits.
-2. 令 j 为 the MV of the second DecimalDigits.
-3. 返回 the two results i and j.
+1. 令 i 为第一个DecimalDigits的MV。
+2. 令 j 为第二个DecimalDigits的MV。
+3. 返回两个结果i和j。
 
 #### 21.2.2.8 原子 <div id="sec-atom"></div>
 
-With parameter direction.
+带有参数direction.
 
 产生式 Atom :: PatternCharacter 如下解释执行：
 
-1. 令 ch 为 the character matched by PatternCharacter.
-2. 令 A 为 a one-element CharSet containing the character ch.
-3. 调用 CharacterSetMatcher(A, false, direction) and return its Matcher result.
+1. 令 ch 为由PatternCharacter匹配的字符。
+2. 令 A 为包含字符ch的单元素CharSet。
+3. 调用 CharacterSetMatcher(A, false, direction)并返回其Matcher结果。
 
 产生式 Atom :: . 如下解释执行：
 
 1. 若 DotAll 是 true，那么 
-1. 令 A 为 the set of all characters.
-2. 除此之外, 令 A 为 the set of all characters except LineTerminator.
-3. 调用 CharacterSetMatcher(A, false, direction) and return its Matcher result.
+1. 令 A 为所有字符的集合。
+2. 除此之外, 令 A 为除LineTerminator外的所有字符的集合。
+3. 调用 CharacterSetMatcher(A, false, direction)并返回其Matcher结果。
 
 产生式 Atom :: \ AtomEscape 如下解释执行：
 
-1. Evaluate CharacterClass to obtain a CharSet A and a Boolean invert.
-2. 调用 CharacterSetMatcher(A, invert, direction) and return its Matcher result.
+1. 评估CharacterClass以获得CharSet A和布尔值反转。
+2. 调用 CharacterSetMatcher(A, invert, direction)并返回其Matcher结果。
 
 产生式 Atom :: ( GroupSpecifier Disjunction ) 如下解释执行：
 
-1. Evaluate Disjunction with argument direction to obtain a Matcher m.
-2. 令 parenIndex 为 the number of left-capturing parentheses in the entire regular expression that occur to the left of this Atom. This is the total number of Atom :: ( GroupSpecifier Disjunction ) Parse Nodes prior to or enclosing this Atom.
-3. 返回 an internal Matcher closure that takes two arguments, a State x and a Continuation c, and performs the following steps:
-  1. 令 d 为 an internal Continuation closure that takes one State argument y and performs the following steps:
-        1. 令 cap 为 a copy of y's captures List.
-            2. 令 xe 为 x's endIndex.
-                3. 令 ye 为 y's endIndex.
-                    4. 若 direction 是 equal to +1，那么 
-      1. 断言：xe ≤ ye.
-      2. 令 s 为 a new List whose elements are the characters of Input at indices xe (inclusive) through ye (exclusive).
-        5.  否则，
-      1. 断言：direction is equal to -1.
-      2. 断言：ye ≤ xe.
-      3. 令 s 为 a new List whose elements are the characters of Input at indices ye (inclusive) through xe
-          (exclusive).
+1. 用参数direction对Disjunction求值，得到一个Matcher m。
+2. 令 parenIndex 为整个正则表达式中位于此Atom左侧的左捕获括号的数量。这是此Atom之前或包含Atom ::（GroupSpecifier Disjunction）解析节点的总数。
+3. 返回一个内部Matcher闭包，它使用两个参数（状态x和连续性c），并执行以下步骤：
+    1. 令 d 为内部Continuation闭包，它接受一个State参数y并执行以下步骤：
+        1. 令 cap 为y的捕获列表的副本。
+        2. 令 xe 为x的endIndex。
+        3. 令 ye 为 y 的 endIndex.
+        4. 若 direction 等于 +1，那么 
+            1. 断言：xe ≤ ye.
+            2. 令 s 为一个新的列表，其元素是从索引xe（含）到ye（不含）的Input字符。
+        5. 否则，
+            1. 断言：direction 等于 -1.
+            2. 断言：ye ≤ xe.
+            3. 令 s 为一个新的列表，其元素是从ye（含）到xe（不含）的Input字符。
         6. 设置 cap[parenIndex + 1] 为 s.
-        7. 令 z 为 the State (ye, cap).
-        8. 调用 c(z) and return its result.
-  2. 调用 m(x, d) and return its result.
+        7. 令 z 为 State (ye, cap).
+        8. 调用 c(z)并且返回它的结果
+    14. 调用 m(x, d)并且返回它的结果
 
 产生式 Atom :: ( ? : Disjunction ) 如下解释执行：
 
-1. 返回 the Matcher that is the result of evaluating Disjunction with argument direction.
+1. 返回 Matcher，即是用 direction 参数解析执行 Disjunction 的结果。
 
 ##### 21.2.2.8.1 RS: CharacterSetMatcher ( A, invert, direction ) <div id="sec-runtime-semantics-charactersetmatcher-abstract-operation"></div>
 
-The abstract operation CharacterSetMatcher takes three arguments, a CharSet A, a Boolean flag invert, and an integer direction, and performs the following steps:
+抽象操作CharacterSetMatcher接受三个参数，一个字符集 a，一个Boolean标志 invert，一个整数 direction，并执行以下步骤：
 
-1. 返回 an internal Matcher closure that takes two arguments, a State x and a Continuation c, and performs the following steps when evaluated:
-  1. 令 e 为 x's endIndex.
-  2. 令 f 为 e + direction.
-  3. 若 f < 0 or f > InputLength，返回 failure.
-  4. 令 index 为 min(e, f).
-  5. 令 ch 为 the character Input[index].
-  6. 令 cc 为 Canonicalize(ch).
-  7. 若 invert 是 false，那么 
-        1. 若 there does not exist a member a of set A such that Canonicalize(a) 是 cc，返回 failure.
-  8.  否则，
-        1. 断言：invert is true.
-            2. 若 there exists a member a of set A such that Canonicalize(a) 是 cc，返回 failure.
-  9. 令 cap 为 x's captures List.
-  10. 令 y 为 the State (f, cap).
-  11. 调用 c(y) and return its result.
+1. 返回一个内部Matcher闭包，它接受两个参数，一个状态x，一个延续c，并在计算时执行以下步骤：
+   1. 令 e 为 x 的endIndex。
+   2. 令 f 为 e + direction.
+   3. 若 f < 0 or f > InputLength，返回 failure.
+   4. 令 index 为 min(e, f).
+   5. 令 ch 为字符输入[index].
+   6. 令 cc 为 Canonicalize(ch).
+   7. 若 invert 是 false，那么 
+      1. 若集合A中不存在这样一个 Canonicalize(a) 是 cc，返回 failure.
+   8. 否则，
+      1. 断言：invert 是 true.
+      2. 若集合A中不存在这样一个 Canonicalize(a) 是 cc，返回 failure.
+   9. 令 cap 为 x 的 captures 列表。
+   10. 令 y 为 State (f, cap)。
+   11. 调用 c(y)并且返回它的结果。
 
 ##### 21.2.2.8.2 RS: Canonicalize ( ch ) <div id="sec-runtime-semantics-canonicalize-ch"></div>
 
-The abstract operation Canonicalize takes a character parameter ch and performs the following steps:
+规范化的抽象操作采用字符参数ch，并执行以下步骤:
 
 1. 若 IgnoreCase 是 false，返回 ch.
 2. 若 Unicode 是 true，那么 
-  1. 若 the file CaseFolding.txt of the Unicode Character Database provides a simple or common case folding
-
-    mapping for ch，返回 the result of applying that mapping to ch.
-  2. 返回 ch.
-3.  否则，
-  1. 断言：ch is a UTF-16 code unit.
-  2. 令 s 为 the String value consisting of the single code unit ch.
-  3. 令 u 为 the same result produced as if by performing the algorithm for String.prototype.toUpperCase using s as the this value.
-  4. 断言：Type(u) is String.
-  5. 若 u does not consist of a single code unit，返回 ch.
-  6. 令 cu 为 u's single code unit element.
-  7. 若 the numeric value of ch ≥ 128 and the numeric value of cu < 128，返回 ch.
-  8. 返回 cu.
+     1. 如果Unicode字符数据库的CaseFolding.txt文件为ch提供了一个简单或常见的大小写折叠映射，则返回将该映射应用到ch的结果。
+     2. 返回 ch.
+3. 否则，
+     1. 断言：ch 是 UTF-16 代码单元
+     2. 令 s 为由单个代码单元ch组成的字符串值。
+     3. 令 u 为与对String.prototype执行算法得到的结果相同。使用s作为这个值的toUpperCase。
+     4. 断言：Type(u) 是 String.
+     5. 若 u 不包含单个代码单元，返回 ch.
+     6. 令 cu 为u的单个代码单元元素。
+     7. 若 ch ≥ 128 的数值和 cu < 128 的数值，返回 ch.
+     8. 返回 cu.
 
 > 注 1
 >
-> Parentheses of the form ( Disjunction ) serve both to group the components of the Disjunction pattern together and to save the result of the match. The result can be used either in a backreference (\ followed by a nonzero decimal number), referenced in a replace String, or returned as part of an array from the regular expression matching internal procedure. To inhibit the capturing behaviour of parentheses, use the form (?: Disjunction ) instead.
+> 形式（Disjunction）的括号既可以将Disjunction模式的各个组成部分组合在一起，又可以保存匹配结果。结果可以用在反向引用中（\后跟一个非零的十进制数字），可以在替换字符串中引用，也可以从匹配内部过程的正则表达式中作为数组的一部分返回。要禁止捕获括号，请改用（ ? : Disjunction）形式。
 >
 > 注 2
 >
-> The form (?= Disjunction ) specifies a zero-width positive lookahead. In order for it to succeed, the pattern inside Disjunction must match at the current position, but the current position is not advanced before matching the sequel. If Disjunction can match at the current position in several ways, only the first one is tried. Unlike other regular expression operators, there is no backtracking into a (?= form (this unusual behaviour is inherited from Perl). This only matters when the Disjunction contains capturing parentheses and the sequel of the pattern contains backreferences to those captures.
+> 形式（ ? = Disjunction）指定零宽度的正向超前。为了使它成功，“分离”中的模式必须在当前位置匹配，但是在匹配后继序列之前，当前位置不会前进。如果“分离”可以几种方式在当前位置匹配，则仅尝试第一个。与其他正则表达式运算符不同，它没有回溯到（？= form（此异常行为是从Perl继承的）。仅当Disjunction包含捕获括号并且模式的后继包含对那些捕获的反向引用时，才有意义。
 >
-> For example,
+> 例如，
 >
 > /(?=(a+))/.exec("baaabac")
 >
-> matches空字符串 immediately after the first b and therefore returns the array:
+> 在第一个b之后立即匹配空String，因此返回数组：
 >
 > ["", "aaa"]
 >
-> To illustrate the lack of backtracking into the lookahead, consider:
+> 为了说明缺乏回溯到前瞻性，请考虑：
 >
 > /(?=(a+))a*b\1/.exec("baaabac")
 >
-> This expression returns
+> 该表达式返回
 >
 > ["aba", "a"]
 >
-> and not:
+> 并不是：
 >
 > ["aaaba", "a"].
 >
 > 注 3
 >
-> The form (?! Disjunction ) specifies a zero-width negative lookahead. In order for it to succeed, the pattern inside Disjunction must fail to match at the current position. The current position is not advanced before matching the sequel. Disjunction can contain capturing parentheses, but backreferences to them only make sense from within Disjunction itself. Backreferences to these capturing parentheses from elsewhere in the pattern always return undefined because the negative lookahead must fail for the pattern to succeed. For example,
+> 形式（?!Disjunction）指定零宽度的负前瞻。为了使它成功，“分离”内的模式必须在当前位置不匹配。在匹配续集之前，当前位置不会前进。析取可以包含捕获的括号，但是对它们的反向引用仅在析取本身内部才有意义。对模式中其他位置的这些捕获括号的反向引用始终返回未定义的，因为负前瞻必须失败才能使模式成功。例如，
 >
 > /(.*?)a(?!(a+)b\2c)\2(.*)/.exec("baaabaac")
 >
-> looks for an a not immediately followed by some positive number n of a's, a b, another n a's (specified by the first \2) and a c. The second \2 is outside the negative lookahead, so it matches against undefined and therefore always succeeds. The whole expression returns the array:
+> 查找a，而不是紧随其后的是a的正数n，a b，另一个n a（由第一个\ 2指定）和a。第二个\ 2在负前瞻之外，因此它与undefined匹配，因此总是成功。整个表达式返回数组：
 >
 > ["baaabaac", "ba", undefined, "abaac"]
 >
 > 注 4
 >
-> In case-insignificant matches when Unicode is true, all characters are implicitly case-folded using the simple mapping provided by the Unicode standard immediately before they are compared. The simple mapping always maps to a single code point, so it does not map, for example, "ß" (U+00DF) to "SS". It may however map a code point outside the Basic Latin range to a character within, for example, "ſ" (U+017F) to "s". Such characters are not mapped if Unicode is false. This prevents Unicode code points such as U+017F and U+212A from matching regular expressions such as /[a-z]/i, but they will match /[a-z]/ui.
+> 在Unicode为true的情况下，如果大小写无关紧要，则在比较所有字符之前，立即使用Unicode标准提供的简单映射对所有字符进行隐式大小写折叠。简单映射始终映射到单个代码点，因此不会映射例如“ß”（U + 00DF）到“ SS”。但是，它可能会将基本拉丁语范围之外的代码点映射到例如“ ſ”（U + 017F）到“ s”内的字符。如果Unicode为false，则不会映射此类字符。这样可以防止Unicode代码点（例如U + 017F和U + 212A）匹配正则表达式（例如/ [a-z] / i），但它们将匹配/ [a-z] / ui。
 
 ##### 21.2.2.8.3 RS: UnicodeMatchProperty ( p ) <div id="sec-runtime-semantics-unicodematchproperty-p"></div>
 
-The abstract operation UnicodeMatchProperty takes a parameter p that is a List of Unicode code points and performs the following steps:
+抽象操作UnicodeMatchProperty采用参数p（它是Unicode代码点列表），并执行以下步骤：
 
-1. 断言：p is a List of Unicode code points that is identical to a List of Unicode code points that is a Unicode property name or property alias listed in the “Property name and aliases” column of Table 54 or Table 55.
-2. 令 c 为 the canonical property name of p as given in the “Canonical property name” column of the corresponding row.
-3. 返回 the List of Unicode code points of c.
+1. 断言：p是Unicode代码点列表，与Unicode代码点列表相同，后者是表54或表55的“属性名称和别名”列中列出的Unicode属性名称或属性别名。
+2. 令 c 为 在相应行的“规范属性名称”列中给出的p的规范属性名称。
+3. 返回 c 的Unicode代码点列表。
 
-Implementations must support the Unicode property names and aliases listed in Table 54 and Table 55. To ensure interoperability, implementations must not support any other property names or aliases.
+实现必须支持表54和表55中列出的Unicode属性名称和别名。为确保互操作性，实现不得支持任何其他属性名称或别名。
 
 > 注 1 
 >
-> For example, Script_Extensions (property name) and scx (property alias) are valid, but script_extensions or Scx aren't.
+> 例如，Script_Extensions（属性名称）和scx（属性别名）有效，但script_extensions或Scx无效。
 >
 > 注 2 
 >
-> The listed properties form a superset of what UTS18 RL1.2 requires
+> 列出的属性构成UTS18 RL1.2要求的超集
 
-Table 54: Non-binary Unicode property aliases and their canonical property names
+表54：非二进制Unicode属性别名及其规范属性名称
 
-| [Property name](http://www.ecma-international.org/ecma-262/10.0/index.html#property-name) and aliases | Canonical [property name](http://www.ecma-international.org/ecma-262/10.0/index.html#property-name) |
-| ------------------------------------------------------------ | ------------------------------------------------------------ |
-| `General_Category``gc`                                       | [`General_Category`](https://unicode.org/reports/tr18/#General_Category_Property) |
-| `Script``sc`                                                 | [`Script`](https://unicode.org/reports/tr24/#Script)         |
-| `Script_Extensions``scx`                                     | [`Script_Extensions`](https://unicode.org/reports/tr24/#Script_Extensions) |
+| 属性名称和别名           | 规范属性名称                                                 |
+| ------------------------ | ------------------------------------------------------------ |
+| `General_Category``gc`   | [`General_Category`](https://unicode.org/reports/tr18/#General_Category_Property) |
+| `Script``sc`             | [`Script`](https://unicode.org/reports/tr24/#Script)         |
+| `Script_Extensions``scx` | [`Script_Extensions`](https://unicode.org/reports/tr24/#Script_Extensions) |
 
-Table 55: Binary Unicode property aliases and their canonical property names
+表55：二进制Unicode属性别名及其规范属性名称
 
-| [Property name](http://www.ecma-international.org/ecma-262/10.0/index.html#property-name) and aliases | Canonical [property name](http://www.ecma-international.org/ecma-262/10.0/index.html#property-name) |
-| ------------------------------------------------------------ | ------------------------------------------------------------ |
-| `ASCII`                                                      | [`ASCII`](https://unicode.org/reports/tr18/#General_Category_Property) |
-| `ASCII_Hex_Digit``AHex`                                      | [`ASCII_Hex_Digit`](https://unicode.org/reports/tr44/#ASCII_Hex_Digit) |
-| `Alphabetic``Alpha`                                          | [`Alphabetic`](https://unicode.org/reports/tr44/#Alphabetic) |
-| `Any`                                                        | [`Any`](https://unicode.org/reports/tr18/#General_Category_Property) |
-| `Assigned`                                                   | [`Assigned`](https://unicode.org/reports/tr18/#General_Category_Property) |
-| `Bidi_Control``Bidi_C`                                       | [`Bidi_Control`](https://unicode.org/reports/tr44/#Bidi_Control) |
-| `Bidi_Mirrored``Bidi_M`                                      | [`Bidi_Mirrored`](https://unicode.org/reports/tr44/#Bidi_Mirrored) |
-| `Case_Ignorable``CI`                                         | [`Case_Ignorable`](https://unicode.org/reports/tr44/#Case_Ignorable) |
-| `Cased`                                                      | [`Cased`](https://unicode.org/reports/tr44/#Cased)           |
-| `Changes_When_Casefolded``CWCF`                              | [`Changes_When_Casefolded`](https://unicode.org/reports/tr44/#CWCF) |
-| `Changes_When_Casemapped``CWCM`                              | [`Changes_When_Casemapped`](https://unicode.org/reports/tr44/#CWCM) |
-| `Changes_When_Lowercased``CWL`                               | [`Changes_When_Lowercased`](https://unicode.org/reports/tr44/#CWL) |
-| `Changes_When_NFKC_Casefolded``CWKCF`                        | [`Changes_When_NFKC_Casefolded`](https://unicode.org/reports/tr44/#CWKCF) |
-| `Changes_When_Titlecased``CWT`                               | [`Changes_When_Titlecased`](https://unicode.org/reports/tr44/#CWT) |
-| `Changes_When_Uppercased``CWU`                               | [`Changes_When_Uppercased`](https://unicode.org/reports/tr44/#CWU) |
-| `Dash`                                                       | [`Dash`](https://unicode.org/reports/tr44/#Dash)             |
-| `Default_Ignorable_Code_Point``DI`                           | [`Default_Ignorable_Code_Point`](https://unicode.org/reports/tr44/#Default_Ignorable_Code_Point) |
-| `Deprecated``Dep`                                            | [`Deprecated`](https://unicode.org/reports/tr44/#Deprecated) |
-| `Diacritic``Dia`                                             | [`Diacritic`](https://unicode.org/reports/tr44/#Diacritic)   |
-| `Emoji`                                                      | [`Emoji`](https://unicode.org/reports/tr51/#Emoji_Properties) |
-| `Emoji_Component`                                            | [`Emoji_Component`](https://unicode.org/reports/tr51/#Emoji_Properties) |
-| `Emoji_Modifier`                                             | [`Emoji_Modifier`](https://unicode.org/reports/tr51/#Emoji_Properties) |
-| `Emoji_Modifier_Base`                                        | [`Emoji_Modifier_Base`](https://unicode.org/reports/tr51/#Emoji_Properties) |
-| `Emoji_Presentation`                                         | [`Emoji_Presentation`](https://unicode.org/reports/tr51/#Emoji_Properties) |
-| `Extended_Pictographic`                                      | [`Extended_Pictographic`](https://unicode.org/reports/tr51/#Emoji_Properties) |
-| `Extender``Ext`                                              | [`Extender`](https://unicode.org/reports/tr44/#Extender)     |
-| `Grapheme_Base``Gr_Base`                                     | [`Grapheme_Base`](https://unicode.org/reports/tr44/#Grapheme_Base) |
-| `Grapheme_Extend``Gr_Ext`                                    | [`Grapheme_Extend`](https://unicode.org/reports/tr44/#Grapheme_Extend) |
-| `Hex_Digit``Hex`                                             | [`Hex_Digit`](https://unicode.org/reports/tr44/#Hex_Digit)   |
-| `IDS_Binary_Operator``IDSB`                                  | [`IDS_Binary_Operator`](https://unicode.org/reports/tr44/#IDS_Binary_Operator) |
-| `IDS_Trinary_Operator``IDST`                                 | [`IDS_Trinary_Operator`](https://unicode.org/reports/tr44/#IDS_Trinary_Operator) |
-| `ID_Continue``IDC`                                           | [`ID_Continue`](https://unicode.org/reports/tr44/#ID_Continue) |
-| `ID_Start``IDS`                                              | [`ID_Start`](https://unicode.org/reports/tr44/#ID_Start)     |
-| `Ideographic``Ideo`                                          | [`Ideographic`](https://unicode.org/reports/tr44/#Ideographic) |
-| `Join_Control``Join_C`                                       | [`Join_Control`](https://unicode.org/reports/tr44/#Join_Control) |
-| `Logical_Order_Exception``LOE`                               | [`Logical_Order_Exception`](https://unicode.org/reports/tr44/#Logical_Order_Exception) |
-| `Lowercase``Lower`                                           | [`Lowercase`](https://unicode.org/reports/tr44/#Lowercase)   |
-| `Math`                                                       | [`Math`](https://unicode.org/reports/tr44/#Math)             |
-| `Noncharacter_Code_Point``NChar`                             | [`Noncharacter_Code_Point`](https://unicode.org/reports/tr44/#Noncharacter_Code_Point) |
-| `Pattern_Syntax``Pat_Syn`                                    | [`Pattern_Syntax`](https://unicode.org/reports/tr44/#Pattern_Syntax) |
-| `Pattern_White_Space``Pat_WS`                                | [`Pattern_White_Space`](https://unicode.org/reports/tr44/#Pattern_White_Space) |
-| `Quotation_Mark``QMark`                                      | [`Quotation_Mark`](https://unicode.org/reports/tr44/#Quotation_Mark) |
-| `Radical`                                                    | [`Radical`](https://unicode.org/reports/tr44/#Radical)       |
-| `Regional_Indicator``RI`                                     | [`Regional_Indicator`](https://unicode.org/reports/tr44/#Regional_Indicator) |
-| `Sentence_Terminal``STerm`                                   | [`Sentence_Terminal`](https://unicode.org/reports/tr44/#STerm) |
-| `Soft_Dotted``SD`                                            | [`Soft_Dotted`](https://unicode.org/reports/tr44/#Soft_Dotted) |
-| `Terminal_Punctuation``Term`                                 | [`Terminal_Punctuation`](https://unicode.org/reports/tr44/#Terminal_Punctuation) |
-| `Unified_Ideograph``UIdeo`                                   | [`Unified_Ideograph`](https://unicode.org/reports/tr44/#Unified_Ideograph) |
-| `Uppercase``Upper`                                           | [`Uppercase`](https://unicode.org/reports/tr44/#Uppercase)   |
-| `Variation_Selector``VS`                                     | [`Variation_Selector`](https://unicode.org/reports/tr44/#Variation_Selector) |
-| `White_Space``space`                                         | [`White_Space`](https://unicode.org/reports/tr44/#White_Space) |
-| `XID_Continue``XIDC`                                         | [`XID_Continue`](https://unicode.org/reports/tr44/#XID_Continue) |
-| `XID_Start``XIDS`                                            | [`XID_Start`](https://unicode.org/reports/tr44/#XID_Start)   |
+| 属性名称和别名                        | **规范属性名称**                                             |
+| ------------------------------------- | ------------------------------------------------------------ |
+| `ASCII`                               | [`ASCII`](https://unicode.org/reports/tr18/#General_Category_Property) |
+| `ASCII_Hex_Digit``AHex`               | [`ASCII_Hex_Digit`](https://unicode.org/reports/tr44/#ASCII_Hex_Digit) |
+| `Alphabetic``Alpha`                   | [`Alphabetic`](https://unicode.org/reports/tr44/#Alphabetic) |
+| `Any`                                 | [`Any`](https://unicode.org/reports/tr18/#General_Category_Property) |
+| `Assigned`                            | [`Assigned`](https://unicode.org/reports/tr18/#General_Category_Property) |
+| `Bidi_Control``Bidi_C`                | [`Bidi_Control`](https://unicode.org/reports/tr44/#Bidi_Control) |
+| `Bidi_Mirrored``Bidi_M`               | [`Bidi_Mirrored`](https://unicode.org/reports/tr44/#Bidi_Mirrored) |
+| `Case_Ignorable``CI`                  | [`Case_Ignorable`](https://unicode.org/reports/tr44/#Case_Ignorable) |
+| `Cased`                               | [`Cased`](https://unicode.org/reports/tr44/#Cased)           |
+| `Changes_When_Casefolded``CWCF`       | [`Changes_When_Casefolded`](https://unicode.org/reports/tr44/#CWCF) |
+| `Changes_When_Casemapped``CWCM`       | [`Changes_When_Casemapped`](https://unicode.org/reports/tr44/#CWCM) |
+| `Changes_When_Lowercased``CWL`        | [`Changes_When_Lowercased`](https://unicode.org/reports/tr44/#CWL) |
+| `Changes_When_NFKC_Casefolded``CWKCF` | [`Changes_When_NFKC_Casefolded`](https://unicode.org/reports/tr44/#CWKCF) |
+| `Changes_When_Titlecased``CWT`        | [`Changes_When_Titlecased`](https://unicode.org/reports/tr44/#CWT) |
+| `Changes_When_Uppercased``CWU`        | [`Changes_When_Uppercased`](https://unicode.org/reports/tr44/#CWU) |
+| `Dash`                                | [`Dash`](https://unicode.org/reports/tr44/#Dash)             |
+| `Default_Ignorable_Code_Point``DI`    | [`Default_Ignorable_Code_Point`](https://unicode.org/reports/tr44/#Default_Ignorable_Code_Point) |
+| `Deprecated``Dep`                     | [`Deprecated`](https://unicode.org/reports/tr44/#Deprecated) |
+| `Diacritic``Dia`                      | [`Diacritic`](https://unicode.org/reports/tr44/#Diacritic)   |
+| `Emoji`                               | [`Emoji`](https://unicode.org/reports/tr51/#Emoji_Properties) |
+| `Emoji_Component`                     | [`Emoji_Component`](https://unicode.org/reports/tr51/#Emoji_Properties) |
+| `Emoji_Modifier`                      | [`Emoji_Modifier`](https://unicode.org/reports/tr51/#Emoji_Properties) |
+| `Emoji_Modifier_Base`                 | [`Emoji_Modifier_Base`](https://unicode.org/reports/tr51/#Emoji_Properties) |
+| `Emoji_Presentation`                  | [`Emoji_Presentation`](https://unicode.org/reports/tr51/#Emoji_Properties) |
+| `Extended_Pictographic`               | [`Extended_Pictographic`](https://unicode.org/reports/tr51/#Emoji_Properties) |
+| `Extender``Ext`                       | [`Extender`](https://unicode.org/reports/tr44/#Extender)     |
+| `Grapheme_Base``Gr_Base`              | [`Grapheme_Base`](https://unicode.org/reports/tr44/#Grapheme_Base) |
+| `Grapheme_Extend``Gr_Ext`             | [`Grapheme_Extend`](https://unicode.org/reports/tr44/#Grapheme_Extend) |
+| `Hex_Digit``Hex`                      | [`Hex_Digit`](https://unicode.org/reports/tr44/#Hex_Digit)   |
+| `IDS_Binary_Operator``IDSB`           | [`IDS_Binary_Operator`](https://unicode.org/reports/tr44/#IDS_Binary_Operator) |
+| `IDS_Trinary_Operator``IDST`          | [`IDS_Trinary_Operator`](https://unicode.org/reports/tr44/#IDS_Trinary_Operator) |
+| `ID_Continue``IDC`                    | [`ID_Continue`](https://unicode.org/reports/tr44/#ID_Continue) |
+| `ID_Start``IDS`                       | [`ID_Start`](https://unicode.org/reports/tr44/#ID_Start)     |
+| `Ideographic``Ideo`                   | [`Ideographic`](https://unicode.org/reports/tr44/#Ideographic) |
+| `Join_Control``Join_C`                | [`Join_Control`](https://unicode.org/reports/tr44/#Join_Control) |
+| `Logical_Order_Exception``LOE`        | [`Logical_Order_Exception`](https://unicode.org/reports/tr44/#Logical_Order_Exception) |
+| `Lowercase``Lower`                    | [`Lowercase`](https://unicode.org/reports/tr44/#Lowercase)   |
+| `Math`                                | [`Math`](https://unicode.org/reports/tr44/#Math)             |
+| `Noncharacter_Code_Point``NChar`      | [`Noncharacter_Code_Point`](https://unicode.org/reports/tr44/#Noncharacter_Code_Point) |
+| `Pattern_Syntax``Pat_Syn`             | [`Pattern_Syntax`](https://unicode.org/reports/tr44/#Pattern_Syntax) |
+| `Pattern_White_Space``Pat_WS`         | [`Pattern_White_Space`](https://unicode.org/reports/tr44/#Pattern_White_Space) |
+| `Quotation_Mark``QMark`               | [`Quotation_Mark`](https://unicode.org/reports/tr44/#Quotation_Mark) |
+| `Radical`                             | [`Radical`](https://unicode.org/reports/tr44/#Radical)       |
+| `Regional_Indicator``RI`              | [`Regional_Indicator`](https://unicode.org/reports/tr44/#Regional_Indicator) |
+| `Sentence_Terminal``STerm`            | [`Sentence_Terminal`](https://unicode.org/reports/tr44/#STerm) |
+| `Soft_Dotted``SD`                     | [`Soft_Dotted`](https://unicode.org/reports/tr44/#Soft_Dotted) |
+| `Terminal_Punctuation``Term`          | [`Terminal_Punctuation`](https://unicode.org/reports/tr44/#Terminal_Punctuation) |
+| `Unified_Ideograph``UIdeo`            | [`Unified_Ideograph`](https://unicode.org/reports/tr44/#Unified_Ideograph) |
+| `Uppercase``Upper`                    | [`Uppercase`](https://unicode.org/reports/tr44/#Uppercase)   |
+| `Variation_Selector``VS`              | [`Variation_Selector`](https://unicode.org/reports/tr44/#Variation_Selector) |
+| `White_Space``space`                  | [`White_Space`](https://unicode.org/reports/tr44/#White_Space) |
+| `XID_Continue``XIDC`                  | [`XID_Continue`](https://unicode.org/reports/tr44/#XID_Continue) |
+| `XID_Start``XIDS`                     | [`XID_Start`](https://unicode.org/reports/tr44/#XID_Start)   |
 
 ##### 21.2.2.8.4 RS: UnicodeMatchPropertyValue ( p, v ) <div id="sec-runtime-semantics-unicodematchpropertyvalue-p-v"></div>
 
-The abstract operation UnicodeMatchPropertyValue takes two parameters p and v, each of which is a [List](http://www.ecma-international.org/ecma-262/10.0/index.html#sec-list-and-record-specification-type) of Unicode code points, and performs the following steps:
+抽象操作UnicodeMatchPropertyValue具有两个参数p和v，每个参数都是Unicode代码点列表，并执行以下步骤：
 
-1. 断言：p is a List of Unicode code points that is identical to a List of Unicode code points that is a canonical, unaliased Unicode property name listed in the “Canonical property name” column of Table 54.
-2. 断言：v is a List of Unicode code points that is identical to a List of Unicode code points that is a property value or property value alias for Unicode property p listed in the “Property value and aliases” column of Table 56 or Table 57.
-3. 令 value 为 the canonical property value of v as given in the “Canonical property value” column of the corresponding row.
-4. 返回 the List of Unicode code points of value.
+1. 断言：p是Unicode代码点列表，与Unicode代码点列表相同，后者是表54的“规范属性名称”列中列出的规范的，未混叠的Unicode属性名称。
+2. 断言：v是Unicode代码点列表，与Unicode代码点列表相同，后者是表56或表57的“属性值和别名”列中列出的Unicode属性p的属性值或属性值别名。
+3. 令 value 为 v 的规范属性值（在相应行的“规范属性值”列中给出）。
+4. 返回Unicode代码点列表。
 
-Implementations must support the Unicode property value names and aliases listed in Table 56 and Table 57. To ensure interoperability, implementations must not support any other property value names or aliases.
+实现必须支持表56和表57中列出的Unicode属性值名称和别名。为确保互操作性，实现不得支持任何其他属性值名称或别名。
 
 >注 1
->For example, Xpeo and Old_Persian are valid Script_Extensions values, but xpeo and Old Persian aren't.
+>例如，Xpeo和Old_Persian是有效的Script_Extensions值，但xpeo和Old Persian不是。
 >注 2
->This algorithm differs from the matching rules for symbolic values listed in UAX44: case, white space, U+002D (HYPHEN-MINUS), and U+005F (LOW LINE) are not ignored, and the Is prefix is not supported.
+>此算法不同于UAX44中列出的符号值的匹配规则：不区分大小写，空格，U + 002D（减号）和U + 005F（下划线），并且不支持Is前缀。
 
-Table 56: Value aliases and canonical values for the Unicode property [`General_Category`](https://unicode.org/reports/tr18/#General_Category_Property)
+表56：Unicode属性 [`General_Category`](https://unicode.org/reports/tr18/#General_Category_Property)的值别名和规范值。
 
-| Property value and aliases  | Canonical property value |
-| --------------------------- | ------------------------ |
-| `Cased_Letter``LC`          | `Cased_Letter`           |
-| `Close_Punctuation``Pe`     | `Close_Punctuation`      |
-| `Connector_Punctuation``Pc` | `Connector_Punctuation`  |
-| `Control``Cc``cntrl`        | `Control`                |
-| `Currency_Symbol``Sc`       | `Currency_Symbol`        |
-| `Dash_Punctuation``Pd`      | `Dash_Punctuation`       |
-| `Decimal_Number``Nd``digit` | `Decimal_Number`         |
-| `Enclosing_Mark``Me`        | `Enclosing_Mark`         |
-| `Final_Punctuation``Pf`     | `Final_Punctuation`      |
-| `Format``Cf`                | `Format`                 |
-| `Initial_Punctuation``Pi`   | `Initial_Punctuation`    |
-| `Letter``L`                 | `Letter`                 |
-| `Letter_Number``Nl`         | `Letter_Number`          |
-| `Line_Separator``Zl`        | `Line_Separator`         |
-| `Lowercase_Letter``Ll`      | `Lowercase_Letter`       |
-| `Mark``M``Combining_Mark`   | `Mark`                   |
-| `Math_Symbol``Sm`           | `Math_Symbol`            |
-| `Modifier_Letter``Lm`       | `Modifier_Letter`        |
-| `Modifier_Symbol``Sk`       | `Modifier_Symbol`        |
-| `Nonspacing_Mark``Mn`       | `Nonspacing_Mark`        |
-| `Number``N`                 | `Number`                 |
-| `Open_Punctuation``Ps`      | `Open_Punctuation`       |
-| `Other``C`                  | `Other`                  |
-| `Other_Letter``Lo`          | `Other_Letter`           |
-| `Other_Number``No`          | `Other_Number`           |
-| `Other_Punctuation``Po`     | `Other_Punctuation`      |
-| `Other_Symbol``So`          | `Other_Symbol`           |
-| `Paragraph_Separator``Zp`   | `Paragraph_Separator`    |
-| `Private_Use``Co`           | `Private_Use`            |
-| `Punctuation``P``punct`     | `Punctuation`            |
-| `Separator``Z`              | `Separator`              |
-| `Space_Separator``Zs`       | `Space_Separator`        |
-| `Spacing_Mark``Mc`          | `Spacing_Mark`           |
-| `Surrogate``Cs`             | `Surrogate`              |
-| `Symbol``S`                 | `Symbol`                 |
-| `Titlecase_Letter``Lt`      | `Titlecase_Letter`       |
-| `Unassigned``Cn`            | `Unassigned`             |
-| `Uppercase_Letter``Lu`      | `Uppercase_Letter`       |
+| 属性值和别名                | 规范属性值              |
+| --------------------------- | ----------------------- |
+| `Cased_Letter``LC`          | `Cased_Letter`          |
+| `Close_Punctuation``Pe`     | `Close_Punctuation`     |
+| `Connector_Punctuation``Pc` | `Connector_Punctuation` |
+| `Control``Cc``cntrl`        | `Control`               |
+| `Currency_Symbol``Sc`       | `Currency_Symbol`       |
+| `Dash_Punctuation``Pd`      | `Dash_Punctuation`      |
+| `Decimal_Number``Nd``digit` | `Decimal_Number`        |
+| `Enclosing_Mark``Me`        | `Enclosing_Mark`        |
+| `Final_Punctuation``Pf`     | `Final_Punctuation`     |
+| `Format``Cf`                | `Format`                |
+| `Initial_Punctuation``Pi`   | `Initial_Punctuation`   |
+| `Letter``L`                 | `Letter`                |
+| `Letter_Number``Nl`         | `Letter_Number`         |
+| `Line_Separator``Zl`        | `Line_Separator`        |
+| `Lowercase_Letter``Ll`      | `Lowercase_Letter`      |
+| `Mark``M``Combining_Mark`   | `Mark`                  |
+| `Math_Symbol``Sm`           | `Math_Symbol`           |
+| `Modifier_Letter``Lm`       | `Modifier_Letter`       |
+| `Modifier_Symbol``Sk`       | `Modifier_Symbol`       |
+| `Nonspacing_Mark``Mn`       | `Nonspacing_Mark`       |
+| `Number``N`                 | `Number`                |
+| `Open_Punctuation``Ps`      | `Open_Punctuation`      |
+| `Other``C`                  | `Other`                 |
+| `Other_Letter``Lo`          | `Other_Letter`          |
+| `Other_Number``No`          | `Other_Number`          |
+| `Other_Punctuation``Po`     | `Other_Punctuation`     |
+| `Other_Symbol``So`          | `Other_Symbol`          |
+| `Paragraph_Separator``Zp`   | `Paragraph_Separator`   |
+| `Private_Use``Co`           | `Private_Use`           |
+| `Punctuation``P``punct`     | `Punctuation`           |
+| `Separator``Z`              | `Separator`             |
+| `Space_Separator``Zs`       | `Space_Separator`       |
+| `Spacing_Mark``Mc`          | `Spacing_Mark`          |
+| `Surrogate``Cs`             | `Surrogate`             |
+| `Symbol``S`                 | `Symbol`                |
+| `Titlecase_Letter``Lt`      | `Titlecase_Letter`      |
+| `Unassigned``Cn`            | `Unassigned`            |
+| `Uppercase_Letter``Lu`      | `Uppercase_Letter`      |
 
-Table 57: Value aliases and canonical values for the Unicode properties [`Script`](https://unicode.org/reports/tr24/#Script) and [`Script_Extensions`](https://unicode.org/reports/tr24/#Script_Extensions)
+表57：Unicode属性[`Script`](https://unicode.org/reports/tr24/#Script) 和[`Script_Extensions`](https://unicode.org/reports/ tr24 /＃Script_Extensions)
 
 | Property value and aliases     | Canonical property value |
 | ------------------------------ | ------------------------ |
@@ -2068,54 +2065,54 @@ Table 57: Value aliases and canonical values for the Unicode properties [`Script
 
 #### 21.2.2.9 转义原子 <div id="sec-atomescape"></div>
 
-With parameter direction.
+带有参数direction.
 
 产生式 AtomEscape :: DecimalEscape 如下解释执行：
 
-1. Evaluate DecimalEscape to obtain an integer n.
+1. 评估DecimalEscape以获取整数n。
 2. 断言：n ≤ NcapturingParens.
-3. 调用 BackreferenceMatcher(n, direction) and return its Matcher result.
+3. 调用 BackreferenceMatcher(n, direction)，并且返回其Matcher结果
 
 产生式 AtomEscape :: CharacterEscape 如下解释执行：
 
-1. Evaluate CharacterEscape to obtain a character ch.
-2. 令 A 为 a one-element CharSet containing the character ch.
-3. 调用 CharacterSetMatcher(A, false, direction) and return its Matcher result.
+1. 评估CharacterEscape以获取字符ch。
+2. 令 A 为包含字符ch的单元素CharSet。
+3. 调用 CharacterSetMatcher(A, false, direction)，并且返回其Matcher结果
 
 产生式 AtomEscape :: CharacterClassEscape 如下解释执行：
 
-1. Evaluate CharacterClassEscape to obtain a CharSet A.
-2. 调用 CharacterSetMatcher(A, false, direction) and return its Matcher result.
+1. 评估CharacterClassEscape以获取CharSetA。
+2. 调用 CharacterSetMatcher(A, false, direction)，并且返回其Matcher结果
 
-> 注 An escape sequence of the form \ followed by a nonzero decimal number n matches the result of the nth set of capturing parentheses (21.2.2.1). It is an error if the regular expression has fewer than n capturing parentheses. If the regular expression has n or more capturing parentheses but the nth one is undefined because it has not captured anything，那么  the backreference always succeeds.
+> 注：形式为\的转义序列，后跟一个非零的十进制数字n，它与第n组捕获括号（21.2.2.1）的结果匹配。如果正则表达式的捕获括号少于n个，则会出现错误。如果正则表达式具有n个或多个捕获括号，但第n个因未捕获任何东西而未定义，则后向引用始终会成功。
 
 产生式 AtomEscape :: k GroupName 如下解释执行：
 
-1. Search the enclosing Pattern for an instance of a GroupSpecifier for a RegExpIdentifierName which has a StringValue equal to the StringValue of the RegExpIdentifierName contained in GroupName.
-2. 断言：A unique such GroupSpecifier is found.
-3. 令 parenIndex 为 the number of left-capturing parentheses in the entire regular expression that occur to the left of the located GroupSpecifier. This is the total number of Atom :: ( GroupSpecifier Disjunction ) Parse Nodes prior to or enclosing the located GroupSpecifier.
-4. 调用 BackreferenceMatcher(parenIndex, direction) and return its Matcher result.
+1. 在封闭模式中搜索RegExpIdentifierName的GroupSpecifier实例，该实例的StringValue等于GroupName中包含的RegExpIdentifierName的StringValue。
+2. 断言：找到唯一的此类GroupSpecifier。
+3. 令 parenIndex 为整个正则表达式中位于定位的GroupSpecifier左侧的左捕获括号的数量。这是位于或封闭所定位GroupSpecifier之前的Atom ::（GroupSpecifier Disjunction）解析节点的总数。
+4. 调用 BackreferenceMatcher(parenIndex, direction)，并且返回其Matcher结果
 
 ##### 21.2.2.9.1 RS: BackreferenceMatcher ( n, direction ) <div id="sec-backreference-matcher"></div>
 
-The abstract operation BackreferenceMatcher takes two arguments, an integer n and an integer direction, and performs the following steps:
+抽象操作BackreferenceMatcher接受两个参数，整数n和整数direction，并执行以下步骤：
 
-1. 返回 an internal Matcher closure that takes two arguments, a State x and a Continuation c, and performs the following steps:
-   1. 令 cap 为 x's captures [List](http://www.ecma-international.org/ecma-262/10.0/index.html#sec-list-and-record-specification-type).
+1. 返回一个内部Matcher闭包，它使用两个参数（状态x和连续性c），并执行以下步骤：
+   1. 令 cap 为 x 的捕获列表。
    2. 令 s 为 cap[n].
    3. 若 s 是 undefined，返回 c(x).
-   4. 令 e 为 x's endIndex.
-   5. 令 len 为 the number of elements in s.
+   4. 令 e 为x的endIndex。
+   5. 令 len 为 s 中的元素数。
    6. 令 f 为 e + direction × len.
-   7. 若 f < 0 or f > InputLength，返回 failure.
-   8. 令 g 为 [min](http://www.ecma-international.org/ecma-262/10.0/index.html#eqn-min)(e, f).
-   9. 若 there exists an integer i between 0 (inclusive) and len (exclusive) such that [Canonicalize](http://www.ecma-international.org/ecma-262/10.0/index.html#sec-runtime-semantics-canonicalize-ch)(s[i]) 不是 the same character value as [Canonicalize](http://www.ecma-international.org/ecma-262/10.0/index.html#sec-runtime-semantics-canonicalize-ch)(Input[g + i])，返回 failure.
-   10. 令 y 为 the State (f, cap).
-   11. 调用 c(y) and return its result.
+   7. 若 f < 0 或 f > InputLength，返回 failure.
+   8. 令 g 为 min (e, f).
+   9. 若存在一个介于0（含）和len（不含）之间的整数i，以使 Canonicalize（s [i]）不是与Canonicalize（Input [g + i]）相同的字符值，返回 failure.
+   10. 令 y 为 State (f, cap).
+   11. 调用 c(y)并且返回它的结果
 
 #### 21.2.2.10 转义字符 <div id="sec-characterescape"></div>
 
-The CharacterEscape productions evaluate as follows:
+CharacterEscape产品评估如下：
 
 ```
 CharacterEscape ::
@@ -2127,179 +2124,179 @@ CharacterEscape ::
     IdentityEscape
 ```
 
-1. 令 cv 为 the CharacterValue of this CharacterEscape.
-2. 返回 the character whose character value is cv.
+1. 令 cv 为此CharacterEscape的CharacterValue。
+2. 返回字符值为cv的字符。
 
 #### 21.2.2.11 转义十进制 <div id="sec-decimalescape"></div>
 
-The DecimalEscape productions evaluate as follows:
+DecimalEscape生产评估如下：
 
 ```
 DecimalEscape :: NonZeroDigit DecimalDigits
 ```
 
-1. 返回 the CapturingGroupNumber of this DecimalEscape.
+1. 返回此DecimalEscape的CapturingGroupNumber。
 
->注 If \ is followed by a decimal number n whose first digit is not 0，那么  the escape sequence is considered to be a backreference. It is an error if n is大于 the total number of left-capturing parentheses in the entire regular expression.
+>注：如果\后跟一个十进制数字n（其第一位数字不为0），则转义序列被视为反向引用。如果n大于整个正则表达式中左捕获括号的总数，则会出现错误。
 
 #### 21.2.2.12 转义字符类 <div id="sec-characterclassescape"></div>
 
 产生式 CharacterClassEscape :: d 如下解释执行：
 
-1. 返回 the ten-element set of characters containing the characters 0 through 9 inclusive.
+1. 返回十个字符的字符集，包含字符0到9（含0和9）。
 
 产生式 CharacterClassEscape :: D 如下解释执行：
 
-1. 返回 the set of all characters not included in the set returned by CharacterClassEscape :: d .
+1. 返回由CharacterClassEscape :: d返回的集合中未包括的所有字符的集合。
 
 产生式 CharacterClassEscape :: s 如下解释执行：
 
-1. 返回 the set of characters containing the characters that are on the right-hand side of the WhiteSpace or LineTerminator productions.
+1. 返回包含WhiteSpace或LineTerminator产品右侧的字符的字符集。
 
 产生式 CharacterClassEscape :: S 如下解释执行：
 
-1. 返回 the set of all characters not included in the set returned by CharacterClassEscape :: s .
+1. 返回由CharacterClassEscape ::: s返回的所有字符集中的字符集。
 
 产生式 CharacterClassEscape :: w 如下解释执行：
 
-1. 返回 the set of all characters returned by WordCharacters().
+1. 返回WordCharacters（）返回的所有字符的集合。
 
 产生式 CharacterClassEscape :: W 如下解释执行：
 
-1. 返回 the set of all characters not included in the set returned by CharacterClassEscape :: w .
+1. 返回CharacterClassEscape :: w返回的集合中未包括的所有字符的集合。
 
-The production CharacterClassEscape :: p{ UnicodePropertyValueExpression } evaluates by returning the CharSet containing all Unicode code points included in the CharSet returned by UnicodePropertyValueExpression.
+生产的CharacterClassEscape :: p {UnicodePropertyValueExpression}通过返回CharSet进行评估，该CharSet包含UnicodePropertyValueExpression返回的CharSet中包含的所有Unicode代码点。
 
-The production CharacterClassEscape :: P{ UnicodePropertyValueExpression } evaluates by returning the CharSet containing all Unicode code points not included in the CharSet returned by UnicodePropertyValueExpression.
+生产的CharacterClassEscape :: P {UnicodePropertyValueExpression}通过返回包含所有未包含在UnicodePropertyValueExpression返回的CharSet中的所有Unicode代码点的CharSet进行评估。
 
 产生式 UnicodePropertyValueExpression :: UnicodePropertyName = UnicodePropertyValue 如下解释执行：
 
-1. 令 ps 为 SourceText of UnicodePropertyName.
+1. 令 ps 为UnicodePropertyName的SourceText。
 2. 令 p 为 ! UnicodeMatchProperty(ps).
-3. 断言：p is a Unicode property name or property alias listed in the “Property name and aliases” column of Table 54.
-4. 令 vs 为 SourceText of UnicodePropertyValue.
+3. 断言：p是表54的“属性名称和别名”列中列出的Unicode属性名称或属性别名。
+4. 令 vs 为UnicodePropertyValue的SourceText。
 5. 令 v 为 ! UnicodeMatchPropertyValue(p, vs).
-6. 返回 the CharSet containing all Unicode code points whose character database definition includes the property p with value v.
+6. 返回包含所有Unicode代码点的字符集的CharSet，这些字符集的字符数据库定义包含值为v的属性p。
 
 产生式 UnicodePropertyValueExpression :: LoneUnicodePropertyNameOrValue 如下解释执行：
 
-1. 令 s 为 SourceText of LoneUnicodePropertyNameOrValue.
-2. 若 ! UnicodeMatchPropertyValue("General_Category", s) is identical to a List of Unicode code points that 是 the name of a Unicode general category or general category alias listed in the “Property value and aliases” column of Table 56，那么 
-  1. 返回 the CharSet containing all Unicode code points whose character database definition includes the property “General_Category” with value s.
+1. 令 s 为LoneUnicodePropertyNameOrValue的SourceText。
+2. 若 ! UnicodeMatchPropertyValue("General_Category", s)与Unicode代码点列表相同，后者是表56的“属性值和别名”列中列出的Unicode常规类别或常规类别别名的名称，然后
+  1. 返回 包含所有Unicode代码点的字符集的字符集，其字符数据库定义包括值为s的属性“ General_Category”。
 3. 令 p 为 ! UnicodeMatchProperty(s).
-4. 断言：p is a binary Unicode property or binary property alias listed in the “Property name and aliases” column of Table 55.
-5. 返回 the CharSet containing all Unicode code points whose character database definition includes the property p with value “True”.
+4. 断言：p是表55的“属性名称和别名”列中列出的二进制Unicode属性或二进制属性别名。
+5. 返回包含所有Unicode代码点的字符集的字符集，这些字符集的字符数据库定义包含值为“ True”的属性p。
 
 #### 21.2.2.13 字符类 <div id="sec-characterclass"></div>
 
 产生式 CharacterClass :: [ ClassRanges ] 如下解释执行：
 
-1. Evaluate ClassRanges to obtain a CharSet A.
-2. 返回 the two results A and false.
+1. 评估ClassRanges以获得CharSetA。
+2. 返回两个结果A和False。
 
 产生式 CharacterClass :: [ ^ ClassRanges ] 如下解释执行：
 
-1. Evaluate ClassRanges to obtain a CharSet A.
-2. 返回 the two results A and true.
+1. 评估ClassRanges以获得CharSetA。
+2. 返回两个结果A和true。
 
 #### 21.2.2.14 字符范围集 <div id="sec-classranges"></div>
 
 产生式 ClassRanges :: [empty] 如下解释执行：
 
-1. 返回 the empty CharSet.
+1. 返回空的CharSet。
 
 产生式 ClassRanges :: NonemptyClassRanges 如下解释执行：
 
-1. 返回 the CharSet that is the result of evaluating NonemptyClassRanges.
+1. 返回CharSet是评估NonemptyClassRanges的结果。
 
 #### 21.2.2.15 非空字符范围集 <div id="sec-nonemptyclassranges"></div>
 
 产生式 NonemptyClassRanges :: ClassAtom 如下解释执行：
 
-1. 返回 the CharSet that is the result of evaluating ClassAtom.
+1. 返回CharSet是评估ClassAtom的结果。
 
 产生式 NonemptyClassRanges :: ClassAtom NonemptyClassRangesNoDash 如下解释执行：
 
-1. Evaluate ClassAtom to obtain a CharSet A.
+1. 评估ClassAtom以获得CharSetA。
 
-2. Evaluate NonemptyClassRangesNoDash to obtain a CharSet B.
-3. 返回 the union of CharSets A and B.
+2. 评估NonemptyClassRangesNoDash以获得CharSetB。
+3. 返回字符集A和B的并集。
 
 产生式 NonemptyClassRanges :: ClassAtom - ClassAtom ClassRanges 如下解释执行：
 
-1. Evaluate the first ClassAtom to obtain a CharSet A.
-2. Evaluate the second ClassAtom to obtain a CharSet B.
-3. Evaluate ClassRanges to obtain a CharSet C.
-4. 调用 CharacterRange(A, B) and 令 D 为 the resulting CharSet.
-5. 返回 the union of CharSets D and C.
+1. 评估第一个ClassAtom以获得CharSetA。
+2. 评估第二个ClassAtom以获得CharSetB。
+3. 评估ClassRanges以获得CharSetC。
+4. 调用 CharacterRange(A, B)，并且令 D 为 得到的CharSet。
+5. 返回字符集D和C的并集。
 
 ##### 21.2.2.15.1 RS: CharacterRange ( A, B ) <div id="sec-runtime-semantics-characterrange-abstract-operation"></div>
 
-The abstract operation CharacterRange takes two CharSet parameters A and B and performs the following steps:
+抽象操作CharacterRange采用两个CharSet参数A和B并执行以下步骤：
 
-1. 断言：A and B each contain exactly one character.
-2. 令 a 为 the one character in CharSet A.
-3. 令 b 为 the one character in CharSet B.
-4. 令 i 为 the character value of character a.
-5. 令 j 为 the character value of character b.
+1. 断言：A和B都只包含一个字符。
+2. 令 a 为CharSet A中的一个字符。
+3. 令 b 为CharSet B中的一个字符。
+4. 令 i 为字符a的字符值。
+5. 令 j 为字符b的字符值。
 6. 断言：i ≤ j.
-7. 返回 the set containing all characters numbered i through j, inclusive.
+7. 返回包含所有编号为i到j（包括i）的字符的集合。
 
 #### 21.2.2.16 无连接符非空字符范围集 <div id="sec-nonemptyclassrangesnodash"></div>
 
 产生式 NonemptyClassRangesNoDash :: ClassAtom 如下解释执行：
 
-1. 返回 the CharSet that is the result of evaluating ClassAtom.
+1. 返回 CharSet 是评估ClassAtom的结果。
 
 产生式 NonemptyClassRangesNoDash :: ClassAtomNoDash NonemptyClassRangesNoDash 如下解释执行：
 
-1. Evaluate ClassAtomNoDash to obtain a CharSet A.
-2. Evaluate NonemptyClassRangesNoDash to obtain a CharSet B.
-3. 返回 the union of CharSets A and B
+1. 评估ClassAtomNoDash以获取CharSetA。
+2. 评估NonemptyClassRangesNoDash以获得CharSetB。
+3. 返回字符集A和B的并集
 
 产生式 NonemptyClassRangesNoDash :: ClassAtomNoDash - ClassAtom ClassRanges 如下解释执行：
 
-1. Evaluate ClassAtomNoDash to obtain a CharSet A.
-2. Evaluate ClassAtom to obtain a CharSet B.
-3. Evaluate ClassRanges to obtain a CharSet C.
-4. 调用 CharacterRange(A, B) and 令 D 为 the resulting CharSet.
-5. 返回 the union of CharSets D and C.
+1. 评估ClassAtomNoDash以获取CharSetA。
+2. 评估ClassAtom以获得CharSetB。
+3. 评估ClassRanges以获得CharSetC。
+4. 调用 CharacterRange(A, B)，并且令 D 为得到的CharSet。
+5. 返回字符集D和C的并集。
 
 > 注 1 
 >
-> ClassRanges can expand into a single ClassAtom and/or ranges of two ClassAtom separated by dashes. In the latter case the ClassRanges includes all characters between the first ClassAtom and the second ClassAtom, inclusive; an error occurs if either ClassAtom does not represent a single character (for example, if one is \w) or if the first ClassAtom's character value is大于 the second ClassAtom's character value. 
+> ClassRanges可以扩展为单个ClassAtom和/或两个以虚线分隔的ClassAtom范围。在后一种情况下，ClassRanges包括第一个ClassAtom和第二个ClassAtom之间的所有字符（包括首尾）。如果ClassAtom不代表单个字符（例如，如果是\ w），或者第一个ClassAtom的字符值大于第二个ClassAtom的字符值，则会发生错误。
 >
 > 注 2 
 >
-> Even if the pattern ignores case, the case of the two ends of a range is significant in determining which characters belong to the range. Thus, for example, the pattern /[E-F]/i matches only the letters E, F, e, and f, while the pattern /[E-f]/i matches all upper and lower-case letters in the Unicode Basic Latin block as well as the symbols [, \, ], ^, _, and `.
+> 即使模式忽略大小写，在确定哪些字符属于该范围时，范围两端的大小写也很重要。因此，例如，模式/ [EF] / i仅匹配字母E，F，e和f，而模式/ [Ef] / i则匹配Unicode Basic Latin块中的所有大小写字母，例如以及符号[，\，]，^，_和`。
 >
 > 注 3
 >
-> A - character can be treated literally or it can denote a range. It is treated literally if it is the first or last character of ClassRanges, the beginning or end limit of a range specification, or immediately follows a range specification.
+> -字符可以按字面意义对待，也可以表示范围。如果它是ClassRanges的第一个或最后一个字符，范围说明的开始或结束限制，或者紧随范围说明，则将按字面意义对待它。
 
 #### 21.2.2.17 字符类原子 <div id="sec-classatom"></div>
 
 产生式 ClassAtom :: - 如下解释执行：
 
-1. 返回 the CharSet containing the single character - U+002D (HYPHEN-MINUS).
+1. 返回包含单个字符的字符集-U + 002D（减号）。
 
 产生式 ClassAtom :: ClassAtomNoDash 如下解释执行：
 
-1. 返回 the CharSet that is the result of evaluating ClassAtomNoDash.
+1. 返回 CharClas s是评估ClassAtomNoDash的结果。
 
 #### 21.2.2.18 非连接符字符类原子 <div id="sec-classatomnodash"></div>
 
 产生式 ClassAtomNoDash :: SourceCharacter but not one of \ or ] or - 如下解释执行：
 
-1. 返回 the CharSet containing the character matched by SourceCharacter.
+1. 返回包含与SourceCharacter匹配的字符的CharSet。
 
 产生式 ClassAtomNoDash :: \ ClassEscape 如下解释执行：
 
-1. 返回 the CharSet that is the result of evaluating ClassEscape.
+1. 返回CharSet是评估ClassEscape的结果。
 
 #### 21.2.2.19 字符可用转义 <div id="sec-classescape"></div>
 
-The ClassEscape productions evaluate as follows:
+ClassEscape产品评估如下：
 
 ```
 ClassEscape :: b
@@ -2307,28 +2304,28 @@ ClassEscape :: -
 ClassEscape :: CharacterEscape
 ```
 
-1. 令 cv 为 the CharacterValue of this ClassEscape.
-2. 令 c 为 the character whose character value is cv.
-3. 返回 the CharSet containing the single character c.
+1. 令 cv 为此ClassEscape的CharacterValue。
+2. 令 c 为字符值为cv的字符。
+3. 返回包含单个字符的字符集c。
 
 ```
 ClassEscape :: CharacterClassEscape
 ```
 
-1. 返回 the CharSet that is the result of evaluating CharacterClassEscape.
+1. 返回 CharSet 是评估CharacterClassEscape的结果。
 
 > 注
 >
-> A ClassAtom can use any of the escape sequences that are allowed in the rest of the regular expression except for \b, \B, and backreferences. Inside a CharacterClass, \b means the backspace character, while \B and backreferences raise errors. Using a backreference inside a ClassAtom causes an error.
+> ClassAtom可以使用正则表达式其余部分中允许的任何转义序列，但\ b，\ B和反向引用除外。在CharacterClass内部，\ b表示退格字符，而\ B和反向引用会引发错误。在ClassAtom内部使用反向引用会导致错误。
 
 ### 21.2.3 RegExp 构造器 <div id="sec-regexp-constructor"></div>
 
-The RegExp constructor:
+RegExp构造函数：
 
-- is the intrinsic object %RegExp%.
-- is the initial value of the RegExp property of the global object.
-- creates and initializes a new RegExp object when called as a function rather than as a constructor. Thus the function call RegExp(…) is equivalent to the object creation expression new RegExp(…) with the same arguments.
-- is designed to be subclassable. It may be used as the value of an extends clause of a class definition. Subclass constructors that intend to inherit the specified RegExp behaviour must include a super call to the RegExp constructor to create and initialize subclass instances with the necessary internal slots.
+- 是内部对象％RegExp％。
+- 是全局对象的RegExp属性的初始值。
+- 当作为函数而不是构造函数调用时，创建并初始化一个新的RegExp对象。因此，函数调用RegExp（…）等效于具有相同参数的对象创建表达式new RegExp（…）。
+- 设计为可归类的。它可以用作类定义的extends子句的值。打算继承指定的RegExp行为的子类构造函数必须包括对RegExp构造函数的超级调用，以使用必需的内部插槽创建和初始化子类实例。
 
 #### 21.2.3.1 RegExp ( pattern, flags ) <div id="sec-regexp-pattern-flags"></div>
 
@@ -2336,35 +2333,36 @@ The RegExp constructor:
 
 1. 令 patternIsRegExp 为 ? IsRegExp(pattern).
 2. 若 NewTarget 是 undefined，那么 
-  1. 令 newTarget 为 the active function object.
-  2. 若 patternIsRegExp is true and flags 是 undefined，那么 
+   1. 令 newTarget 为 the active function object.
+   2. 若 patternIsRegExp is true and flags 是 undefined，那么 
         1. 令 patternConstructor 为 ? Get(pattern, "constructor").
-            2. 若 SameValue(newTarget, patternConstructor) 是 true，返回 pattern.
-3.  否则， 令 newTarget 为 NewTarget.
-4. 若 Type(pattern) 是 Object and pattern has a [[RegExpMatcher]] internal slot，那么 
-  1. 令 P 为 pattern.[[OriginalSource]].
-  2. 若 flags 是 undefined, 令 F 为 pattern.[[OriginalFlags]].
-  3.  否则， 令 F 为 flags.
-5. Else if patternIsRegExp is true，那么 
-  1. 令 P 为 ? Get(pattern, "source").
-  2. 若 flags 是 undefined，那么 
-  3. 令 F 为 ? Get(pattern, "flags").
-  4.  否则， 令 F 为 flags.
-6.  否则，
-  1. 令 P 为 pattern.
-  2. 令 F 为 flags.
+        2. 若 SameValue(newTarget, patternConstructor) 是 true，返回 pattern.
+8. 否则，令 newTarget 为 NewTarget.
+4. 若 Type(pattern) 是 Object，并且 pattern 有 [[RegExpMatcher]] 内置插槽，那么 
+    1. 令 P 为 pattern.[[OriginalSource]].
+    2. 若 flags 是 undefined, 令 F 为 pattern.[[OriginalFlags]].
+    3. 否则，令 F 为 flags.
+5. 否则若 patternIsRegExp 是 true，那么 
+   1. 令 P 为 ? Get(pattern, "source").
+   2. 若 flags 是 undefined，那么 
+   3. 令 F 为 ? Get(pattern, "flags").
+   4. 否则，令 F 为 flags.
+6. 否则，
+   1. 令 P 为 pattern.
+   2. 令 F 为 flags.
 7. 令 O 为 ? RegExpAlloc(newTarget).
 8. 返回 ? RegExpInitialize(O, P, F).
 
 > 注
 >
-> If pattern is supplied using a StringLiteral, the usual escape sequence substitutions are performed before the String is processed by RegExp. If pattern must contain an escape sequence to be recognized by RegExp, any U+005C (REVERSE SOLIDUS) code points must be escaped within the StringLiteral to prevent them being removed when the contents of the StringLiteral are formed
+> 如果使用StringLiteral提供模式，则在RegExp处理字符串之前执行通常的转义序列替换。
+> 如果模式必须包含一个要被RegExp识别的转义序列，则必须在StringLiteral中转义任何U+005C(反向SOLIDUS)代码点，以防止在形成StringLiteral内容时将它们删除
 
 #### 21.2.3.2 RegExp构造器的抽象操作 <div id="sec-abstract-operations-for-the-regexp-constructor"></div>
 
 ##### 21.2.3.2.1 RS: RegExpAlloc ( newTarget ) <div id="sec-regexpalloc"></div>
 
-When the abstract operation RegExpAlloc with argument newTarget is called, 将采取以下步骤：
+当调用带有newTarget参数的抽象操作RegExpAlloc时，将采取以下步骤：
 
 1. 令 obj 为 ? OrdinaryCreateFromConstructor(newTarget, "%RegExpPrototype%", « [[RegExpMatcher]],[[OriginalSource]], [[OriginalFlags]] »). 
 2. 执行 ! DefinePropertyOrThrow(obj, "lastIndex", PropertyDescriptor { [[Writable]]: true, [[Enumerable]]: false, [[Configurable]]: false }). 
@@ -2372,125 +2370,126 @@ When the abstract operation RegExpAlloc with argument newTarget is called, 将�
 
 ##### 21.2.3.2.2 RS: RegExpInitialize ( obj, pattern, flags ) <div id="sec-regexpinitialize"></div>
 
-When the abstract operation RegExpInitialize with arguments obj, pattern, and flags is called, 将采取以下步骤：
+当调用带有参数obj、模式和标志的抽象操作RegExpInitialize时，将采取以下步骤：
 
 1. 若 pattern 是 undefined, 令 P 为空字符串.
-2.  否则， 令 P 为 ? ToString(pattern).
+2.  否则，令 P 为 ? ToString(pattern).
 3. 若 flags 是 undefined, 令 F 为空字符串.
 4.  否则， 令 F 为 ? ToString(flags).
-5. 若 F contains any code unit other than "g", "i", "m", "s", "u", or "y" or if it contains the same code unit more than once, 抛出 SyntaxError 异常.
-6. 若 F contains "u", 令 BMP 为 false; else 令 BMP 为 true.
+5. 若 F 包含除"g", "i", "m", "s", "u", or "y"或者它包含相同的代码单元不止一次，抛出 SyntaxError 异常.
+6. 若 F 包括 "u", 令 BMP 为 false；否则令 BMP 为 true.
 7. 若 BMP 是 true，那么 
-   1. Parse P using the grammars in 21.2.1 and interpreting each of its 16-bit elements as a Unicode BMP code point. UTF-16 decoding is not applied to the elements. The goal symbol for the parse is Pattern[~U, ~N]. If the result of parsing contains a GroupName, reparse with the goal symbol Pattern[~U, +N] and use this result instead. 抛出 SyntaxError 异常 if P did not conform to the grammar, if any elements of P were not matched by the parse, or if any Early Error conditions exist.
-   2. 令 patternCharacters 为 a List whose elements are the code unit elements of P.
+   1. 使用21.2.1中的语法解析P，并将其16位元素解释为Unicode BMP编码点。UTF-16解码不应用于元素。
+      解析的目标符号是Pattern[~U， ~N]。如果解析的结果包含GroupName，则使用目标符号模式[~U， +N]重新解析，并使用此结果。抛出SyntaxError异常如果P不符合语法,如果任何元素的P被解析不匹配,或是否存在任何早期的错误条件。
+   2. 令 patternCharacters 为一个列表，它的元素是P的代码单元元素。
 8.  否则，
-   1. Parse P using the grammars in 21.2.1 and interpreting P as UTF-16 encoded Unicode code points (6.1.4). The goal symbol for the parse is Pattern[+U, +N]. 抛出 SyntaxError 异常 if P did not conform to the grammar, if any elements of P were not matched by the parse, or if any Early Error conditions exist.
-   2. 令 patternCharacters 为 a List whose elements are the code points resulting from applying UTF-16 decoding to P's sequence of elements.
+   1. 使用21.2.1中的语法解析P，并将P解释为UTF-16编码的Unicode编码点(6.1.4)。解析的目标符号是Pattern[+U， +N]。抛出SyntaxError异常如果P不符合语法,如果任何元素的P被解析不匹配,或是否存在任何早期的错误条件。
+   2. 令 patternCharacters 为一个列表，它的元素是将UTF-16解码应用到P的元素序列后产生的代码点。
 9. 设置 obj.[[OriginalSource]] 为 P.
 10. 设置 obj.[[OriginalFlags]] 为 F.
-11. 设置 obj.[[RegExpMatcher]] 为 the internal procedure that evaluates the above parse of P by applying the semantics provided in 21.2.2 using patternCharacters as the pattern's List of SourceCharacter values and F as the flag parameters.
+11. 设置 obj.[[RegExpMatcher]] 为使用模式字符作为源字符值的模式列表，并使用F作为标志参数，通过应用21.2.2中提供的语义来评估P的上述解析的内部过程。
 12. 执行 ? Set(obj, "lastIndex", 0, true).
 13. 返回 obj.
 
 ##### 21.2.3.2.3 RS: RegExpCreate ( P, F ) <div id="sec-regexpcreate"></div>
 
-When the abstract operation RegExpCreate with arguments P and F is called, 将采取以下步骤：
+当调用带有参数P和F的抽象操作RegExpCreate时，将采取以下步骤：
 
 1. 令 obj 为 ? RegExpAlloc(%RegExp%).
 2. 返回 ? RegExpInitialize(obj, P, F).
 
 ##### 21.2.3.2.4 RS: EscapeRegExpPattern ( P, F ) <div id="sec-escaperegexppattern"></div>
 
-When the abstract operation EscapeRegExpPattern with arguments P and F is called, the following occurs:
+调用带有参数P和F的EscapeRegExpPattern抽象操作时，发生以下情况:
 
-1. Let S be a String in the form of a Pattern[~U] (Pattern[+U] if F contains "u") equivalent to P interpreted as UTF-16 encoded Unicode code points (6.1.4), in which certain code points are escaped as described below. S may or may not be identical to P; however, the internal procedure that would result from evaluating S as a Pattern[~U] (Pattern[+U] if F contains "u") must behave identically to the internal procedure given by the constructed object's [[RegExpMatcher]] internal slot. Multiple calls to this abstract operation using the same values for P and F must produce identical results.
-2. The code points / or any LineTerminator occurring in the pattern shall be escaped in S as necessary to ensure that the string-concatenation of "/", S, "/", and F can be parsed (in an appropriate lexical context) as a RegularExpressionLiteral that behaves identically to the constructed regular expression. For example, if P is "/"，那么  S could be "\/" or "\u002F", among other possibilities, but not "/", because /// followed by F would be parsed as a SingleLineComment rather than a RegularExpressionLiteral. If P is空字符串, this specification can be met by letting S be "(?:)".
+1. 假设S是一个模式\[~U]\(模式\[+U]，如果F包含"U")形式的字符串，它等价于P, P被解释为UTF-16编码的Unicode编码点(6.1.4)，其中某些编码点如下所述转义。S可能与P相同，也可能不相同；但是，将S求值为模式\[~U\]\(如果F包含"U"，则模式[+U])所产生的内部过程必须与构造对象的[[RegExpMatcher]]内部槽所给出的内部过程具有相同的行为。对这个抽象操作使用相同的P和F值的多次调用必须产生相同的结果。
+2. 模式中出现的代码点/或任何LineTerminator必须在S中转义，以确保可以将“ /”，S，“ /”和F的字符串连接解析为（在适当的词法上下文中）为RegularExpressionLiteral，其行为与构造的正则表达式相同。例如，如果P为“ /”，则S可以为“ \ /”或“ \ u002F”，但不能为“ /”，因为///后跟F将被解析为SingleLineComment而不是A RegularExpressionLiteral。如果P是空字符串，则可以通过使S为“（？:)”来满足此规范。
 3. 返回 S.
 
 ### 21.2.4 RegExp 构造器属性 <div id="sec-properties-of-the-regexp-constructor"></div>
 
-The RegExp constructor:
+RegExp构造函数：
 
-- has a [[Prototype]] internal slot whose value is the intrinsic object %FunctionPrototype%.
-- has the following properties:
+- 有一个[[Prototype]]内部插槽，其值是固有对象％FunctionPrototype％。
+- 具有以下属性：
 
 #### 21.2.4.1 RegExp.prototype <div id="sec-regexp.prototype"></div>
 
-The initial value of RegExp.prototype is the intrinsic object %RegExpPrototype%.
+RegExp.prototype的初始值为内部对象％RegExpPrototype％。
 
 此属性具有特性 { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }.
 
 #### 21.2.4.2 get RegExp [ @@species ] <div id="sec-get-regexp-@@species"></div>
 
-RegExp[@@species] is an accessor property whose set accessor function is undefined. Its get accessor function performs the following steps:
+RegExp [@@species]是一个访问器属性，其设置的访问器功能未定义。它的get访问器功能执行以下步骤：
 
-1. 返回 the this value.
+1. 返回 this 值。
 
-The value of the name property of this function is "get [Symbol.species]".
+该函数的名称属性的值为“ get [Symbol.species]”。
 
-> 注 RegExp prototype methods normally use their this object's constructor to create a derived object. However, a subclass constructor may over-ride that default behaviour by redefining its @@species property.
+> 注：RegExp原型方法通常使用其this对象的构造函数来创建派生对象。但是，子类构造函数可以通过重新定义其@@species属性来覆盖该默认行为。
 
 ### 21.2.5 RegExp 原型对象属性 <div id="sec-properties-of-the-regexp-prototype-object"></div>
 
-The RegExp prototype object:
+RegExp原型对象：
 
-- is the intrinsic object %RegExpPrototype%.
-- is an ordinary object.
-- is not a RegExp instance and does not have a [[RegExpMatcher]] internal slot or any of the other internal slots of RegExp instance objects.
-- has a [[Prototype]] internal slot whose value is the intrinsic object %ObjectPrototype%.
+- 是内部对象％RegExpPrototype％。
+- 是一个普通的对象。
+- 不是RegEx实例，并且没有[[RegExp Matcher]]内部插槽或RegExp实例对象的任何其他内部插槽。
+- 有一个[[Prototype]]内部插槽，其值是固有对象％ObjectPrototype％。
 
-> 注 The RegExp prototype object does not have a valueOf property of its own; however, it inherits the valueOf property from the Object prototype object.
+> 注：RegExp原型对象没有自己的valueOf属性。但是，它从Object原型对象继承了valueOf属性。
 
 #### 21.2.5.1 RegExp.prototype.constructor <div id="sec-regexp.prototype.constructor"></div>
 
-The initial value of RegExp.prototype.constructor is the intrinsic object %RegExp%.
+RegExp.prototype.constructor的初始值为内部对象％RegExp％。
 
 #### 21.2.5.2 RegExp.prototype.exec ( string ) <div id="sec-regexp.prototype.exec"></div>
 
-Performs a regular expression match of string against the regular expression and returns an Array object containing the results of the match, or null if string did not match.
+与正则表达式执行字符串的正则表达式匹配，并返回包含匹配结果的Array对象；如果字符串不匹配，则返回null。
 
-The String ToString(string) is searched for an occurrence of the regular expression pattern as follows:
+在字符串ToString（string）中搜索正则表达式模式，如下所示：
 
-1. 令 R 为 the this value.
+1. 令 R 为 this 值。
 2. 若 Type(R) 不是 Object, 抛出 TypeError 异常.
-3. 若 R does not have a [[RegExpMatcher]] internal slot, 抛出 TypeError 异常.
+3. 若 R 没有 [[RegExpMatcher]] 内部插槽, 抛出 TypeError 异常.
 4. 令 S 为 ? ToString(string).
 5. 返回 ? RegExpBuiltinExec(R, S).
 
 ##### 21.2.5.2.1 RS: RegExpExec ( R, S ) <div id="sec-regexpexec"></div>
 
-The abstract operation RegExpExec with arguments R and S performs the following steps:
+具有参数R和S的抽象操作RegExpExec执行以下步骤：
 
-1. 断言：Type(R) is Object.
-2. 断言：Type(S) is String.
+1. 断言：Type(R) 是 Object。
+2. 断言：Type(S) 是 String。
 3. 令 exec 为 ? Get(R, "exec").
 4. 若 IsCallable(exec) 是 true，那么 
-1. 令 result 为 ? Call(exec, R, « S »).
-2. 若 Type(result) 是 neither Object or Null, 抛出 TypeError 异常.
-3. 返回 result.
-5. 若 R does not have a [[RegExpMatcher]] internal slot, 抛出 TypeError 异常.
+   1. 令 result 为 ? Call(exec, R, « S »).
+   2. 若 Type(result) 不是 Object 或 Null, 抛出 TypeError 异常.
+   3. 返回 result.
+5. 若 R 没有 [[RegExpMatcher]] 内部插槽, 抛出 TypeError 异常.
 6. 返回 ? RegExpBuiltinExec(R, S).
 
-> 注 If a callable exec property is not found this algorithm falls back to attempting to use the built-in RegExp matching algorithm. This provides compatible behaviour for code written for prior editions where most built-in algorithms that use regular expressions did not perform a dynamic property lookup of exec.
+> 注：如果找不到可调用的exec属性，则该算法将退回到尝试使用内置RegExp匹配算法的过程。这为为先前版本编写的代码提供了兼容的行为，在先前版本中，大多数使用正则表达式的内置算法未执行exec的动态属性查找。
 
 ##### 21.2.5.2.2 RS: RegExpBuiltinExec ( R, S ) <div id="sec-regexpbuiltinexec"></div>
 
-The abstract operation RegExpBuiltinExec with arguments R and S performs the following steps:
+具有参数R和S的抽象操作RegExpBuiltinExec执行以下步骤：
 
-1. 断言：R is an initialized RegExp instance.
-2. 断言：Type(S) is String.
-3. 令 length 为 the number of code units in S.
+1. 断言：R是初始化的RegExp实例。
+2. 断言：Type(S) 是 String。
+3. 令 length 为S中的代码单位数。
 4. 令 lastIndex 为 ? ToLength(? Get(R, "lastIndex")).
 5. 令 flags 为 R.[[OriginalFlags]].
-6. 若 flags contains "g", 令 global 为 true, else 令 global 为 false.
-7. 若 flags contains "y", 令 sticky 为 true, else 令 sticky 为 false.
-8. 若 global is false and sticky 是 false, set lastIndex to 0.
+6. 若 flags 包含 "g", 令 global 为 true, else 令 global 为 false.
+7. 若 flags 包含 "y", 令 sticky 为 true, else 令 sticky 为 false.
+8. 若 global 是 false，并且 sticky 是 false, 设置 lastIndex 为 0.
 9. 令 matcher 为 R.[[RegExpMatcher]].
-10. 若 flags contains "u", 令 fullUnicode 为 true, else 令 fullUnicode 为 false.
+10. 若 flags 包含 "u", 令 fullUnicode 为 true，否则 令 fullUnicode 为 false.
 11. 令 matchSucceeded 为 false.
-12. Repeat, while matchSucceeded is false
+12. 重复，直到 matchSucceeded 是 false
     1. 若 lastIndex > length，那么 
-       1. 若 global is true or sticky 是 true，那么 
+       1. 若 global 是 true，或 sticky 是 true，那么 
           1. 执行 ? Set(R, "lastIndex", 0, true).
        2. 返回 null.
     2. 令 r 为 matcher(S, lastIndex).
@@ -2500,129 +2499,130 @@ The abstract operation RegExpBuiltinExec with arguments R and S performs the fol
           2. 返回 null.
        2. 设置 lastIndex 为 AdvanceStringIndex(S, lastIndex, fullUnicode).
     4.  否则，
-       1. 断言：r is a State.
+       1. 断言：r 是 State.
        2. 设置 matchSucceeded 为 true.
-13. 令 e 为 r's endIndex value.
-14. 若 fullUnicode is true，那么 
-    1. e is an index into the Input character list, derived from S, matched by matcher. Let eUTF be the smallest index into S that corresponds to the character at element e of Input. If e is大于 or equal to the number of elements in Input，那么  eUTF is the number of code units in S.
+13. 令 e 为 r 的 endIndex 值。
+14. 若 fullUnicode 是 true，那么 
+    1. e是输入字符列表的索引，由S派生，由匹配器匹配。假设eUTF是S中与Input元素e上的字符相对应的最小索引。如果e大于或等于Input中的元素数，则eUTF是S中的代码单元数。
     2. 设置 e 为 eUTF.
-15. 若 global is true or sticky is true，那么 
+15. 若 global 是 true，或 sticky 是 true，那么 
     1. 执行 ? Set(R, "lastIndex", e, true).
-16. 令 n 为 the number of elements in r's captures List. (This is the same value as 21.2.2.1's NcapturingParens.)
-17. Assert: n < 232 - 1.
+16. 令 n 为r的捕获列表中元素的数量。 （该值与21.2.2.1的NcapturingParens相同。）
+17. 断言: n < 232 - 1.
 18. 令 A 为 ! ArrayCreate(n + 1).
-19. Assert: The value of A's "length" property is n + 1.
+19. 断言: A的“length”属性的值为n + 1。
 20. 执行 ! CreateDataProperty(A, "index", lastIndex).
 21. 执行 ! CreateDataProperty(A, "input", S).
-22. Let matchedSubstr be the matched substring (i.e. the portion of S between offset lastIndex inclusive and offset e exclusive).
+22. 令matchSubstr为匹配的子字符串（即偏移量lastIndex包含在内和偏移量e排除之间的S部分）。
 23. 执行 ! CreateDataProperty(A, "0", matchedSubstr).
-24. 若 R contains any GroupName，那么 
+24. 若R包含任何GroupName，那么 
     1. 令 groups 为 ObjectCreate(null).
 25.  否则，
     1. 令 groups 为 undefined.
 26. 执行 ! CreateDataProperty(A, "groups", groups).
-27. For each integer i such that i > 0 and i ≤ n, do
-    1. 令 captureI 为 ith element of r's captures List.
+27. 对于每个大于 i 且 i ≤ n 的整数 i，执行
+    1. 令 captureI 为第 i 个 r 的捕获列表的元素。
     2. 若 captureI 是 undefined, 令 capturedValue 为 undefined.
-    3. Else if fullUnicode is true，那么 
-       1. 断言：captureI is a List of code points.
-       2. 令 capturedValue 为 the String value whose code units are the UTF16Encoding of the code points of captureI.
-    4. Else fullUnicode is false,
-       1. 断言：captureI is a List of code units.
-       2. 令 capturedValue 为 the String value consisting of the code units of captureI.
+    3. 否则若 fullUnicode 是 true，那么 
+       1. 断言：captureI是代码点列表。
+       2. 令 capturedValue 为 String 值，其代码单位是captureI的代码点的UTF16Encoding。
+    4. 否则 fullUnicode 为 false，
+       1. 断言：captureI是代码单元列表。
+       2. 令 capturedValue 为由captureI的代码单元组成的String值。
     5. 执行 ! CreateDataProperty(A, ! ToString(i), capturedValue).
-    6. 若 the ith capture of R was defined with a GroupName，那么 
-       1. 令 s 为 the StringValue of the corresponding RegExpIdentifierName.
+    6. 若使用GroupName定义R的第i个捕获，那么 
+       1. 令 s 为相应的RegExpIdentifierName的StringValue。
        2. 执行 ! CreateDataProperty(groups, s, capturedValue).
 28. 返回 A.
 
 ##### 21.2.5.2.3 AdvanceStringIndex ( S, index, unicode ) <div id="sec-advancestringindex"></div>
 
-The abstract operation AdvanceStringIndex with arguments S, index, and unicode performs the following steps:
+具有参数S，索引和unicode的抽象操作AdvanceStringIndex执行以下步骤：
 
-1. 断言：Type(S) is String.
-2. 断言：index is an integer such that 0 ≤ index ≤ 253 - 1.
-3. 断言：Type(unicode) is Boolean.
+1. 断言：Type(S) 是 String。
+2. 断言：index是一个整数，使得 0 ≤ index ≤ 253 - 1.
+3. 断言：Type(unicode) 是 Boolean。
 4. 若 unicode 是 false，返回 index + 1.
-5. 令 length 为 the number of code units in S.
+5. 令 length 为S中的代码单位数。
 6. 若 index + 1 ≥ length，返回 index + 1.
-7. 令 first 为 the numeric value of the code unit at index index within S.
+7. 令 first 为S中索引index处的代码单元的数值。
 8. 若 first < 0xD800 or first > 0xDBFF，返回 index + 1.
-9. 令 second 为 the numeric value of the code unit at index index + 1 within S.
-10. 若 second < 0xDC00 or second > 0xDFFF，返回 index + 1.
+9. 令 second 为S中索引index +1处的代码单元的数值。
+10. 若 second < 0xDC00 或 second > 0xDFFF，返回 index + 1.
 11. 返回 index + 2.
 
 #### 21.2.5.3 获取 RegExp.prototype.dotAll <div id="sec-get-regexp.prototype.dotAll"></div>
 
-RegExp.prototype.dotAll is an accessor property whose set accessor function is undefined. Its get accessor function performs the following steps:
+RegExp.prototype.dotAll是一个访问器属性，其设置的访问器函数未定义。它的get访问器功能执行以下步骤：
 
-1. 令 R 为 the this value.
+1. 令 R 为 this 值。
 2. 若 Type(R) 不是 Object, 抛出 TypeError 异常.
-3. 若 R does not have an [[OriginalFlags]] internal slot，那么 
+3. 若 R 没有 [[OriginalFlags]] 内部插槽，那么 
 1. 若 SameValue(R, %RegExpPrototype%) 是 true，返回 undefined.
 2. 除此之外, 抛出 TypeError 异常.
 4. 令 flags 为 R.[[OriginalFlags]].
-5. 若 flags contains the code unit 0x0073 (LATIN SMALL LETTER S)，返回 true.
+5. 若 flags 包含代码单元 0x0073 (拉丁文小写字母S)，返回 true.
 6. 返回 false
 
 #### 21.2.5.4 获取 RegExp.prototype.flags <div id="sec-get-regexp.prototype.flags"></div>
 
-RegExp.prototype.flags is an accessor property whose set accessor function is undefined. Its get accessor function performs the following steps:
+RegExp.prototype.flags是一个访问器属性，其设置的访问器功能未定义。它的get访问器功能执行以下步骤：
 
-1. 令 R 为 the this value.
+1. 令 R 为 this 值。
 2. 若 Type(R) 不是 Object, 抛出 TypeError 异常.
 3. 令 result 为空字符串.
 4. 令 global 为 ToBoolean(? Get(R, "global")).
-5. 若 global 是 true, append the code unit 0x0067 (LATIN SMALL LETTER G) as the last code unit of result.
+5. 若 global 是 true, 将代码单元0x0067（拉丁文小写字母G）附加为结果的最后一个代码单元。
 6. 令 ignoreCase 为 ToBoolean(? Get(R, "ignoreCase")).
-7. 若 ignoreCase 是 true, append the code unit 0x0069 (LATIN SMALL LETTER I) as the last code unit of result.
+7. 若 ignoreCase 是 true, 将代码单元0x0069（拉丁文小写字母I）附加为结果的最后一个代码单元。
 8. 令 multiline 为 ToBoolean(? Get(R, "multiline")).
-9. 若 multiline 是 true, append the code unit 0x006D (LATIN SMALL LETTER M) as the last code unit of result.
+9. 若 multiline 是 true, 将代码单元0x006D（拉丁文小写字母M）附加为结果的最后一个代码单元。
 10. 令 dotAll 为 ToBoolean(? Get(R, "dotAll")).
-11. 若 dotAll is true, append the code unit 0x0073 (LATIN SMALL LETTER S) as the last code unit of result.
+11. 若 dotAll is true, 将代码单元0x0073（拉丁文小写字母S）附加为结果的最后一个代码单元。
 12. 令 unicode 为 ToBoolean(? Get(R, "unicode")).
-13. 若 unicode is true, append the code unit 0x0075 (LATIN SMALL LETTER U) as the last code unit of result.
+13. 若 unicode is true, 将代码单元0x0075（拉丁文小写字母U）附加为结果的最后一个代码单元。
 14. 令 sticky 为 ToBoolean(? Get(R, "sticky")).
-15. 若 sticky is true, append the code unit 0x0079 (LATIN SMALL LETTER Y) as the last code unit of result.
+15. 若 sticky is true, 将代码单元0x0079（拉丁文小写字母Y）附加为结果的最后一个代码单元。
 16. 返回 result.
 
 #### 21.2.5.5 获取 RegExp.prototype.global <div id="sec-get-regexp.prototype.global"></div>
 
-RegExp.prototype.global is an accessor property whose set accessor function is undefined. Its get accessor function performs the following steps:
+RegExp.prototype.global是一个访问器属性，其设置的访问器功能未定义。它的get访问器功能执行以下步骤：
 
-1. 令 R 为 the this value.
+1. 令 R 为 this 值。
 2. 若 Type(R) 不是 Object, 抛出 TypeError 异常.
-3. 若 R does not have an [[OriginalFlags]] internal slot，那么 
-1. 若 SameValue(R, %RegExpPrototype%) 是 true，返回 undefined.
-2. 除此之外, 抛出 TypeError 异常.
-4. 令 flags 为 R.[[OriginalFlags]].
-5. 若 flags contains the code unit 0x0067 (LATIN SMALL LETTER G)，返回 true.
-6. 返回 false.
+3. 若 R 没有 [[OriginalFlags]] 内部插槽，那么 
+   1. 若 SameValue(R, %RegExpPrototype%) 是 true，返回 undefined.
+   2. 除此之外, 抛出 TypeError 异常.
+4. 除此之外, 抛出 TypeError 异常.
+5. 令 flags 为 R.[[OriginalFlags]].
+6. 若包含代码单元0x0067（拉丁文小写字母G），返回 true.
+7. 返回 false.
 
 #### 21.2.5.6 获取 RegExp.prototype.ignoreCase <div id="sec-get-regexp.prototype.ignorecase"></div>
 
-RegExp.prototype.ignoreCase is an accessor property whose set accessor function is undefined. Its get accessor function performs the following steps:
+RegExp.prototype.ignoreCase是一个访问器属性，其设置的访问器功能未定义。它的get访问器功能执行以下步骤：
 
-1. 令 R 为 the this value.
+1. 令 R 为 this 值。
 2. 若 Type(R) 不是 Object, 抛出 TypeError 异常.
-3. 若 R does not have an [[OriginalFlags]] internal slot，那么 
-1. 若 SameValue(R, %RegExpPrototype%) 是 true，返回 undefined.
-2. 除此之外, 抛出 TypeError 异常.
+3. 若 R 没有 [[OriginalFlags]] 内部插槽，那么 
+   1. 若 SameValue(R, %RegExpPrototype%) 是 true，返回 undefined.
+   2. 除此之外, 抛出 TypeError 异常.
 4. 令 flags 为 R.[[OriginalFlags]].
-5. 若 flags contains the code unit 0x0069 (LATIN SMALL LETTER I)，返回 true.
+5. 若 flags 包含代码单元0x0069（拉丁文小写字母I），返回 true.
 6. 返回 false.
 
 #### 21.2.5.7 RegExp.prototype [ @@match ] ( string ) <div id="sec-regexp.prototype-@@match"></div>
 
-When the @@match method is called with argument string, 将采取以下步骤：
+用参数字符串调用@@match方法时，将采取以下步骤：
 
-1. 令 rx 为 the this value.
+1. 令 rx 为 this 值。
 2. 若 Type(rx) 不是 Object, 抛出 TypeError 异常.
 3. 令 S 为 ? ToString(string).
 4. 令 global 为 ToBoolean(? Get(rx, "global")).
 5. 若 global 是 false，那么 
    1. 返回 ? RegExpExec(rx, S).
-6. Else global is true,
+6. 否则 global 是 true,
    1. 令 fullUnicode 为 ToBoolean(? Get(rx, "unicode")).
    2. 执行 ? Set(rx, "lastIndex", 0, true).
    3. 令 A 为 ! ArrayCreate(0).
@@ -2632,41 +2632,41 @@ When the @@match method is called with argument string, 将采取以下步骤：
       2. 若 result 是 null，那么 
          1. 若 n = 0，返回 null.
          2. 返回 A.
-      3. Else result is not null,
+      3. 否则 result 不是 null,
          1. 令 matchStr 为 ? ToString(? Get(result, "0")).
          2. 令 status 为 CreateDataProperty(A, ! ToString(n), matchStr).
-         3. 断言：status is true.
+         3. 断言：status 是 true.
          4. 若 matchStr 是空字符串，那么 
             1. 令 thisIndex 为 ? ToLength(? Get(rx, "lastIndex")).
             2. 令 nextIndex 为 AdvanceStringIndex(S, thisIndex, fullUnicode).
             3. 执行 ? Set(rx, "lastIndex", nextIndex, true).
-         5. Increment n.
+         5. n增加
 
-The value of the name property of this function is "[Symbol.match]".
+该函数的名称属性的值为“ [Symbol.match]”。
 
-> 注 The @@match property is used by the IsRegExp abstract operation to identify objects that have the basic behaviour of regular expressions. The absence of a @@match property or the existence of such a property whose value does not Boolean coerce to true indicates that the object is not intended to be used as a regular expression object.
+> 注：IsRegExp抽象操作使用@@match属性来标识具有正则表达式基本行为的对象。不存在@@match属性或该属性的值不将布尔值强制转换为true表示该对象不打算用作正则表达式对象。
 
 #### 21.2.5.8 获取 RegExp.prototype.multiline <div id="sec-get-regexp.prototype.multiline"></div>
 
-RegExp.prototype.multiline is an accessor property whose set accessor function is undefined. Its get accessor function performs the following steps:
+RegExp.prototype.multiline是一个访问器属性，其设置的访问器函数未定义。它的get访问器功能执行以下步骤：
 
-1. 令 R 为 the this value.
+1. 令 R 为 this 值。
 2. 若 Type(R) 不是 Object, 抛出 TypeError 异常.
-3. 若 R does not have an [[OriginalFlags]] internal slot，那么 
-1. 若 SameValue(R, %RegExpPrototype%) 是 true，返回 undefined.
-2. 除此之外, 抛出 TypeError 异常.
+3. 若 R 没有 [[OriginalFlags]] 内部插槽，那么 
+   1. 若 SameValue(R, %RegExpPrototype%) 是 true，返回 undefined.
+   2. 除此之外, 抛出 TypeError 异常.
 4. 令 flags 为 R.[[OriginalFlags]].
-5. 若 flags contains the code unit 0x006D (LATIN SMALL LETTER M)，返回 true.
+5. 若 flags 包含代码单元0x006D（拉丁文小写字母M），返回 true.
 6. 返回 false.
 
 #### 21.2.5.9 RegExp.prototype [ @@replace ] ( string, replaceValue ) <div id="sec-regexp.prototype-@@replace"></div>
 
-When the @@replace method is called with arguments string and replaceValue, 将采取以下步骤：
+当使用参数 string 和 replaceValue 调用 @@replace 方法时，将采取以下步骤：
 
-1. 令 rx 为 the this value.
+1. 令 rx 为 this 值。
 2. 若 Type(rx) 不是 Object, 抛出 TypeError 异常.
 3. 令 S 为 ? ToString(string).
-4. 令 lengthS 为 the number of code unit elements in S.
+4. 令 lengthS 为S中的代码单元元素的数量。
 5. 令 functionalReplace 为 IsCallable(replaceValue).
 6. 若 functionalReplace 是 false，那么 
    1. 设置 replaceValue 为 ? ToString(replaceValue).
@@ -2676,12 +2676,12 @@ When the @@replace method is called with arguments string and replaceValue, 将�
    2. 执行 ? Set(rx, "lastIndex", 0, true).
 9. 令 results 为一个新的空列表。
 10. 令 done 为 false.
-11. Repeat, while done is false
+11. 重复, 直到 done 是 false
     1. 令 result 为 ? RegExpExec(rx, S).
-    2. 若 result 是 null, set done to true.
-    3. Else result is not null,
-       1. 添加 result 到 the end of results.
-       2. 若 global 是 false, set done to true.
+    2. 若 result 是 null, 设置 done 为 true.
+    3. 否则 result 不是 null,
+       1. 添加 result 到 results 的结尾.
+       2. 若 global 是 false, 设置 done 到 true.
        3.  否则，
           1. 令 matchStr 为 ? ToString(? Get(result, "0")).
           2. 若 matchStr 是空字符串，那么 
@@ -2690,72 +2690,72 @@ When the @@replace method is called with arguments string and replaceValue, 将�
              3. 执行 ? Set(rx, "lastIndex", nextIndex, true).
 12. 令 accumulatedResult 为空字符串 value.
 13. 令 nextSourcePosition 为 0.
-14. For each result in results, do
+14. 对于results中的每个result，执行
     1. 令 nCaptures 为 ? ToLength(? Get(result, "length")).
     2. 设置 nCaptures 为 max(nCaptures - 1, 0).
     3. 令 matched 为 ? ToString(? Get(result, "0")).
-    4. 令 matchLength 为 the number of code units in matched.
+    4. 令 matchLength 为匹配的代码单元数。
     5. 令 position 为 ? ToInteger(? Get(result, "index")).
     6. 设置 position 为 max(min(position, lengthS), 0).
     7. 令 n 为 1.
     8. 令 captures 为一个新的空列表。
-    9. 重复， while n ≤ nCaptures
+    9. 重复， 当 n ≤ nCaptures
        1. 令 capN 为 ? Get(result, ! ToString(n)).
        2. 若 capN 不是 undefined，那么 
           1. 设置 capN 为 ? ToString(capN).
-       3. Append capN as the last element of captures.
+       3. 将capN追加为捕获的最后一个元素。
        4. n 增加 1
     10. 令 namedCaptures 为 ? Get(result, "groups").
-    11. 若 functionalReplace is true，那么 
+    11. 若 functionalReplace 是 true，那么 
         1. 令 replacerArgs 为 « matched ».
-        2. 添加 in list order the elements of captures 到 the end of the List replacerArgs.
-        3. 添加 position and S 到 replacerArgs.
+        2. 添加按列表顺序 captures 的元素到列表 replacerArgs 的末尾。
+        3. 添加 position 和 S 到 replacerArgs.
         4. 若 namedCaptures 不是 undefined，那么 
-           1. Append namedCaptures as the last element of replacerArgs.
+           1. 将namedCaptures追加为replacerArgs的最后一个元素。
         5. 令 replValue 为 ? Call(replaceValue, undefined, replacerArgs).
         6. 令 replacement 为 ? ToString(replValue).
     12.  否则，
         1. 令 replacement 为 GetSubstitution(matched, S, position, captures, namedCaptures, replaceValue).
     13. 若 position ≥ nextSourcePosition，那么 
-        1. 注: position should not normally move backwards. If it does, it is an indication of an ill-behaving RegExp subclass or use of an access triggered side-effect to change the global flag or other characteristics of rx. In such cases, the corresponding substitution is ignored.
-        2. 设置 accumulatedResult to the string-concatenation of the current value of accumulatedResult, the substring of S consisting of the code units from nextSourcePosition (inclusive) up 为 position (exclusive), and replacement.
+        1. 注: 位置通常不应向后移动。如果是这样，则表明RegExp子类行为异常，或者使用访问触发的副作用来更改rx的全局标志或其他特征。在这种情况下，将忽略相应的替换。
+        2. 设置 cumulativeResult 为 accumulatedResult 当前值的字符串连接，即 S 的子字符串，包括从nextSourcePosition（含）到位置（不含）的代码单元，和更换。
         3. 设置 nextSourcePosition 为 position + matchLength.
 15. 若 nextSourcePosition ≥ lengthS，返回 accumulatedResult.
-16. 返回 the string-concatenation of accumulatedResult and the substring of S consisting of the code units from nextSourcePosition (inclusive) up through the final code unit of S (inclusive).
+16. 返回 S 的子字符串（由nextSourcePosition（包括）开始，到S的最终代码单元（包括）），是SummaryResult的字符串连接。
 
-The value of the name property of this function is "[Symbol.replace]".
+该函数的名称属性的值为“ [Symbol.replace]”。
 
 #### 21.2.5.10 RegExp.prototype [ @@search ] ( string ) <div id="sec-regexp.prototype-@@search"></div>
 
-When the @@search method is called with argument string, 将采取以下步骤：
+当使用参数字符串调用@@search方法时，将采取以下步骤：
 
-1. 令 rx 为 the this value.
+1. 令 rx 为 this 值。
 2. 若 Type(rx) 不是 Object, 抛出 TypeError 异常.
 3. 令 S 为 ? ToString(string).
 4. 令 previousLastIndex 为 ? Get(rx, "lastIndex").
 5. 若 SameValue(previousLastIndex, 0) 是 false，那么 
-1. 执行 ? Set(rx, "lastIndex", 0, true).
+   1. 执行 ? Set(rx, "lastIndex", 0, true).
 6. 令 result 为 ? RegExpExec(rx, S).
 7. 令 currentLastIndex 为 ? Get(rx, "lastIndex").
 8. 若 SameValue(currentLastIndex, previousLastIndex) 是 false，那么 
-  1. 执行 ? Set(rx, "lastIndex", previousLastIndex, true).
+     1. 执行 ? Set(rx, "lastIndex", previousLastIndex, true).
 9. 若 result 是 null，返回 -1.
 10. 返回 ? Get(result, "index").
 
-The value of the name property of this function is "[Symbol.search]".
+该函数的名称属性的值为“ [Symbol.search]”。
 
-> 注 The lastIndex and global properties of this RegExp object are ignored when performing the search. The lastIndex property is left unchanged.
+> 注：执行搜索时，将忽略此RegExp对象的lastIndex和全局属性。 lastIndex属性保持不变。
 
 #### 21.2.5.11 获取 RegExp.prototype.source <div id="sec-get-regexp.prototype.source"></div>
 
-RegExp.prototype.source is an accessor property whose set accessor function is undefined. Its get accessor function performs the following steps:
+RegExp.prototype.source是一个访问器属性，其设置的访问器功能未定义。它的get访问器功能执行以下步骤：
 
-1. 令 R 为 the this value.
+1. 令 R 为 this 值。
 2. 若 Type(R) 不是 Object, 抛出 TypeError 异常.
-3. 若 R does not have an [[OriginalSource]] internal slot，那么 
+3. 若 R 没有 [[OriginalSource]] 内部插槽，那么 
    1. 若 SameValue(R, %RegExpPrototype%) 是 true，返回 "(?:)".
    2. 除此之外, 抛出 TypeError 异常.
-4. 断言：R has an [[OriginalFlags]] internal slot.
+4. 断言：R有一个[[OriginalFlags]]内部插槽。
 5. 令 src 为 R.[[OriginalSource]].
 6. 令 flags 为 R.[[OriginalFlags]].
 7. 返回 EscapeRegExpPattern(src, flags).
@@ -2764,38 +2764,38 @@ RegExp.prototype.source is an accessor property whose set accessor function is u
 
 > 注 1
 >
-> Returns an Array object into which substrings of the result of converting string to a String have been stored. The substrings are determined by searching from left to right for matches of the this value regular expression; these occurrences are not part of any substring in the returned array, but serve to divide up the String value.
+> 返回一个Array对象，其中已将字符串转换为String的结果的子字符串存储在其中。通过从左到右搜索此值正则表达式的匹配项来确定子字符串。这些出现不属于返回数组中任何子字符串的一部分，而是用于划分String值。
 >
-> The this value may be an empty regular expression or a regular expression that can match an empty String. In this case, the regular expression does not match the empty substring at the beginning or end of the input String, nor does it match the empty substring at the end of the previous separator match. (For example, if the regular expression matches空字符串, the String is split up into individual code unit elements; the length of the result array equals the length of the String, and each substring contains one code unit.) Only the first match at a given index of the String is considered, even if backtracking could yield a non-empty-substring match at that index. (For example, /a\*?/\[Symbol.split]("ab") evaluates to the array ["a", "b"], while /a\*/\[Symbol.split]("ab") evaluates to the array ["","b"].)
+> 这个值可以是空的正则表达式，也可以是匹配空字符串的正则表达式。在本例中，正则表达式不匹配输入字符串开头或结尾的空子字符串，也不匹配前面的分隔符匹配结尾的空子字符串。(例如,如果正则表达式匹配空字符串,字符串分成独立的代码单元元素；结果数组的长度等于字符串的长度，每个子字符串包含一个代码单元。只考虑给定字符串索引处的第一个匹配，即使回溯可能在该索引处产生非空子字符串匹配。(例如,/ \ * ? / \ [Symbol.split] (ab)等于数组(“a”、“b”),而/ \ * / \ [Symbol.split] (ab)等于数组(“”,“b”))。
 >
-> If the string is (or converts to)空字符串, the result depends on whether the regular expression can match空字符串. If it can, the result array contains no elements. Otherwise, the result array contains one element, which is空字符串
+> 如果字符串是（或转换为）空字符串，则结果取决于正则表达式是否可以匹配空字符串。如果可以，则结果数组不包含任何元素。否则，结果数组包含一个元素，即空字符串
 >
-> If the regular expression contains capturing parentheses，那么  each time separator is matched the results (including any undefined results) of the capturing parentheses are spliced into the output array. For example,
+> 如果正则表达式包含捕获括号，则每次分隔符匹配时，捕获括号的结果（包括任何未定义的结果）都将被拼接到输出数组中。例如，
 >
 > /<(\/)?(\[^<>]+)>/\[Symbol.split]("A\<B>bold\</B>and\<CODE>coded\</CODE>")
 >
-> evaluates to the array
+> 解释执行到数组
 >
 > ["A", undefined, "B", "bold", "/", "B", "and", undefined, "CODE", "coded", "/", "CODE"
 >
-> If limit is not undefined，那么  the output array is truncated so that it contains no more than limit elements.
+> 如果未定义limit，则输出数组将被截断，以使其包含的元素数不超过limit。
 
-When the @@split method is called, 将采取以下步骤：
+调用@@split方法时，将采取以下步骤：
 
-1. 令 rx 为 the this value.
+1. 令 rx 为 this 值。
 2. 若 Type(rx) 不是 Object, 抛出 TypeError 异常.
 3. 令 S 为 ? ToString(string).
 4. 令 C 为 ? SpeciesConstructor(rx, %RegExp%).
 5. 令 flags 为 ? ToString(? Get(rx, "flags")).
-6. 若 flags contains "u", 令 unicodeMatching 为 true.
+6. 若 flags 包含 "u", 令 unicodeMatching 为 true.
 7.  否则， 令 unicodeMatching 为 false.
-8. 若 flags contains "y", 令 newFlags 为 flags.
-9.  否则， 令 newFlags 为 the string-concatenation of flags and "y".
+8. 若 flags 包含 "y", 令 newFlags 为 flags.
+9.  否则， 令 newFlags 为 flag 和“y”的字符串连接。
 10. 令 splitter 为 ? Construct(C, « rx, newFlags »).
 11. 令 A 为 ! ArrayCreate(0).
 12. 令 lengthA 为 0.
-13. 若 limit is undefined, 令 lim 为 232 - 1; else 令 lim 为 ? ToUint32(limit).
-14. 令 size 为S的长度.
+13. 若 limit 是 undefined, 令 lim 为 232 - 1; 否则 令 lim 为 ? ToUint32(limit).
+14. 令 size 为 S 的长度.
 15. 令 p 为 0.
 16. 若 lim = 0，返回 A.
 17. 若 size = 0，那么 
@@ -2804,56 +2804,56 @@ When the @@split method is called, 将采取以下步骤：
     3. 执行 ! CreateDataProperty(A, "0", S).
     4. 返回 A.
 18. 令 q 为 p.
-19. Repeat, while q < size
+19. 重复, 直到 q < size
     1. 执行 ? Set(splitter, "lastIndex", q, true).
     2. 令 z 为 ? RegExpExec(splitter, S).
-    3. 若 z 是 null, set q to AdvanceStringIndex(S, q, unicodeMatching).
-    4. Else z is not null,
-    5. 令 e 为 ? ToLength(? Get(splitter, "lastIndex")).
-    6. 设置 e 为 min(e, size).
-    7. 若 e = p, set q to AdvanceStringIndex(S, q, unicodeMatching).
-    8. Else e ≠ p,
-       1. 令 T 为 the String value equal to the substring of S consisting of the code units at indices p (inclusive) through q (exclusive).
-       2. 执行 ! CreateDataProperty(A, ! ToString(lengthA), T).
-       3. lengthA 增加 1
-       4. 若 lengthA = lim，返回 A.
-       5. 设置 p 为 e.
-       6. 令 numberOfCaptures 为 ? ToLength(? Get(z, "length")).
-       7. 设置 numberOfCaptures 为 max(numberOfCaptures - 1, 0).
-       8. 令 i 为 1.
-       9. 重复， while i ≤ numberOfCaptures,
-          1. 令 nextCapture 为 ? Get(z, ! ToString(i)).
-          2. 执行 ! CreateDataProperty(A, ! ToString(lengthA), nextCapture).
-          3. i 增加 1
-          4. lengthA 增加 1
-          5. 若 lengthA = lim，返回 A.
-       10. 设置 q 为 p.
-20. 令 T 为 the String value equal to the substring of S consisting of the code units at indices p (inclusive) through size (exclusive).
+    3. 若 z 是 null, 设置 q 到 AdvanceStringIndex(S, q, unicodeMatching).
+    4. 否则 z 不是 null,
+       5. 令 e 为 ? ToLength(? Get(splitter, "lastIndex")).
+       2. 设置 e 为 min(e, size).
+       3. 若 e = p, set q to AdvanceStringIndex(S, q, unicodeMatching).
+       4. 否则 e ≠ p,
+          1. 令 T 为字符串值，它等于S的子字符串，该子字符串由索引p（含）至q（不含）处的代码单元组成。
+          2. 执行 ! CreateDataProperty(A, ! ToString(lengthA), T).
+          3. lengthA 增加 1
+          4. 若 lengthA = lim，返回 A.
+          5. 设置 p 为 e.
+          6. 令 numberOfCaptures 为 ? ToLength(? Get(z, "length")).
+          7. 设置 numberOfCaptures 为 max(numberOfCaptures - 1, 0).
+          8. 令 i 为 1.
+          9. 重复， 直到 i ≤ numberOfCaptures,
+             1. 令 nextCapture 为 ? Get(z, ! ToString(i)).
+             2. 执行 ! CreateDataProperty(A, ! ToString(lengthA), nextCapture).
+             3. i 增加 1
+             4. lengthA 增加 1
+             5. 若 lengthA = lim，返回 A.
+          10. 设置 q 为 p.
+20. 令 T 为字符串值，它等于S的子字符串，该子字符串由索引p（含）到大小（不含）之间的代码单元组成。
 21. 执行 ! CreateDataProperty(A, ! ToString(lengthA), T).
 22. 返回 A.
 
-The value of the name property of this function is "[Symbol.split]".
+该函数的名称属性的值为“ [Symbol.split]”。
 
-> 注 2 The @@split method ignores the value of the global and sticky properties of this RegExp object.
+> 注 2：@@split方法将忽略此RegExp对象的global和sticky属性的值。
 
 #### 21.2.5.13 获取 RegExp.prototype.sticky <div id="sec-get-regexp.prototype.sticky"></div>
 
-RegExp.prototype.sticky is an accessor property whose set accessor function is undefined. Its get accessor function performs the following steps:
+RegExp.prototype.sticky是一个访问器属性，其设置的访问器功能未定义。它的get访问器功能执行以下步骤：
 
-1. 令 R 为 the this value.
+1. 令 R 为 this 值。
 2. 若 Type(R) 不是 Object, 抛出 TypeError 异常.
-3. 若 R does not have an [[OriginalFlags]] internal slot，那么 
+3. 若 R 没有 [[OriginalFlags]] 内部插槽，那么 
 1. 若 SameValue(R, %RegExpPrototype%) 是 true，返回 undefined.
 2. 除此之外, 抛出 TypeError 异常.
 4. 令 flags 为 R.[[OriginalFlags]].
-5. 若 flags contains the code unit 0x0079 (LATIN SMALL LETTER Y)，返回 true.
+5. 若 flags 包含代码单元0x0079（拉丁文小写字母Y），返回 true.
 6. 返回 false.
 
 #### 21.2.5.14 RegExp.prototype.test ( S ) <div id="sec-regexp.prototype.test"></div>
 
 将采取以下步骤：
 
-1. 令 R 为 the this value.
+1. 令 R 为 this 值。
 2. 若 Type(R) 不是 Object, 抛出 TypeError 异常.
 3. 令 string 为 ? ToString(S).
 4. 令 match 为 ? RegExpExec(R, string).
@@ -2861,36 +2861,36 @@ RegExp.prototype.sticky is an accessor property whose set accessor function is u
 
 #### 21.2.5.15 RegExp.prototype.toString ( ) <div id="sec-regexp.prototype.tostring"></div>
 
-1. 令 R 为 the this value.
+1. 令 R 为 this 值。
 2. 若 Type(R) 不是 Object, 抛出 TypeError 异常.
 3. 令 pattern 为 ? ToString(? Get(R, "source")).
 4. 令 flags 为 ? ToString(? Get(R, "flags")).
-5. 令 result 为 the string-concatenation of "/", pattern, "/", and flags.
+5. 令 result 为“ /”，模式，“ /”和标志的字符串连接。
 6. 返回 result.
 
-> 注 The returned String has the form of a RegularExpressionLiteral that evaluates to another RegExp object with the same behaviour as this object.
+> 注：返回的String具有RegularExpressionLiteral的形式，该形式求值为另一个具有与此对象相同行为的RegExp对象。
 
 #### 21.2.5.16 获取 RegExp.prototype.unicode <div id="sec-get-regexp.prototype.unicode"></div>
 
-RegExp.prototype.unicode is an accessor property whose set accessor function is undefined. Its get accessor function performs the following steps:
+RegExp.prototype.unicode是一个访问器属性，其设置的访问器函数未定义。它的get访问器功能执行以下步骤：
 
-1. 令 R 为 the this value.
+1. 令 R 为 this 值。
 2. 若 Type(R) 不是 Object, 抛出 TypeError 异常.
-3. 若 R does not have an [[OriginalFlags]] internal slot，那么 
+3. 若 R 没有 [[OriginalFlags]] 内部插槽，那么 
 1. 若 SameValue(R, %RegExpPrototype%) 是 true，返回 undefined.
 2. 除此之外, 抛出 TypeError 异常.
 4. 令 flags 为 R.[[OriginalFlags]].
-5. 若 flags contains the code unit 0x0075 (LATIN SMALL LETTER U)，返回 true.
+5. 若 flags 包含代码单元0x0075（拉丁文小写字母U），返回 true.
 6. 返回 false
 
 ### 21.2.6 RegExp 实例属性 <div id="sec-properties-of-regexp-instances"></div>
 
-RegExp instances are ordinary objects that inherit properties from the RegExp prototype object. RegExp instances have internal slots [[RegExpMatcher]], [[OriginalSource]], and [[OriginalFlags]]. The value of the [[RegExpMatcher]] internal slot is an implementation-dependent representation of the Pattern of the RegExp object.
+RegExp实例是从RegExp原型对象继承属性的普通对象。 RegExp实例具有内部插槽[[RegExpMatcher]]，[[OriginalSource]]和[[OriginalFlags]]。 [[RegExpMatcher]]内部插槽的值是RegExp对象的Pattern的与实现有关的表示。
 
-> 注 Prior to ECMAScript 2015, RegExp instances were specified as having the own data properties source, global, ignoreCase, and multiline. Those properties are now specified as accessor properties of RegExp.prototype.
+> 注：在ECMAScript 2015之前，RegExp实例被指定为具有自己的数据属性source，global，ignoreCase和multiline。这些属性现在指定为RegExp.prototype的访问器属性。
 
-RegExp instances also have the following property:
+RegExp实例还具有以下属性：
 
 #### 21.2.6.1 lastIndex <div id="sec-lastindex"></div>
 
-The value of the lastIndex property specifies the String index at which to start the next match. It is coerced to an integer when used (see 21.2.5.2.2). This property shall have the attributes { [[Writable]]: true, [[Enumerable]]: false, [[Configurable]]: false }.
+lastIndex属性的值指定开始下一个匹配的String索引。使用时将其强制为整数（请参见21.2.5.2.2）。该属性应具有以下属性 { [[Writable]]: true, [[Enumerable]]: false, [[Configurable]]: false }.
