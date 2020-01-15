@@ -23,12 +23,12 @@ Gitbook 链接：https://lhzcode.github.io/es10-cn/
 - [x] [13 ECMAScript语言：语句和声明](statements-declarations.md)
 - [x] [14 ECMAScript语言：函数和类](functions-and-classes.md)
 - [X] [15 ECMAScript语言：脚本和模块](scripts-and-modules.md)
-- [ ] 16 错误处理和语言扩展
-- [ ] 17 ECMAScript标准内置对象
-- [ ] 18 全局对象
-- [ ] 19 基本对象
-- [ ] 20 数字和日期
-- [ ] 21 文字处理
+- [x] [16 错误处理和语言扩展](error-handling-and-language-extensions.md)
+- [x] [17 ECMAScript标准内置对象](standard-built-in-objects.md)
+- [x] [18 全局对象](global-object.md)
+- [x] [19 基本对象](fundamental-objects.md)
+- [x] [20 数字和日期](numbers-and-dates.md)
+- [x] [21 文字处理](text-processing.md)
 - [ ] 22 索引集合
 - [ ] 23 带键的集合
 - [ ] 24 结构化数据
