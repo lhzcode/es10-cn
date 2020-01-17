@@ -7,12 +7,12 @@
 
 数组构造函数：
 
-- 是固有对象％Array％。
+- 是内部对象％Array％。
 - 是全局对象的Array属性的初始值。
--  在作为构造函数调用时，创建并初始化一个新的Array奇异对象。
+-  在作为构造函数调用时，创建并初始化一个新的Array异类对象。
 - 当作为函数而不是构造函数调用时，还创建并初始化一个新的Array对象。因此，函数调用“ Array（…）”等效于具有相同参数的对象创建表达式“ new Array（…）”。
 - 是一个函数，其行为根据其参数的数量和类型而重载。
-- 设计为可归类的。它可以用作类定义的`extends'子句的值。打算继承奇异的Array行为的子类构造函数必须包括对Array构造函数的super调用，以初始化作为Array奇异对象的子类实例。但是，大多数Array.prototype方法是通用方法，并不依赖于this值是Array外来对象。
+- 设计为可归类的。它可以用作类定义的`extends'子句的值。打算继承奇异的Array行为的子类构造函数必须包括对Array构造函数的super调用，以初始化作为Array异类对象的子类实例。但是，大多数Array.prototype方法是通用方法，并不依赖于this值是Array异类对象。
 - 具有“ length”属性，其值为1。
 
 #### 22.1.1.1 Array ( ) <div id="sec-array-constructor-array"></div>
@@ -69,7 +69,7 @@
 ### 22.1.2 Array 构造器属性 <div id="sec-properties-of-the-array-constructor"></div>
 数组构造函数：
 
-- 有一个[[Prototype]]内部插槽，其值是固有对象％FunctionPrototype％。
+- 有一个[[Prototype]]内部插槽，其值是内部对象％FunctionPrototype％。
 - 具有以下属性：
 
 #### 22.1.2.1 Array.from ( items [ , mapfn [ , thisArg ] ] ) <div id="sec-array.from"></div>
@@ -169,7 +169,7 @@ Array.prototype的值为％ArrayPrototype％，即固有的Array原型对象。
 
 #### 22.1.2.5 获取 Array [ @@species ] <div id="sec-get-array-@@species"></div>
 
-`Array[@@species]`是一个访问器属性，它的set访问器函数是未定义的。其get访问器函数执行以下步骤:
+`Array[@@species]`是一个访问器属性，它的set访问器函数是undefined。其get访问器函数执行以下步骤:
 
 1. 返回 this 值
 
@@ -183,14 +183,14 @@ Array.prototype的值为％ArrayPrototype％，即固有的Array原型对象。
 
 数组原型对象：
 
-- 是固有对象％ArrayPrototype％。
-- 是一个数组奇异对象，并具有为此类对象指定的内部方法。
+- 是内部对象％ArrayPrototype％。
+- 是一个数组异类对象，并具有为此类对象指定的内部方法。
 - 具有“length”属性，其初始值为0，其属性为{ [[Writable]]: true, [[Enumerable]]: false, [[Configurable]]: false }.
-- 有一个[[Prototype]]内部插槽，其值是固有对象％ObjectPrototype％。
+- 有一个[[Prototype]]内部插槽，其值是内部对象％ObjectPrototype％。
 
 > 注
 >
-> 将Array原型对象指定为Array奇异对象，以确保与ECMAScript 2015规范之前创建的ECMAScript代码兼容。
+> 将Array原型对象指定为Array异类对象，以确保与ECMAScript 2015规范之前创建的ECMAScript代码兼容。
 
 #### 22.1.3.1 Array.prototype.concat ( ...arguments ) <div id="sec-array.prototype.concat"></div>
 
@@ -245,7 +245,7 @@ Array.prototype的值为％ArrayPrototype％，即固有的Array原型对象。
 
 #### 22.1.3.2 Array.prototype.constructor <div id="sec-array.prototype.constructor"></div>
 
-Array.prototype.constructor 的初始值为固有对象％Array％。
+Array.prototype.constructor 的初始值为内部对象％Array％。
 
 #### 22.1.3.3 Array.prototype.copyWithin ( target, start [ , end ] ) <div id="sec-array.prototype.copywithin"></div>
 
@@ -297,7 +297,7 @@ copyWithin方法最多包含三个参数target，start和end。
 1. 令 O 为 ? ToObject(this value).
 2. 返回 CreateArrayIterator(O, `"key+value"`).
 
-这个函数是%ArrayProto_entries%固有对象。
+这个函数是%ArrayProto_entries%内部对象。
 
 #### 22.1.3.5 Array.prototype.every ( callbackfn [ , thisArg ] ) <div id="sec-array.prototype.every"></div>
 
@@ -920,7 +920,7 @@ push方法的“ length”属性为1。
 
 > 注 1
 >
-> slice方法有两个参数start和end，并返回一个数组，该数组包含从元素开始到元素结束（但不包括元素结束）（如果未定义end，则从数组的结尾）开始的数组的元素。如果start为负，则将其视为length + start，其中length是数组的长度。如果end为负，则将其视为length + end，其中length是数组的长度。
+> slice方法有两个参数start和end，并返回一个数组，该数组包含从元素开始到元素结束（但不包括元素结束）（如果undefinedend，则从数组的结尾）开始的数组的元素。如果start为负，则将其视为length + start，其中length是数组的长度。如果end为负，则将其视为length + end，其中length是数组的长度。
 
 采取以下步骤：
 
@@ -991,7 +991,7 @@ push方法的“ length”属性为1。
 
 此数组的元素已排序。排序必须是稳定的（也就是说，比较相等的元素必须保持其原始顺序）。如果comparefn不是undefined，则它应该是一个接受两个参数x和y的函数，如果x <y，则返回负值；如果x = y，则返回零；如果x> y，则返回正值。
 
-输入后，将执行以下步骤来初始化对sort函数的评估：
+输入后，将执行以下步骤来初始化对sort函数的解释执行：
 
 1. 若 comparefn 不是 undefined 并且 IsCallable(comparefn) 是 false, 抛出 TypeError 异常
 2. 令 obj 为 ? ToObject(this value).
@@ -1006,7 +1006,7 @@ push方法的“ length”属性为1。
 
 sort order 是此函数完成后对整数索引小于len的obj的整数索引属性值的排序。然后按以下方式确定“ sort”函数的结果：
 
-如果comparefn不是未定义的，并且不是该数组元素的一致比较函数（请参见下文），则排序顺序是实现定义的。如果未定义comparefn并且SortCompare不用作一致的比较函数，则排序顺序也是由实现定义的。
+如果comparefn不是undefined，并且不是该数组元素的一致比较函数（请参见下文），则排序顺序是实现定义的。如果undefinedcomparefn并且SortCompare不用作一致的比较函数，则排序顺序也是由实现定义的。
 
 设proto为obj.\[\[GetPrototypeOf]]()。如果proto不为空，且存在一个整数j，满足以下所有条件，则排序顺序由实现定义:
 
@@ -1023,8 +1023,8 @@ sort order 是此函数完成后对整数索引小于len的obj的整数索引属
 
 - 如果obj是一个异类对象(包括代理异类对象)，它对[[Get]]、[[Set]]、[[Delete]]和[[GetOwnProperty]]的行为不是这些内部方法的普通对象实现。
 - 如果obj的任何索引属性的名称是小于len的非负整数，那么它就是一个访问器属性，或者是一个数据属性，它的[[Writable]]属性是假的。
-- 如果comparefn是未定义的，并且ToString的应用程序对作为SortCompare参数传递的任何值修改obj或obj的原型链上的任何对象。
-- 如果comparefn是未定义的，并且ToString的所有应用程序，对于作为参数传递给SortCompare的任何特定值，都不会产生相同的结果。
+- 如果comparefn是undefined，并且ToString的应用程序对作为SortCompare参数传递的任何值修改obj或obj的原型链上的任何对象。
+- 如果comparefn是undefined，并且ToString的所有应用程序，对于作为参数传递给SortCompare的任何特定值，都不会产生相同的结果。
 
 采取以下步骤：
 
@@ -1082,7 +1082,7 @@ SortCompare抽象操作由两个参数x和y调用，它还可以访问传递给�
 
 > 注 1
 >
-> 因为不存在的属性值总是比未定义的属性值大，而且未定义的属性值总是比任何其他值大，所以未定义的属性值总是排序到结果的末尾，然后是不存在的属性值。
+> 因为不存在的属性值总是比undefined属性值大，而且undefined属性值总是比任何其他值大，所以undefined属性值总是排序到结果的末尾，然后是不存在的属性值。
 
 > 注 2
 >
@@ -1293,7 +1293,7 @@ unshift方法的“ length”属性为1。
 
 ### 22.1.4 Array 实例属性 <div id="sec-properties-of-array-instances"></div>
 
-数组实例是数组奇异对象，并具有为此类对象指定的内部方法。数组实例从Array原型对象继承属性。
+数组实例是数组异类对象，并具有为此类对象指定的内部方法。数组实例从Array原型对象继承属性。
 
 数组实例具有“ length”属性和一组带有数组索引名称的可枚举属性。
 
@@ -1328,7 +1328,7 @@ Array对象的几种方法返回Iterator对象。具有参数array和kind的抽�
 
 - 具有所有数组迭代器对象继承的属性。
 - 是一个普通的对象。
-- 有一个[[Prototype]]内部插槽，其值是固有对象％IteratorPrototype％。
+- 有一个[[Prototype]]内部插槽，其值是内部对象％IteratorPrototype％。
 - 具有以下属性：
 
 ##### 22.1.5.2.1 %ArrayIteratorPrototype%.next ( ) <div id="sec-%arrayiteratorprototype%.next"></div>
@@ -1378,53 +1378,53 @@ Array对象的几种方法返回Iterator对象。具有参数array和kind的抽�
 
 ## 22.2 类数组对象 <div id="sec-typedarray-objects"></div>
 
-TypedArray objects present an array-like view of an underlying binary data buffer (24.1). Each element of a TypedArray instance has the same underlying binary scalar data type. There is a distinct TypedArray constructor, listed in Table 59, for each of the nine supported element types. Each constructor in Table 59 has a corresponding distinct prototype object.
+TypedArray对象表示基础二进制数据缓冲区（24.1）的类似数组的视图。 TypedArray实例的每个元素都具有相同的基础二进制标量数据类型。表59中列出了九种受支持元素类型中的每一个的独特TypedArray构造函数。表59中的每个构造函数都有一个对应的不同原型对象。
 
-Table 59: The TypedArray Constructors
+表59：TypedArray构造函数
 
-| Constructor Name and Intrinsic | Element Type | Element Size | Conversion Operation                                         | Description                                 | Equivalent C Type |
+| 构造函数名称和本征 | 元素类型 | 元素类型 | 转换操作                                     | 描述                               | 等效C类 型 |
 | ------------------------------------------------------------ | ------------ | ------------ | ------------------------------------------------------------ | ------------------------------------------- | ----------------- |
-| Int8Array %Int8Array%                                        | Int8         | 1            | ToInt8 | 8-bit 2's complement signed integer         | signed char       |
-| Uint8Array %Uint8Array%                                      | Uint8        | 1            | ToUint8 | 8-bit unsigned integer                      | unsigned char     |
-| Uint8ClampedArray %Uint8ClampedArray%                        | Uint8C       | 1            | ToUint8Clamp | 8-bit unsigned integer (clamped conversion) | unsigned char     |
-| Int16Array %Int16Array%                                      | Int16        | 2            | ToInt16 | 16-bit 2's complement signed integer        | short             |
-| Uint16Array %Uint16Array%                                    | Uint16       | 2            | ToUint16 | 16-bit unsigned integer                     | unsigned short    |
-| Int32Array %Int32Array%                                      | Int32        | 4            | ToInt32 | 32-bit 2's complement signed integer        | int               |
-| Uint32Array %Uint32Array%                                    | Uint32       | 4            | ToUint32 | 32-bit unsigned integer                     | unsigned int      |
-| Float32Array %Float32Array%                                  | Float32      | 4            |                                                              | 32-bit IEEE floating point                  | float             |
-| Float64Array %Float64Array%                                  | Float64      | 8            |                                                              | 64-bit IEEE floating point                  | double            |
+| Int8Array %Int8Array%                                        | Int8         | 1            | ToInt8 | 8位2的补码有符号整数 | signed char       |
+| Uint8Array %Uint8Array%                                      | Uint8        | 1            | ToUint8 | 8位无符号整数               | unsigned char     |
+| Uint8ClampedArray %Uint8ClampedArray%                        | Uint8C       | 1            | ToUint8Clamp | 8位无符号整数（强制转换） | unsigned char     |
+| Int16Array %Int16Array%                                      | Int16        | 2            | ToInt16 | 16位2的补码有符号整数 | short             |
+| Uint16Array %Uint16Array%                                    | Uint16       | 2            | ToUint16 | 16位无符号整数             | unsigned short    |
+| Int32Array %Int32Array%                                      | Int32        | 4            | ToInt32 | 32位2的补码有符号整数 | int               |
+| Uint32Array %Uint32Array%                                    | Uint32       | 4            | ToUint32 | 32位无符号整数             | unsigned int      |
+| Float32Array %Float32Array%                                  | Float32      | 4            |                                                              | 32位IEEE浮点         | float             |
+| Float64Array %Float64Array%                                  | Float64      | 8            |                                                              | 64位IEEE浮点         | double            |
 
-In the definitions below, references to TypedArray should be replaced with the appropriate constructor name from the above table. The phrase “the element size in bytes” refers to the value in the Element Size column of the table in the row corresponding to the constructor. The phrase “element Type” refers to the value in the Element Type column for that row.
+在下面的定义中，对TypedArray的引用应替换为上表中的相应构造函数名称。短语“以字节为单位的元素大小”是指表中与构造函数对应的行的“元素大小”列中的值。短语“元素类型”是指该行的“元素类型”列中的值。
 
 ### 22.2.1 %TypedArray% 内部对象 <div id="sec-%typedarray%-intrinsic-object"></div>
 
-The %TypedArray% intrinsic object:
+％TypedArray％内部对象：
 
-- is a constructor function object that all of the TypedArray constructor objects inherit from.
-- along with its corresponding prototype object, provides common properties that are inherited by all TypedArray constructors and their instances.
-- does not have a global name or appear as a property of the global object.
-- acts as the abstract superclass of the various TypedArray constructors.
-- will throw an error when invoked, because it is an abstract class constructor. The TypedArray constructors do not perform a `super` call to it.
+- 是所有TypedArray构造函数对象都继承的构造函数对象。
+- 连同其相应的原型对象一起，提供了所有TypedArray构造函数及其实例继承的公共属性。
+- 没有全局名称或作为全局对象的属性出现。
+- 充当各种TypedArray构造函数的抽象超类。
+- 调用时将引发错误，因为它是抽象类的构造函数。 TypedArray构造函数不会对其执行“ super”调用。
 
 #### 22.2.1.1 %TypedArray% ( ) <div id="sec-%typedarray%"></div>
 
-The %TypedArray% constructor performs the following steps:
+％TypedArray％构造函数执行以下步骤：
 
 1. 抛出 TypeError 异常
 
-The `"length"` property of the %TypedArray% constructor function is 0.
+％TypedArray％构造函数的“ length”属性为0。
 
 ### 22.2.2 %TypedArray% 内部对象属性 <div id="sec-properties-of-the-%typedarray%-intrinsic-object"></div>
 
-The %TypedArray% intrinsic object:
+％TypedArray％内部对象：
 
-- has a [[Prototype]] internal slot whose value is the intrinsic object %FunctionPrototype%.
-- has a `name` property whose value is `"TypedArray"`.
-- has the following properties:
+- 有一个[[Prototype]]内部插槽，其值是内部对象％FunctionPrototype％。
+- 有一个“name”属性，其值为“ TypedArray”。
+- 具有以下属性：
 
 #### 22.2.2.1 %TypedArray%.from ( source [ , mapfn [ , thisArg ] ] ) <div id="sec-%typedarray%.from"></div>
 
-When the from method is called with argument source, and optional arguments mapfn and thisArg, 采取以下步骤：
+当使用参数source和可选参数mapfn和thisArg调用from方法时，采取以下步骤：
 
 1. 令 C 为 this 值
 2. 若 IsConstructor(C) 是 false, 抛出 TypeError 异常
@@ -1441,15 +1441,15 @@ When the from method is called with argument source, and optional arguments mapf
    4. 令 k 为 0.
    5. 重复，直到 k < len
       1. 令 Pk 为 ! ToString(k).
-      2. 令 kValue 为 the first element of values and remove that element from values.
+      2. 令 kValue 为值的第一个元素，然后从值中删除该元素。
       3. 若 mapping 是 true，那么
          1. 令 mappedValue 为 ? Call(mapfn, T, « kValue, k »).
       4. 否则，令 mappedValue 为 kValue.
       5. 执行 ? Set(targetObj, Pk, mappedValue, true).
       6. k 增加 1。
-   6. 断言：values is now an empty List.
+   6. 断言：values现在是一个空列表。
    7. 返回 targetObj.
-8. NOTE: source is not an Iterable so assume it is already an array-like object.
+8. 注: source不是Iterable，因此假设它已经是一个类似数组的对象。
 9. 令 arrayLike 为 ! ToObject(source).
 10. 令 len 为 ? ToLength(? Get(arrayLike, "length")).
 11. 令 targetObj 为 ? TypedArrayCreate(C, « len »).
@@ -1466,12 +1466,12 @@ When the from method is called with argument source, and optional arguments mapf
 
 ##### 22.2.2.1.1Runtime Semantics: IterableToList ( items, method )<div id="sec-iterabletolist"></div>
 
-The abstract operation IterableToList performs the following steps:
+抽象操作IterableToList执行以下步骤：
 
 1. 令 iteratorRecord 为 ? GetIterator(items, sync, method).
-2. 令 values 为 a new empty List.
+2. 令 values 为一个新的空列表
 3. 令 next 为 true.
-4. 重复，直到 next is not false
+4. 重复，直到 next 不为 false
    1. 设置 next 为 ? IteratorStep(iteratorRecord).
    2. 若 next 不是 false，那么
       1. 令 nextValue 为 ? IteratorValue(next).
@@ -1480,10 +1480,10 @@ The abstract operation IterableToList performs the following steps:
 
 #### 22.2.2.2 %TypedArray%.of ( ...items ) <div id="sec-%typedarray%.of"></div>
 
-When the `of` method is called with any number of arguments, 采取以下步骤：
+当使用任意数量的参数调用`of`方法时，采取以下步骤：
 
-1. 令 len 为 the actual number of arguments passed to this function.
-2. 令 items 为 the List of arguments passed to this function.
+1. 令 len 为传递给此函数的实际参数数。
+2. 令 items 为传递给此函数的参数列表。
 3. 令 C 为 this 值
 4. 若 IsConstructor(C) 是 false, 抛出 TypeError 异常
 5. 令 newObj 为 ? TypedArrayCreate(C, « len »).
@@ -1497,53 +1497,53 @@ When the `of` method is called with any number of arguments, 采取以下步骤�
 
 > 注
 >
-> The items argument is assumed to be a well-formed rest argument value.
+> 假设items参数是格式正确的rest参数值。
 
 #### 22.2.2.3 %TypedArray%.prototype <div id="sec-%typedarray%.prototype"></div>
 
-The initial value of %TypedArray%`.prototype` is the %TypedArrayPrototype% intrinsic object.
+％TypedArray％.prototype 的初始值为％TypedArrayPrototype％内部对象。
 
 此属性具有特性 { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }.
 
 #### 22.2.2.4 get %TypedArray% [ @@species ] <div id="sec-get-%typedarray%-@@species"></div>
 
-%TypedArray%`[@@species]` is an accessor property whose set accessor function is undefined. Its get accessor function performs the following steps:
+％TypedArray％[@@ species]是一个访问器属性，其设置的访问器功能undefined。它的get访问器功能执行以下步骤：
 
 1. 返回 this 值
 
-The value of the `name` property of this function is `"get [Symbol.species]"`.
+该函数的名称属性的值是“ get [Symbol.species]”。
 
 > 注
 >
->%TypedArrayPrototype% methods normally use their `this` object's constructor to create a derived object. However, a subclass constructor may over-ride that default behaviour by redefining its @@species property.
+>％TypedArrayPrototype％方法通常使用其“此”对象的构造函数来创建派生对象。但是，子类构造函数可以通过重新定义其@@ species属性来覆盖该默认行为。
 
 ### 22.2.3 %TypedArrayPrototype% 对象属性 <div id="sec-properties-of-the-%typedarrayprototype%-object"></div>
 
-The %TypedArrayPrototype% object:
+％TypedArray原型％对象：
 
-- has a [[Prototype]] internal slot whose value is the intrinsic object %ObjectPrototype%.
-- is an ordinary object.
-- does not have a [[ViewedArrayBuffer]] or any other of the internal slots that are specific to TypedArray instance objects.
+- 有一个[[Prototype]]内部插槽，其值是内部对象％ObjectPrototype％。
+- 是一个普通的对象。
+- 没有[[ViewedArrayBuffer]]或任何其他TypedArray实例对象专用的内部插槽。
 
 #### 22.2.3.1 获取 %TypedArray%.prototype.buffer <div id="sec-get-%typedarray%.prototype.buffer"></div>
 
-%TypedArray%.prototype.buffer is an accessor property whose set accessor function is undefined. Its get accessor function performs the following steps:
+％TypedArray％.prototype.buffer是一个访问器属性，其设置的访问器函数undefined。它的get访问器功能执行以下步骤：
 
 1. 令 O 为 this 值
 2. 若 Type(O) 不是 Object, 抛出 TypeError 异常
-3. 若 O does not have a [[TypedArrayName]] internal slot, 抛出 TypeError 异常
-4. 断言：O has a [[ViewedArrayBuffer]] internal slot.
+3. 若 O 没有 [[TypedArrayName]] 内部插槽, 抛出 TypeError 异常
+4. 断言：O 有 [[ViewedArrayBuffer]] 内部插槽。
 5. 令 buffer 为 O.[[ViewedArrayBuffer]].
 6. 返回 buffer.
 
 #### 22.2.3.2 获取 %TypedArray%.prototype.byteLength <div id="sec-get-%typedarray%.prototype.bytelength"></div>
 
-%TypedArray%.prototype.byteLength is an accessor property whose set accessor function is undefined. Its get accessor function performs the following steps:
+％TypedArray％.prototype.byteLength是一个访问器属性，其设置的访问器功能undefined。它的get访问器功能执行以下步骤：
 
 1. 令 O 为 this 值
 2. 若 Type(O) 不是 Object, 抛出 TypeError 异常
-3. 若 O does not have a [[TypedArrayName]] internal slot, 抛出 TypeError 异常
-4. 断言：O has a [[ViewedArrayBuffer]] internal slot.
+3. 若 O 没有 [[TypedArrayName]] 内部插槽, 抛出 TypeError 异常
+4. 断言：O 有 [[ViewedArrayBuffer]] 内部插槽.
 5. 令 buffer 为 O.[[ViewedArrayBuffer]].
 6. 若 IsDetachedBuffer(buffer) 是 true, 返回 0.
 7. 令 size 为 O.[[ByteLength]].
@@ -1551,12 +1551,12 @@ The %TypedArrayPrototype% object:
 
 #### 22.2.3.3 获取 %TypedArray%.prototype.byteOffset <div id="sec-get-%typedarray%.prototype.byteoffset"></div>
 
-%TypedArray%.prototype.byteOffset is an accessor property whose set accessor function is undefined. Its get accessor function performs the following steps:
+％TypedArray％.prototype.byteOffset是一个访问器属性，其设置的访问器功能undefined。它的get访问器功能执行以下步骤：
 
 1. 令 O 为 this 值
 2. 若 Type(O) 不是 Object, 抛出 TypeError 异常
-3. 若 O does not have a [[TypedArrayName]] internal slot, 抛出 TypeError 异常
-4. 断言：O has a [[ViewedArrayBuffer]] internal slot.
+3. 若 O 没有 [[TypedArrayName]] 内部插槽, 抛出 TypeError 异常
+4. 断言：O 有 [[ViewedArrayBuffer]] 内部插槽.
 5. 令 buffer 为 O.[[ViewedArrayBuffer]].
 6. 若 IsDetachedBuffer(buffer) 是 true, 返回 0.
 7. 令 offset 为 O.[[ByteOffset]].
@@ -1564,15 +1564,15 @@ The %TypedArrayPrototype% object:
 
 #### 22.2.3.4 %TypedArray%.prototype.constructor <div id="sec-%typedarray%.prototype.constructor"></div>
 
-The initial value of %TypedArray%`.prototype.constructor` is the %TypedArray% intrinsic object.
+％TypedArray％.prototype.constructor 的初始值为％TypedArray％内部对象。
 
 #### 22.2.3.5 %TypedArray%.prototype.copyWithin ( target, start [ , end ] ) <div id="sec-%typedarray%.prototype.copywithin"></div>
 
-The interpretation and use of the arguments of %TypedArray% `.prototype.copyWithin` are the same as for `Array.prototype.copyWithin` as defined in 22.1.3.3.
+％TypedArray％`.prototype.copyWithin`的参数的解释和使用与22.1.3.3中定义的 Array.prototype.copyWithin 相同。
 
 采取以下步骤：
 
-1. 令 O 为 this value.
+1. 令 O 为 this 值.
 2. 执行 ? ValidateTypedArray(O).
 3. 令 len 为 O.[[ArrayLength]].
 4. 令 relativeTarget 为 ? ToInteger(target).
@@ -1583,16 +1583,16 @@ The interpretation and use of the arguments of %TypedArray% `.prototype.copyWith
 9. 若 relativeEnd < 0, 令 final 为 max((len + relativeEnd), 0); 否则令 final 为 min(relativeEnd, len).
 10. 令 count 为 min(final - from, len - to).
 11. 若 count > 0，那么
-    1. NOTE: The copying must be performed in a manner that preserves the bit-level encoding of the source data.
+    1. 注意：必须以保留源数据的位级别编码的方式执行复制。
     2. 令 buffer 为 O.[[ViewedArrayBuffer]].
     3. 若 IsDetachedBuffer(buffer) 是 true, 抛出 TypeError 异常
-    4. 令 typedArrayName 为 the String value of O.[[TypedArrayName]].
-    5. 令 elementSize 为 the Number value of the Element Size value specified in Table 59 for typedArrayName.
+    4. 令 typedArrayName 为 O.[[TypedArrayName]] 的字符串值.
+    5. 令 elementSize 为表59中为typedArrayName指定的Element Size值的Number值。
     6. 令 byteOffset 为 O.[[ByteOffset]].
     7. 令 toByteIndex 为 to × elementSize + byteOffset.
     8. 令 fromByteIndex 为 from × elementSize + byteOffset.
     9. 令 countBytes 为 count × elementSize.
-    10. 若 fromByteIndex < toByteIndex and toByteIndex < fromByteIndex + countBytes，那么
+    10. 若 fromByteIndex < toByteIndex 并且 toByteIndex < fromByteIndex + countBytes，那么
         1. 令 direction 为 -1.
         2. 设置 fromByteIndex 为 fromByteIndex + countBytes - 1.
         3. 设置 toByteIndex 为 toByteIndex + countBytes - 1.
@@ -1608,11 +1608,11 @@ The interpretation and use of the arguments of %TypedArray% `.prototype.copyWith
 
 ##### 22.2.3.5.1 RS: ValidateTypedArray ( O ) <div id="sec-validatetypedarray"></div>
 
-When called with argument O, 采取以下步骤：
+当使用参数O调用时，采取以下步骤：
 
 1. 若 Type(O) 不是 Object, 抛出 TypeError 异常
-2. 若 O does not have a [[TypedArrayName]] internal slot, 抛出 TypeError 异常
-3. 断言：O has a [[ViewedArrayBuffer]] internal slot.
+2. 若 O 没有 [[TypedArrayName]] 内部插槽, 抛出 TypeError 异常
+3. 断言：O 有 [[ViewedArrayBuffer]] 内部插槽.
 4. 令 buffer 为 O.[[ViewedArrayBuffer]].
 5. 若 IsDetachedBuffer(buffer) 是 true, 抛出 TypeError 异常
 6. 返回 buffer.
@@ -1627,13 +1627,13 @@ When called with argument O, 采取以下步骤：
 
 #### 22.2.3.7 %TypedArray%.prototype.every ( callbackfn [ , thisArg ] ) <div id="sec-%typedarray%.prototype.every"></div>
 
-%TypedArray%`.prototype.every` is a distinct function that implements the same algorithm as `Array.prototype.every` as defined in 22.1.3.5 except that the this object's [[ArrayLength]] internal slot is accessed in place of performing a [[Get]] of `"length"`. The implementation of the algorithm may be optimized with the knowledge that the this value is an object that has a fixed length and whose integer-indexed properties are not sparse. However, such optimization must not introduce any observable changes in the specified behaviour of the algorithm and must take into account the possibility that calls to callbackfn may cause the this value to become detached.
+％TypedArray％`.prototype.every`是与22.1.3.5中定义的 Array.prototype.every 实现相同算法的独特函数，除了访问此对象的[[ArrayLength]]内部插槽以代替执行[length]的[[Get]]。可以使用以下知识来优化算法的实现：该值是一个具有固定长度的对象，并且其整数索引属性不稀疏。但是，此类优化不得在算法的指定行为中引入任何可观察的变化，并且必须考虑对callbackfn的调用可能导致此值分离的可能性。
 
-This function is not generic. ValidateTypedArray is applied to the this value prior to evaluating the algorithm. If its result is an abrupt completion that exception is thrown instead of evaluating the algorithm.
+此功能不是通用的。在解释执行算法之前，将ValidateTypedArray应用于此值。如果其结果是突然完成，则抛出该异常，而不是解释执行算法。
 
 #### 22.2.3.8 %TypedArray%.prototype.fill ( value [ , start [ , end ] ] ) <div id="sec-%typedarray%.prototype.fill"></div>
 
-The interpretation and use of the arguments of %TypedArray%.prototype.fill are the same as for Array.prototype.fill as defined in 22.1.3.6.
+％TypedArray％.prototype.fill参数的解释和使用与22.1.3.6中定义的Array.prototype.fill相同。
 
 采取以下步骤：
 
@@ -1654,16 +1654,16 @@ The interpretation and use of the arguments of %TypedArray%.prototype.fill are t
 
 #### 22.2.3.9 %TypedArray%.prototype.filter ( callbackfn [ , thisArg ] ) <div id="sec-%typedarray%.prototype.filter"></div>
 
-The interpretation and use of the arguments of %TypedArray%.prototype.filter are the same as for Array.prototype.filter as defined in 22.1.3.7.
+％TypedArray％.prototype.filter参数的解释和使用与22.1.3.7中定义的Array.prototype.filter相同。
 
-When the filter method is called with one or two arguments, 采取以下步骤：
+当使用一个或两个参数调用filter方法时，采取以下步骤：
 
 1. 令 O 为 this 值
 2. 执行 ? ValidateTypedArray(O).
 3. 令 len 为 O.[[ArrayLength]].
 4. 若 IsCallable(callbackfn) 是 false, 抛出 TypeError 异常
 5. 若 thisArg 存在, 令 T 为 thisArg; 否则令 T 为 undefined.
-6. 令 kept 为 a new empty List.
+6. 令 kept 为一个新的空列表。
 7. 令 k 为 0.
 8. 令 captured 为 0.
 9. 重复，直到 k < len
@@ -1671,53 +1671,53 @@ When the filter method is called with one or two arguments, 采取以下步骤�
    2. 令 kValue 为 ? Get(O, Pk).
    3. 令 selected 为 ToBoolean(? Call(callbackfn, T, « kValue, k, O »)).
    4. 若 selected 是 true，那么
-      1. Append kValue to the end of kept.
+      1. 将kValue追加到keep的末尾。
       2. captured 增加 1。
    5. k 增加 1。
 10. 令 A 为 ? TypedArraySpeciesCreate(O, « captured »).
 11. 令 n 为 0.
-12. For each element e of kept, do
+12. 对于保留的每个元素e，
     1. 执行 ! Set(A, ! ToString(n), e, true).
     2. Increment n by 1.
 13. 返回 A.
 
-This function is not generic. The this value must be an object with a [[TypedArrayName]] internal slot.
+此功能不是通用的。此值必须是具有[[TypedArrayName]]内部插槽的对象。
 
 #### 22.2.3.10 %TypedArray%.prototype.find ( predicate [ , thisArg ] ) <div id="sec-%typedarray%.prototype.find"></div>
 
-%TypedArray%`.prototype.find` is a distinct function that implements the same algorithm as `Array.prototype.find` as defined in 22.1.3.8 except that the this object's [[ArrayLength]] internal slot is accessed in place of performing a [[Get]] of `"length"`. The implementation of the algorithm may be optimized with the knowledge that the this value is an object that has a fixed length and whose integer-indexed properties are not sparse. However, such optimization must not introduce any observable changes in the specified behaviour of the algorithm and must take into account the possibility that calls to predicate may cause the this value to become detached.
+％TypedArray％`.prototype.find`是一个与22.1.3.8中定义的'Array.prototype.find`相同的算法，其不同之处在于该对象的[[ArrayLength]]内部插槽被访问以代替执行[length]的[[Get]]。可以使用以下知识来优化算法的实现：该值是一个具有固定长度的对象，并且其整数索引属性不稀疏。但是，这种优化不得在算法的指定行为中引入任何可观察到的变化，并且必须考虑谓词调用可能导致该值分离的可能性。
 
-This function is not generic. ValidateTypedArray is applied to the this value prior to evaluating the algorithm. If its result is an abrupt completion that exception is thrown instead of evaluating the algorithm.
+此功能不是通用的。在解释执行算法之前，将ValidateTypedArray应用于此值。如果其结果是突然完成，则抛出该异常，而不是解释执行算法。
 
 #### 22.2.3.11 %TypedArray%.prototype.findIndex ( predicate [ , thisArg ] ) <div id="sec-%typedarray%.prototype.findindex"></div>
 
-%TypedArray%`.prototype.findIndex` is a distinct function that implements the same algorithm as `Array.prototype.findIndex` as defined in 22.1.3.9 except that the this object's [[ArrayLength]] internal slot is accessed in place of performing a [[Get]] of `"length"`. The implementation of the algorithm may be optimized with the knowledge that the this value is an object that has a fixed length and whose integer-indexed properties are not sparse. However, such optimization must not introduce any observable changes in the specified behaviour of the algorithm and must take into account the possibility that calls to predicate may cause the this value to become detached.
+％TypedArray％`.prototype.findIndex`是一个独特的函数，实现与22.1.3.9中定义的“ Array.prototype.findIndex`”相同的算法，除了访问此对象的[[ArrayLength]]内部插槽以代替执行[length]的[[Get]]。可以使用以下知识来优化算法的实现：该值是一个具有固定长度的对象，并且其整数索引属性不稀疏。但是，这种优化不得在算法的指定行为中引入任何可观察到的变化，并且必须考虑谓词调用可能导致该值分离的可能性。
 
-This function is not generic. ValidateTypedArray is applied to the this value prior to evaluating the algorithm. If its result is an abrupt completion that exception is thrown instead of evaluating the algorithm.
+此功能不是通用的。在解释执行算法之前，将ValidateTypedArray应用于此值。如果其结果是突然完成，则抛出该异常，而不是解释执行算法。
 
 #### 22.2.3.12 %TypedArray%.prototype.forEach ( callbackfn [ , thisArg ] ) <div id="sec-%typedarray%.prototype.foreach"></div>
 
-%TypedArray%`.prototype.forEach` is a distinct function that implements the same algorithm as `Array.prototype.forEach` as defined in 22.1.3.12 except that the this object's [[ArrayLength]] internal slot is accessed in place of performing a [[Get]] of `"length"`. The implementation of the algorithm may be optimized with the knowledge that the this value is an object that has a fixed length and whose integer-indexed properties are not sparse. However, such optimization must not introduce any observable changes in the specified behaviour of the algorithm and must take into account the possibility that calls to callbackfn may cause the this value to become detached.
+％TypedArray％`.prototype.forEach`是一个独特的函数，实现了与22.1.3.12中定义的`Array.prototype.forEach`相同的算法，除了访问此对象的[[ArrayLength]]内部插槽以代替执行[length]的[[Get]]。可以使用以下知识来优化算法的实现：该值是一个具有固定长度的对象，并且其整数索引属性不稀疏。但是，此类优化不得在算法的指定行为中引入任何可观察的变化，并且必须考虑对callbackfn的调用可能导致此值分离的可能性。
 
-This function is not generic. ValidateTypedArray is applied to the this value prior to evaluating the algorithm. If its result is an abrupt completion that exception is thrown instead of evaluating the algorithm.
+此功能不是通用的。在解释执行算法之前，将ValidateTypedArray应用于此值。如果其结果是突然完成，则抛出该异常，而不是解释执行算法。
 
 #### 22.2.3.13 %TypedArray%.prototype.includes ( searchElement [ , fromIndex ] ) <div id="sec-%typedarray%.prototype.includes"></div>
 
-%TypedArray%`.prototype.includes` is a distinct function that implements the same algorithm as `Array.prototype.includes` as defined in 22.1.3.13 except that the this object's [[ArrayLength]] internal slot is accessed in place of performing a [[Get]] of `"length"`. The implementation of the algorithm may be optimized with the knowledge that the this value is an object that has a fixed length and whose integer-indexed properties are not sparse. However, such optimization must not introduce any observable changes in the specified behaviour of the algorithm.
+％TypedArray％`.prototype.includes`是与22.1.3.13中定义的实现相同算法的独特函数，除了访问此对象的[[ArrayLength]]内部插槽以代替执行[length]的[[Get]]。可以使用以下知识来优化算法的实现：该值是一个具有固定长度的对象，并且其整数索引属性不稀疏。但是，这种优化不得在算法的指定行为中引入任何可观察到的变化。
 
-This function is not generic. ValidateTypedArray is applied to the this value prior to evaluating the algorithm. If its result is an abrupt completion that exception is thrown instead of evaluating the algorithm.
+此功能不是通用的。在解释执行算法之前，将ValidateTypedArray应用于此值。如果其结果是突然完成，则抛出该异常，而不是解释执行算法。
 
 #### 22.2.3.14 %TypedArray%.prototype.indexOf ( searchElement [ , fromIndex ] ) <div id="sec-%typedarray%.prototype.indexof"></div>
 
-%TypedArray%`.prototype.indexOf` is a distinct function that implements the same algorithm as `Array.prototype.indexOf` as defined in 22.1.3.14 except that the this object's [[ArrayLength]] internal slot is accessed in place of performing a [[Get]] of `"length"`. The implementation of the algorithm may be optimized with the knowledge that the this value is an object that has a fixed length and whose integer-indexed properties are not sparse. However, such optimization must not introduce any observable changes in the specified behaviour of the algorithm.
+％TypedArray％`.prototype.indexOf`是一个独特的函数，实现与22.1.3.14中定义的 Array.prototype.indexOf 相同的算法，除了访问此对象的[[ArrayLength]]内部插槽以代替执行[length]的[[Get]]。可以使用以下知识来优化算法的实现：该值是一个具有固定长度的对象，并且其整数索引属性不稀疏。但是，这种优化不得在算法的指定行为中引入任何可观察到的变化。
 
-This function is not generic. ValidateTypedArray is applied to the this value prior to evaluating the algorithm. If its result is an abrupt completion that exception is thrown instead of evaluating the algorithm.
+此功能不是通用的。在解释执行算法之前，将ValidateTypedArray应用于此值。如果其结果是突然完成，则抛出该异常，而不是解释执行算法。
 
 #### 22.2.3.15 %TypedArray%.prototype.join ( separator ) <div id="sec-%typedarray%.prototype.join"></div>
 
-%TypedArray%`.prototype.join` is a distinct function that implements the same algorithm as `Array.prototype.join` as defined in 22.1.3.15 except that the this object's [[ArrayLength]] internal slot is accessed in place of performing a [[Get]] of `"length"`. The implementation of the algorithm may be optimized with the knowledge that the this value is an object that has a fixed length and whose integer-indexed properties are not sparse. However, such optimization must not introduce any observable changes in the specified behaviour of the algorithm.
+％TypedArray％`.prototype.join`是一个与22.1.3.15中定义的实现相同算法的独特函数，除了访问此对象的[[ArrayLength]]内部插槽以代替执行[length]的[[Get]]。可以使用以下知识来优化算法的实现：该值是一个具有固定长度的对象，并且其整数索引属性不稀疏。但是，这种优化不得在算法的指定行为中引入任何可观察到的变化。
 
-This function is not generic. ValidateTypedArray is applied to the this value prior to evaluating the algorithm. If its result is an abrupt completion that exception is thrown instead of evaluating the algorithm.
+此功能不是通用的。在解释执行算法之前，将ValidateTypedArray应用于此值。如果其结果是突然完成，则抛出该异常，而不是解释执行算法。
 
 #### 22.2.3.16 %TypedArray%.prototype.keys ( ) <div id="sec-%typedarray%.prototype.keys"></div>
 
@@ -1729,30 +1729,30 @@ This function is not generic. ValidateTypedArray is applied to the this value pr
 
 #### 22.2.3.17 %TypedArray%.prototype.lastIndexOf ( searchElement [ , fromIndex ] ) <div id="sec-%typedarray%.prototype.lastindexof"></div>
 
-%TypedArray%`.prototype.lastIndexOf` is a distinct function that implements the same algorithm as `Array.prototype.lastIndexOf` as defined in 22.1.3.17 except that the this object's [[ArrayLength]] internal slot is accessed in place of performing a [[Get]] of `"length"`. The implementation of the algorithm may be optimized with the knowledge that the this value is an object that has a fixed length and whose integer-indexed properties are not sparse. However, such optimization must not introduce any observable changes in the specified behaviour of the algorithm.
+％TypedArray％`.prototype.lastIndexOf`是一个与22.1.3.17定义的实现相同算法的独特函数，除了访问此对象的[[ArrayLength]]内部插槽以代替执行[length]的[[Get]]。可以使用以下知识来优化算法的实现：该值是一个具有固定长度的对象，并且其整数索引属性不稀疏。但是，这种优化不得在算法的指定行为中引入任何可观察到的变化。
 
-This function is not generic. ValidateTypedArray is applied to the this value prior to evaluating the algorithm. If its result is an abrupt completion that exception is thrown instead of evaluating the algorithm.
+此功能不是通用的。在解释执行算法之前，将ValidateTypedArray应用于此值。如果其结果是突然完成，则抛出该异常，而不是解释执行算法。
 
 #### 22.2.3.18 获取 %TypedArray%.prototype.length <div id="sec-get-%typedarray%.prototype.length"></div>
 
-%TypedArray%.prototype.length is an accessor property whose set accessor function is undefined. Its get accessor function performs the following steps:
+％TypedArray％.prototype.length是一个访问器属性，其设置的访问器函数undefined。它的get访问器功能执行以下步骤：
 
 1. 令 O 为 this 值
 2. 若 Type(O) 不是 Object, 抛出 TypeError 异常
-3. 若 O does not have a [[TypedArrayName]] internal slot, 抛出 TypeError 异常
+3. 若 O 没有 [[TypedArrayName]] 内部插槽, 抛出 TypeError 异常
 4. 断言：O has [[ViewedArrayBuffer]] and [[ArrayLength]] internal slots.
 5. 令 buffer 为 O.[[ViewedArrayBuffer]].
 6. 若 IsDetachedBuffer(buffer) 是 true, 返回 0.
 7. 令 length 为 O.[[ArrayLength]].
 8. 返回 length.
 
-This function is not generic. The this value must be an object with a [[TypedArrayName]] internal slot.
+此功能不是通用的。此值必须是具有[[TypedArrayName]]内部插槽的对象。
 
 #### 22.2.3.19 %TypedArray%.prototype.map ( callbackfn [ , thisArg ] ) <div id="sec-%typedarray%.prototype.map"></div>
 
-The interpretation and use of the arguments of %TypedArray%.prototype.map are the same as for Array.prototype.map as defined in 22.1.3.18.
+％TypedArray％.prototype.map参数的解释和使用与22.1.3.18中定义的Array.prototype.map相同。
 
-When the map method is called with one or two arguments, 采取以下步骤：
+当使用一个或两个参数调用map方法时，采取以下步骤：
 
 1. 令 O 为 this 值
 2. 执行 ? ValidateTypedArray(O).
@@ -1769,49 +1769,49 @@ When the map method is called with one or two arguments, 采取以下步骤：
    5. k 增加 1。
 9. 返回 A.
 
-This function is not generic. The this value must be an object with a [[TypedArrayName]] internal slot.
+此功能不是通用的。此值必须是具有[[TypedArrayName]]内部插槽的对象。
 
 #### 22.2.3.20 %TypedArray%.prototype.reduce ( callbackfn [ , initialValue ] ) <div id="sec-%typedarray%.prototype.reduce"></div>
 
-%TypedArray%`.prototype.reduce` is a distinct function that implements the same algorithm as `Array.prototype.reduce` as defined in 22.1.3.21 except that the this object's [[ArrayLength]] internal slot is accessed in place of performing a [[Get]] of `"length"`. The implementation of the algorithm may be optimized with the knowledge that the this value is an object that has a fixed length and whose integer-indexed properties are not sparse. However, such optimization must not introduce any observable changes in the specified behaviour of the algorithm and must take into account the possibility that calls to callbackfn may cause the this value to become detached.
+％TypedArray％.prototype.reduce是一个独特的函数，其实现与22.1.3.21中定义的“ Array.prototype.reduce”相同的算法，除了访问此对象的[[ArrayLength]]内部插槽以代替执行[length]的[[Get]]。可以使用以下知识来优化算法的实现：该值是一个具有固定长度的对象，并且其整数索引属性不稀疏。但是，此类优化不得在算法的指定行为中引入任何可观察的变化，并且必须考虑对callbackfn的调用可能导致此值分离的可能性。
 
-This function is not generic. ValidateTypedArray is applied to the this value prior to evaluating the algorithm. If its result is an abrupt completion that exception is thrown instead of evaluating the algorithm.
+此功能不是通用的。在解释执行算法之前，将ValidateTypedArray应用于此值。如果其结果是突然完成，则抛出该异常，而不是解释执行算法。
 
 #### 22.2.3.21 %TypedArray%.prototype.reduceRight ( callbackfn [ , initialValue ] ) <div id="sec-%typedarray%.prototype.reduceright"></div>
 
-%TypedArray%`.prototype.reduceRight` is a distinct function that implements the same algorithm as `Array.prototype.reduceRight` as defined in 22.1.3.22 except that the this object's [[ArrayLength]] internal slot is accessed in place of performing a [[Get]] of `"length"`. The implementation of the algorithm may be optimized with the knowledge that the this value is an object that has a fixed length and whose integer-indexed properties are not sparse. However, such optimization must not introduce any observable changes in the specified behaviour of the algorithm and must take into account the possibility that calls to callbackfn may cause the this value to become detached.
+％TypedArray％`.prototype.reduceRight`是一个与22.1.3.22中定义的实现与`Array.prototype.reduceRight`相同的算法的独特函数，除了访问此对象的[[ArrayLength]]内部插槽以代替执行[length]的[[Get]]。可以使用以下知识来优化算法的实现：该值是一个具有固定长度的对象，并且其整数索引属性不稀疏。但是，此类优化不得在算法的指定行为中引入任何可观察的变化，并且必须考虑对callbackfn的调用可能导致此值分离的可能性。
 
-This function is not generic. ValidateTypedArray is applied to the this value prior to evaluating the algorithm. If its result is an abrupt completion that exception is thrown instead of evaluating the algorithm.
+此功能不是通用的。在解释执行算法之前，将ValidateTypedArray应用于此值。如果其结果是突然完成，则抛出该异常，而不是解释执行算法。
 
 #### 22.2.3.22 %TypedArray%.prototype.reverse ( ) <div id="sec-%typedarray%.prototype.reverse"></div>
 
-%TypedArray%`.prototype.reverse` is a distinct function that implements the same algorithm as `Array.prototype.reverse` as defined in 22.1.3.23 except that the this object's [[ArrayLength]] internal slot is accessed in place of performing a [[Get]] of `"length"`. The implementation of the algorithm may be optimized with the knowledge that the this value is an object that has a fixed length and whose integer-indexed properties are not sparse. However, such optimization must not introduce any observable changes in the specified behaviour of the algorithm.
+％TypedArray％`.prototype.reverse`是与22.1.3.23中定义的实现相同算法的独特函数，除了访问此对象的[[ArrayLength]]内部插槽以代替执行[length]的[[Get]]。可以使用以下知识来优化算法的实现：该值是一个具有固定长度的对象，并且其整数索引属性不稀疏。但是，这种优化不得在算法的指定行为中引入任何可观察到的变化。
 
-This function is not generic. ValidateTypedArray is applied to the this value prior to evaluating the algorithm. If its result is an abrupt completion that exception is thrown instead of evaluating the algorithm.
+此功能不是通用的。在解释执行算法之前，将ValidateTypedArray应用于此值。如果其结果是突然完成，则抛出该异常，而不是解释执行算法。
 
 #### 22.2.3.23 %TypedArray%.prototype.set ( overloaded [ , offset ] ) <div id="sec-%typedarray%.prototype.set-overloaded-offset"></div>
 
-%TypedArray%`.prototype.set` is a single function whose behaviour is overloaded based upon the type of its first argument.
+％TypedArray％`.prototype.set`是一个函数，其行为根据其第一个参数的类型而重载。
 
-This function is not generic. The this value must be an object with a [[TypedArrayName]] internal slot.
+此功能不是通用的。此值必须是具有[[TypedArrayName]]内部插槽的对象。
 
 ##### 22.2.3.23.1 %TypedArray%.prototype.set ( array [ , offset ] ) <div id="sec-%typedarray%.prototype.set-array-offset"></div>
 
-Sets multiple values in this TypedArray, reading the values from the object array. The optional offset value indicates the first element index in this TypedArray where values are written. If omitted, it is assumed to be 0.
+在此TypedArray中设置多个值，从对象数组中读取值。可选的offset值指示此TypedArray中写入值的第一个元素索引。如果省略，则假定为0。
 
-1. 断言：array is any ECMAScript language value other than an Object with a [[TypedArrayName]] internal slot. If it is such an Object, the definition in 22.2.3.23.2 applies.
+1. 断言：数组是除带有[[TypedArrayName]]内部插槽的对象以外的任何ECMAScript语言值。如果是这样的对象，则适用22.2.3.23.2中的定义。
 2. 令 target 为 this 值
 3. 若 Type(target) 不是 Object, 抛出 TypeError 异常
-4. 若 target does not have a [[TypedArrayName]] internal slot, 抛出 TypeError 异常
-5. 断言：target has a [[ViewedArrayBuffer]] internal slot.
+4. 若 target 没有 [[TypedArrayName]] 内部插槽, 抛出 TypeError 异常
+5. 断言：target 有 [[ViewedArrayBuffer]] 内部插槽.
 6. 令 targetOffset 为 ? ToInteger(offset).
 7. 若 targetOffset < 0, 抛出 RangeError 异常
 8. 令 targetBuffer 为 target.[[ViewedArrayBuffer]].
 9. 若 IsDetachedBuffer(targetBuffer) 是 true, 抛出 TypeError 异常
 10. 令 targetLength 为 target.[[ArrayLength]].
-11. 令 targetName 为 the String value of target.[[TypedArrayName]].
-12. 令 targetElementSize 为 the Number value of the Element Size value specified in Table 59 for targetName.
-13. 令 targetType 为 the String value of the Element Type value in Table 59 for targetName.
+11. 令 targetName 为 target.[[TypedArrayName]] 的字符串值.
+12. 令 targetElementSize 为表59中为targetName指定的元素大小值的Number值。
+13. 令 targetType 为表59中targetName的元素类型值的字符串值。
 14. 令 targetByteOffset 为 target.[[ByteOffset]].
 15. 令 src 为 ? ToObject(array).
 16. 令 srcLength 为 ? ToLength(? Get(src, "length")).
@@ -1830,13 +1830,13 @@ Sets multiple values in this TypedArray, reading the values from the object arra
 
 ##### 22.2.3.23.2 %TypedArray%.prototype.set ( typedArray [ , offset ] ) <div id="sec-%typedarray%.prototype.set-typedarray-offset"></div>
 
-Sets multiple values in this TypedArray, reading the values from the typedArray argument object. The optional offset value indicates the first element index in this TypedArray where values are written. If omitted, it is assumed to be 0.
+在此TypedArray中设置多个值，并从typedArray参数对象中读取值。可选的offset值指示此TypedArray中写入值的第一个元素索引。如果省略，则假定为0。
 
-1. 断言：typedArray has a [[TypedArrayName]] internal slot. If it does not, the definition in 22.2.3.23.1 applies.
+1. 断言：typedArray 有 [[TypedArrayName]] 内部插槽。如果不是，则适用22.2.3.23.1中的定义。
 2. 令 target 为 this 值
 3. 若 Type(target) 不是 Object, 抛出 TypeError 异常
-4. 若 target does not have a [[TypedArrayName]] internal slot, 抛出 TypeError 异常
-5. 断言：target has a [[ViewedArrayBuffer]] internal slot.
+4. 若 target 没有 [[TypedArrayName]] 内部插槽, 抛出 TypeError 异常
+5. 断言：target 有 [[ViewedArrayBuffer]] 内部插槽.
 6. 令 targetOffset 为 ? ToInteger(offset).
 7. 若 targetOffset < 0, 抛出 RangeError 异常
 8. 令 targetBuffer 为 target.[[ViewedArrayBuffer]].
@@ -1844,29 +1844,29 @@ Sets multiple values in this TypedArray, reading the values from the typedArray 
 10. 令 targetLength 为 target.[[ArrayLength]].
 11. 令 srcBuffer 为 typedArray.[[ViewedArrayBuffer]].
 12. 若 IsDetachedBuffer(srcBuffer) 是 true, 抛出 TypeError 异常
-13. 令 targetName 为 the String value of target.[[TypedArrayName]].
-14. 令 targetType 为 the String value of the Element Type value in Table 59 for targetName.
-15. 令 targetElementSize 为 the Number value of the Element Size value specified in Table 59 for targetName.
+13. 令 targetName 为 target.[[TypedArrayName]] 的字符串值。
+14. 令 targetType 为表59中targetName的元素类型值的字符串值。
+15. 令 targetElementSize 为表59中为targetName指定的元素大小值的Number值。
 16. 令 targetByteOffset 为 target.[[ByteOffset]].
-17. 令 srcName 为 the String value of typedArray.[[TypedArrayName]].
-18. 令 srcType 为 the String value of the Element Type value in Table 59 for srcName.
-19. 令 srcElementSize 为 the Number value of the Element Size value specified in Table 59 for srcName.
+17. 令 srcName 为 typedArray.[[TypedArrayName]] 的字符串值。
+18. 令 srcType 为表59中srcName的元素类型值的字符串值。
+19. 令 srcElementSize 为表59中为srcName指定的元素大小值的Number值。
 20. 令 srcLength 为 typedArray.[[ArrayLength]].
 21. 令 srcByteOffset 为 typedArray.[[ByteOffset]].
 22. 若 srcLength + targetOffset > targetLength, 抛出 RangeError 异常
-23. 若 both IsSharedArrayBuffer(srcBuffer) and IsSharedArrayBuffer(targetBuffer) are true，那么
-    1. 若 srcBuffer.[[ArrayBufferData]] and targetBuffer.[[ArrayBufferData]] are the same Shared Data Block values, 令 same 为 true; 否则令 same 为 false.
+23. 若 IsSharedArrayBuffer(srcBuffer) 和 IsSharedArrayBuffer(targetBuffer) 均为true，那么
+    1. 若 srcBuffer.[[ArrayBufferData]] 并且 targetBuffer.[[ArrayBufferData]]是相同的共享数据块值， 令 same 为 true; 否则令 same 为 false.
 24. 否则，令 same 为 SameValue(srcBuffer, targetBuffer).
 25. 若 same 是 true，那么
     1. 令 srcByteLength 为 typedArray.[[ByteLength]].
     2. 设置 srcBuffer 为 ? CloneArrayBuffer(srcBuffer, srcByteOffset, srcByteLength, %ArrayBuffer%).
-    3. NOTE: %ArrayBuffer% is used to clone srcBuffer because is it known to not have any observable side-effects.
+    3. 注意：％ArrayBuffer％用于克隆srcBuffer，因为已知它没有任何可观察到的副作用。
     4. 令 srcByteIndex 为 0.
 26. 否则，令 srcByteIndex 为 srcByteOffset.
 27. 令 targetByteIndex 为 targetOffset × targetElementSize + targetByteOffset.
 28. 令 limit 为 targetByteIndex + targetElementSize × srcLength.
 29. 若 SameValue(srcType, targetType) 是 true，那么
-    1. NOTE: If srcType and targetType are the same, the transfer must be performed in a manner that preserves the bit-level encoding of the source data.
+    1. 注意：如果srcType和targetType相同，则必须以保留源数据的位级编码的方式执行传输。
     2. 重复，直到 targetByteIndex < limit
        1. 令 value 为 GetValueFromBuffer(srcBuffer, srcByteIndex, "Uint8", true, "Unordered").
        2. 执行 SetValueInBuffer(targetBuffer, targetByteIndex, "Uint8", value, true, "Unordered").
@@ -1882,7 +1882,7 @@ Sets multiple values in this TypedArray, reading the values from the typedArray 
 
 #### 22.2.3.24 %TypedArray%.prototype.slice ( start, end ) <div id="sec-%typedarray%.prototype.slice"></div>
 
-The interpretation and use of the arguments of %TypedArray%.prototype.slice are the same as for Array.prototype.slice as defined in 22.1.3.25. 采取以下步骤：
+％TypedArray％.prototype.slice的参数的解释和使用与22.1.3.25中定义的Array.prototype.slice相同。采取以下步骤：
 
 1. 令 O 为 this 值
 2. 执行 ? ValidateTypedArray(O).
@@ -1893,10 +1893,10 @@ The interpretation and use of the arguments of %TypedArray%.prototype.slice are 
 7. 若 relativeEnd < 0, 令 final 为 max((len + relativeEnd), 0); 否则令 final 为 min(relativeEnd, len).
 8. 令 count 为 max(final - k, 0).
 9. 令 A 为 ? TypedArraySpeciesCreate(O, « count »).
-10. 令 srcName 为 the String value of O.[[TypedArrayName]].
-11. 令 srcType 为 the String value of the Element Type value in Table 59 for srcName.
-12. 令 targetName 为 the String value of A.[[TypedArrayName]].
-13. 令 targetType 为 the String value of the Element Type value in Table 59 for targetName.
+10. 令 srcName 为 O.[[TypedArrayName]] 的字符串值。
+11. 令 srcType 为表59中srcName的元素类型值的字符串值。
+12. 令 targetName 为 A.[[TypedArrayName]] 的字符串值。
+13. 令 targetType 为表59中targetName的元素类型值的字符串值。
 14. 若 SameValue(srcType, targetType) 是 false，那么
     1. 令 n 为 0.
     2. 重复，直到 k < final
@@ -1909,8 +1909,8 @@ The interpretation and use of the arguments of %TypedArray%.prototype.slice are 
     1. 令 srcBuffer 为 O.[[ViewedArrayBuffer]].
     2. 若 IsDetachedBuffer(srcBuffer) 是 true, 抛出 TypeError 异常
     3. 令 targetBuffer 为 A.[[ViewedArrayBuffer]].
-    4. 令 elementSize 为 the Number value of the Element Size value specified in Table 59 for srcType.
-    5. NOTE: If srcType and targetType are the same, the transfer must be performed in a manner that preserves the bit-level encoding of the source data.
+    4. 令 elementSize 为表59中为srcType指定的元素大小值的Number值。
+    5. 注意：如果srcType和targetType相同，则必须以保留源数据的位级编码的方式执行传输。
     6. 令 srcByteOffet 为 O.[[ByteOffset]].
     7. 令 targetByteIndex 为 A.[[ByteOffset]].
     8. 令 srcByteIndex 为 (k × elementSize) + srcByteOffet.
@@ -1922,34 +1922,34 @@ The interpretation and use of the arguments of %TypedArray%.prototype.slice are 
         4. targetByteIndex 增加 1。
 16. 返回 A.
 
-This function is not generic. The this value must be an object with a [[TypedArrayName]] internal slot.
+此功能不是通用的。此值必须是具有[[TypedArrayName]]内部插槽的对象。
 
 #### 22.2.3.25 %TypedArray%.prototype.some ( callbackfn [ , thisArg ] ) <div id="sec-%typedarray%.prototype.some"></div>
 
-%TypedArray%`.prototype.some` is a distinct function that implements the same algorithm as `Array.prototype.some` as defined in 22.1.3.26 except that the this object's [[ArrayLength]] internal slot is accessed in place of performing a [[Get]] of `"length"`. The implementation of the algorithm may be optimized with the knowledge that the this value is an object that has a fixed length and whose integer-indexed properties are not sparse. However, such optimization must not introduce any observable changes in the specified behaviour of the algorithm and must take into account the possibility that calls to callbackfn may cause the this value to become detached.
+％TypedArray％`.prototype.some`是一个与22.1.3.26中定义的实现相同算法的独特函数，除了访问此对象的[[ArrayLength]]内部插槽以代替执行[length]的[[Get]]。可以使用以下知识来优化算法的实现：该值是一个具有固定长度的对象，并且其整数索引属性不稀疏。但是，此类优化不得在算法的指定行为中引入任何可观察的变化，并且必须考虑对callbackfn的调用可能导致此值分离的可能性。
 
-This function is not generic. ValidateTypedArray is applied to the this value prior to evaluating the algorithm. If its result is an abrupt completion that exception is thrown instead of evaluating the algorithm.
+此功能不是通用的。在解释执行算法之前，将ValidateTypedArray应用于此值。如果其结果是突然完成，则抛出该异常，而不是解释执行算法。
 
 #### 22.2.3.26 %TypedArray%.prototype.sort ( comparefn ) <div id="sec-%typedarray%.prototype.sort"></div>
 
-%TypedArray%.prototype.sort is a distinct function that, except as described below, implements the same requirements as those of Array.prototype.sort as defined in 22.1.3.27. The implementation of the %TypedArray%.prototype.sort specification may be optimized with the knowledge that the this value is an object that has a fixed length and whose integer-indexed properties are not sparse. The only internal methods of the this object that the algorithm may call are [[Get]] and [[Set]].
+％TypedArray％.prototype.sort是一个独特的函数，除了如下所述，它实现的功能与Array.prototype.sort的要求相同，如22.1.3.27中所定义。可以使用以下知识来优化％TypedArray％.prototype.sort规范的实现：该值是一个具有固定长度且整数索引属性不稀疏的对象。算法可能会调用此对象的唯一内部方法是[[Get]]和[[Set]]。
 
-This function is not generic. The this value must be an object with a [[TypedArrayName]] internal slot.
+此功能不是通用的。此值必须是具有[[TypedArrayName]]内部插槽的对象。
 
-Upon entry, the following steps are performed to initialize evaluation of the sort function. These steps are used instead of the entry steps in 22.1.3.27:
+输入后，执行以下步骤以初始化排序功能的解释执行。这些步骤代替了22.1.3.27中的输入步骤：
 
-1. 若 comparefn is not undefined and IsCallable(comparefn) 是 false, 抛出 TypeError 异常
+1. 若 comparefn 不是 undefined 并且 IsCallable(comparefn) 是 false, 抛出 TypeError 异常
 2. 令 obj 为 this 值
 3. 令 buffer 为 ? ValidateTypedArray(obj).
 4. 令 len 为 obj.[[ArrayLength]].
 
-The implementation-defined sort order condition for exotic objects is not applied by %TypedArray%.prototype.sort.
+％TypedArray％.prototype.sort不应用异类对象的实现定义的排序顺序条件。
 
-The following version of SortCompare is used by %TypedArray%.prototype.sort. It performs a numeric comparison rather than the string comparison used in 22.1.3.27. SortCompare has access to the comparefn and buffer values of the current invocation of the sort method.
+％TypedArray％.prototype.sort使用以下版本的SortCompare。它执行数字比较，而不是22.1.3.27中使用的字符串比较。 SortCompare可以访问sort方法当前调用的comparefn和buffer值。
 
-When the TypedArray SortCompare abstract operation is called with two arguments x and y, 采取以下步骤：
+当使用两个参数x和y调用TypedArray SortCompare抽象操作时，采取以下步骤：
 
-1. 断言：Both Type(x) and Type(y) is Number.
+1. 断言：Type(x) 和 Type(y) 都为 Number.
 2. 若 comparefn 不是 undefined，那么
    1. 令 v 为 ? ToNumber(? Call(comparefn, undefined, « x, y »)).
    2. 若 IsDetachedBuffer(buffer) 是 true, 抛出 TypeError 异常
@@ -1966,16 +1966,16 @@ When the TypedArray SortCompare abstract operation is called with two arguments 
 
 > 注
 >
-> Because NaN always compares greater than any other value, NaN property values always sort to the end of the result when comparefn is not provided.
+> 因为NaN总是比较大于任何其他值，所以当不提供comparefn时，NaN属性值总是排序到结果的末尾。
 
 #### 22.2.3.27 %TypedArray%.prototype.subarray ( begin, end ) <div id="sec-%typedarray%.prototype.subarray"></div>
 
-Returns a new TypedArray object whose element type is the same as this TypedArray and whose ArrayBuffer is the same as the ArrayBuffer of this TypedArray, referencing the elements at begin, inclusive, up to end, exclusive. If either begin or end is negative, it refers to an index from the end of the array, as opposed to from the beginning.
+返回一个新的TypedArray对象，该对象的元素类型与此TypedArray相同，并且其ArrayBuffer与此TypedArray的ArrayBuffer相同，并在开始（包括），直到结束（不包括）之间引用元素。如果begin或end为负，则它是指数组末尾的索引，而不是开头的索引。
 
 1. 令 O 为 this 值
 2. 若 Type(O) 不是 Object, 抛出 TypeError 异常
-3. 若 O does not have a [[TypedArrayName]] internal slot, 抛出 TypeError 异常
-4. 断言：O has a [[ViewedArrayBuffer]] internal slot.
+3. 若 O 没有 [[TypedArrayName]] 内部插槽, 抛出 TypeError 异常
+4. 断言：O 有 [[ViewedArrayBuffer]] 内部插槽.
 5. 令 buffer 为 O.[[ViewedArrayBuffer]].
 6. 令 srcLength 为 O.[[ArrayLength]].
 7. 令 relativeBegin 为 ? ToInteger(begin).
@@ -1983,28 +1983,28 @@ Returns a new TypedArray object whose element type is the same as this TypedArra
 9. 若 end 是 undefined, 令 relativeEnd 为 srcLength; 否则, 令 relativeEnd 为 ? ToInteger(end).
 10. 若 relativeEnd < 0, 令 endIndex 为 max((srcLength + relativeEnd), 0); 否则令 endIndex 为 min(relativeEnd, srcLength).
 11. 令 newLength 为 max(endIndex - beginIndex, 0).
-12. 令 constructorName 为 the String value of O.[[TypedArrayName]].
-13. 令 elementSize 为 the Number value of the Element Size value specified in Table 59 for constructorName.
+12. 令 constructorName 为 O.[[TypedArrayName]] 的字符串值。
+13. 令 elementSize 为表59中为constructorName指定的元素大小值的Number值。
 14. 令 srcByteOffset 为 O.[[ByteOffset]].
 15. 令 beginByteOffset 为 srcByteOffset + beginIndex × elementSize.
 16. 令 argumentsList 为 « buffer, beginByteOffset, newLength ».
 17. 返回 ? TypedArraySpeciesCreate(O, argumentsList).
 
-This function is not generic. The this value must be an object with a [[TypedArrayName]] internal slot.
+此功能不是通用的。此值必须是具有[[TypedArrayName]]内部插槽的对象。
 
 #### 22.2.3.28 %TypedArray%.prototype.toLocaleString ( [ reserved1 [ , reserved2 ] ] ) <div id="sec-%typedarray%.prototype.tolocalestring"></div>
 
-%TypedArray%`.prototype.toLocaleString` is a distinct function that implements the same algorithm as `Array.prototype.toLocaleString` as defined in 22.1.3.29 except that the this object's [[ArrayLength]] internal slot is accessed in place of performing a [[Get]] of `"length"`. The implementation of the algorithm may be optimized with the knowledge that the this value is an object that has a fixed length and whose integer-indexed properties are not sparse. However, such optimization must not introduce any observable changes in the specified behaviour of the algorithm.
+％TypedArray％`.prototype.toLocaleString`是一个与22.1.3.29中定义的实现与`Array.prototype.toLocaleString`相同的算法的独特函数，除了访问此对象的[[ArrayLength]]内部插槽以代替执行[length]的[[Get]]。可以使用以下知识来优化算法的实现：该值是一个具有固定长度的对象，并且其整数索引属性不稀疏。但是，这种优化不得在算法的指定行为中引入任何可观察到的变化。
 
-This function is not generic. ValidateTypedArray is applied to the this value prior to evaluating the algorithm. If its result is an abrupt completion that exception is thrown instead of evaluating the algorithm.
+此功能不是通用的。在解释执行算法之前，将ValidateTypedArray应用于此值。如果其结果是突然完成，则抛出该异常，而不是解释执行算法。
 
 > 注
 >
-> If the ECMAScript implementation includes the ECMA-402 Internationalization API this function is based upon the algorithm for `Array.prototype.toLocaleString` that is in the ECMA-402 specification.
+> 如果ECMAScript实现包含ECMA-402国际化API，则此函数基于ECMA-402规范中的Array.prototype.toLocaleString算法。
 
 #### 22.2.3.29 %TypedArray%.prototype.toString ( ) <div id="sec-%typedarray%.prototype.tostring"></div>
 
-The initial value of the %TypedArray%`.prototype.toString` data property is the same built-in function object as the `Array.prototype.toString` method defined in 22.1.3.30.
+％TypedArray％`.prototype.toString`数据属性的初始值是与22.1.3.30中定义的Array.prototype.toString`方法相同的内置函数对象。
 
 #### 22.2.3.30 %TypedArray%.prototype.values ( ) <div id="sec-%typedarray%.prototype.values"></div>
 
@@ -2016,56 +2016,56 @@ The initial value of the %TypedArray%`.prototype.toString` data property is the 
 
 #### 22.2.3.31 %TypedArray%.prototype [ @@iterator ] ( ) <div id="sec-%typedarray%.prototype-@@iterator"></div>
 
-The initial value of the @@iterator property is the same function object as the initial value of the %TypedArray%`.prototype.values` property.
+@@ iterator属性的初始值是与％TypedArray％`.prototype.values`属性的初始值相同的函数对象。
 
 #### 22.2.3.32 获取 %TypedArray%.prototype [ @@toStringTag ] <div id="sec-get-%typedarray%.prototype-@@tostringtag"></div>
 
-%TypedArray%.prototype[@@toStringTag] is an accessor property whose set accessor function is undefined. Its get accessor function performs the following steps:
+％TypedArray％.prototype [@@ toStringTag]是一个访问器属性，其设置的访问器功能undefined。它的get访问器功能执行以下步骤：
 
 1. 令 O 为 this 值
 2. 若 Type(O) 不是 Object, 返回 undefined.
-3. 若 O does not have a [[TypedArrayName]] internal slot, 返回 undefined.
+3. 若 O 没有 [[TypedArrayName]] 内部插槽, 返回 undefined.
 4. 令 name 为 O.[[TypedArrayName]].
 5. 断言：Type(name) is String.
 6.  返回 name.
 
 此属性具有特性 { [[Enumerable]]: false, [[Configurable]]: true }.
 
-The initial value of the name property of this function is "get [Symbol.toStringTag]".
+此函数的name属性的初始值为“ get [Symbol.toStringTag]”。
 
 ### 22.2.4 TypedArray 构造器 <div id="sec-typedarray-constructors"></div>
 
-Each TypedArray constructor:
+每个TypedArray构造函数：
 
-- is an intrinsic object that has the structure described below, differing only in the name used as the constructor name instead of TypedArray, in Table 59.
-- is a single function whose behaviour is overloaded based upon the number and types of its arguments. The actual behaviour of a call of TypedArray depends upon the number and kind of arguments that are passed to it.
-- is not intended to be called as a function and will throw an exception when called in that manner.
-- is designed to be subclassable. It may be used as the value of an `extends` clause of a class definition. Subclass constructors that intend to inherit the specified TypedArray behaviour must include a `super` call to the TypedArray constructor to create and initialize the subclass instance with the internal state necessary to support the %TypedArray%`.prototype` built-in methods.
-- has a `"length"` property whose value is 3.
+- 是一个内部对象，具有以下描述的结构，仅在用作表59中的TypedArray而不是用作构造函数名称的名称上有所不同。
+- 是一个函数，其行为根据其参数的数量和类型而重载。调用TypedArray的实际行为取决于传递给它的参数的数量和种类。
+- 并非旨在作为函数调用，并且以这种方式调用时将引发异常。
+- 设计为可归类的。它可以用作类定义的`extends`子句的值。打算继承指定TypedArray行为的子类构造函数必须包括对TypedArray构造函数的“超级”调用，以使用支持％TypedArray％`.prototype`内置方法所必需的内部状态来创建和初始化子类实例。
+- 具有一个“ length”属性，其值为3。
 
 #### 22.2.4.1 TypedArray ( ) <div id="sec-typedarray"></div>
 
-This description applies only if the TypedArray function is called with no arguments.
+仅当不带参数调用TypedArray函数时，此描述才适用。
 
 1. 若 NewTarget 是 undefined, 抛出 TypeError 异常
-2. 令 constructorName 为 the String value of the Constructor Name value specified in Table 59 for this TypedArray constructor.
+2. 令 constructorName 为表59中为此TypedArray构造函数指定的构造函数名称值的字符串值。
 3. 返回 ? AllocateTypedArray(constructorName, NewTarget, "%TypedArrayPrototype%", 0).
 
 #### 22.2.4.2 TypedArray ( length ) <div id="sec-typedarray-length"></div>
 
-This description applies only if the TypedArray function is called with at least one argument and the Type of the first argument is not Object.
+仅当使用至少一个参数调用TypedArray函数且第一个参数的类型不是Object时，此描述才适用。
 
-TypedArray called with argument length performs the following steps:
+以参数长度调用的TypedArray执行以下步骤：
 
-1. 断言：Type(length) is not Object.
+1. 断言：Type(length) 不是 Object.
 2. 若 NewTarget 是 undefined, 抛出 TypeError 异常
 3. 令 elementLength 为 ? ToIndex(length).
-4. 令 constructorName 为 the String value of the Constructor Name value specified in Table 59 for this TypedArray constructor.
+4. 令 constructorName 为表59中为此TypedArray构造函数指定的构造函数名称值的字符串值。
 5. 返回 ? AllocateTypedArray(constructorName, NewTarget, "%TypedArrayPrototype%", elementLength).
 
 ##### 22.2.4.2.1 RS: AllocateTypedArray ( constructorName, newTarget, defaultProto [ , length ] ) <div id="sec-allocatetypedarray"></div>
 
-The abstract operation AllocateTypedArray with arguments constructorName, newTarget, defaultProto and optional argument length is used to validate and create an instance of a TypedArray constructor. constructorName is required to be the name of a TypedArray constructor in Table 59. 若 the length argument is passed, an ArrayBuffer of that length is also allocated and associated with the new TypedArray instance. AllocateTypedArray provides common semantics that 是 used by all of the TypedArray overloads. AllocateTypedArray performs the following steps:
+带有参数构造函数名、newTarget、defaultProto和可选参数长度的抽象操作AllocateTypedArray用于验证和创建TypedArray构造函数的实例。表59中的TypedArray构造函数的名称需要使用constructorName。若长度参数传递,一个ArrayBuffer长度也分配和与新TypedArray实例相关联。AllocateTypedArray提供了共同的语义,是由所有TypedArray过载使用。AllocateTypedArray执行以下步骤:
 
 1. 令 proto 为 ? GetPrototypeFromConstructor(newTarget, defaultProto).
 2. 令 obj 为 IntegerIndexedObjectCreate(proto, « [[ViewedArrayBuffer]], [[TypedArrayName]], [[ByteLength]], [[ByteOffset]], [[ArrayLength]] »).
@@ -2081,13 +2081,13 @@ The abstract operation AllocateTypedArray with arguments constructorName, newTar
 
 ##### 22.2.4.2.2 RS: AllocateTypedArrayBuffer ( O, length ) <div id="sec-allocatetypedarraybuffer"></div>
 
-The abstract operation AllocateTypedArrayBuffer with arguments O and length allocates and associates an ArrayBuffer with the TypedArray instance O. It performs the following steps:
+带有参数O和长度的抽象操作AllocateTypedArrayBuffer将ArrayBuffer与TypedArray实例O进行分配和关联。
 
-1. 断言：O is an Object that has a [[ViewedArrayBuffer]] internal slot.
-2. 断言：O.[[ViewedArrayBuffer]] is undefined.
+1. 断言：O 是有 [[ViewedArrayBuffer]] 内部插槽的 Object .
+2. 断言：O.[[ViewedArrayBuffer]] 是 undefined.
 3. 断言：length ≥ 0.
-4. 令 constructorName 为 the String value of O.[[TypedArrayName]].
-5. 令 elementSize 为 the Element Size value in Table 59 for constructorName.
+4. 令 constructorName 为 O.[[TypedArrayName]] 的字符串值。
+5. 令 elementSize 为表59中构造名的元素大小值。
 6. 令 byteLength 为 elementSize × length.
 7. 令 data 为 ? AllocateArrayBuffer(%ArrayBuffer%, byteLength).
 8. 设置 O.[[ViewedArrayBuffer]] 为 data.
@@ -2098,24 +2098,24 @@ The abstract operation AllocateTypedArrayBuffer with arguments O and length allo
 
 #### 22.2.4.3 TypedArray ( typedArray ) <div id="sec-typedarray-typedarray"></div>
 
-This description applies only if the TypedArray function is called with at least one argument and the Type of the first argument is Object and that object has a [[TypedArrayName]] internal slot.
+这个描述仅适用于如果TypedArray函数至少有一个参数，第一个参数的类型是对象，对象有[[TypedArrayName]]内部插槽。
 
-TypedArray called with argument typedArray performs the following steps:
+使用参数TypedArray调用TypedArray执行以下步骤:
 
-1. 断言：Type(typedArray) is Object and typedArray has a [[TypedArrayName]] internal slot.
+1. 断言：Type(typedArray) 是 Object，并且 typedArray 有 [[TypedArrayName]] 内部插槽.
 2. 若 NewTarget 是 undefined, 抛出 TypeError 异常
-3. 令 constructorName 为 the String value of the Constructor Name value specified in Table 59 for this TypedArray constructor.
+3. 令 constructorName 为表59中为此类型darray构造函数指定的构造函数名称值的字符串值。
 4. 令 O 为 ? AllocateTypedArray(constructorName, NewTarget, "%TypedArrayPrototype%").
 5. 令 srcArray 为 typedArray.
 6. 令 srcData 为 srcArray.[[ViewedArrayBuffer]].
 7. 若 IsDetachedBuffer(srcData) 是 true, 抛出 TypeError 异常
-8. 令 elementType 为 the String value of the Element Type value in Table 59 for constructorName.
+8. 令 elementType 为表59中构造名的元素类型值的字符串值。
 9. 令 elementLength 为 srcArray.[[ArrayLength]].
-10. 令 srcName 为 the String value of srcArray.[[TypedArrayName]].
-11. 令 srcType 为 the String value of the Element Type value in Table 59 for srcName.
-12. 令 srcElementSize 为 the Element Size value in Table 59 for srcName.
+10. 令 srcName 为 srcArray.[[TypedArrayName]] 的字符串值。
+11. 令 srcType 为表59中srcName的元素类型值的字符串值。
+12. 令 srcElementSize 为srcName表59中的元素大小值。
 13. 令 srcByteOffset 为 srcArray.[[ByteOffset]].
-14. 令 elementSize 为 the Element Size value in Table 59 for constructorName.
+14. 令 elementSize 为表59中构造名的元素大小值。
 15. 令 byteLength 为 elementSize × elementLength.
 16. 若 IsSharedArrayBuffer(srcData) 是 false，那么
     1. 令 bufferConstructor 为 ? SpeciesConstructor(srcData, %ArrayBuffer%).
@@ -2143,28 +2143,28 @@ TypedArray called with argument typedArray performs the following steps:
 
 #### 22.2.4.4 TypedArray ( object ) <div id="sec-typedarray-object"></div>
 
-This description applies only if the TypedArray function is called with at least one argument and the Type of the first argument is Object and that object does not have either a [[TypedArrayName]] or an [[ArrayBufferData]] internal slot.
+这种描述只适用于以下情况:使用至少一个参数调用TypedArray函数，并且第一个参数的类型是Object，而该对象既没有[[TypedArrayName]]，也没有[[ArrayBufferData]]内部槽。
 
-TypedArray called with argument object performs the following steps:
+使用参数对象调用TypedArray执行以下步骤:
 
-1. 断言：Type(object) is Object and object does not have either a [[TypedArrayName]] or an [[ArrayBufferData]] internal slot.
+1. 断言：Type(object) 是 Object 并且 object 既没有[[TypedArrayName]]，也没有[[ArrayBufferData]]内部槽。
 2. 若 NewTarget 是 undefined, 抛出 TypeError 异常
-3. 令 constructorName 为 the String value of the Constructor Name value specified in Table 59 for this TypedArray constructor.
+3. 令 constructorName 为表59中为此类型darray构造函数指定的构造函数名称值的字符串值。
 4. 令 O 为 ? AllocateTypedArray(constructorName, NewTarget, "%TypedArrayPrototype%").
 5. 令 usingIterator 为 ? GetMethod(object, @@iterator).
 6. 若 usingIterator 不是 undefined，那么
    1. 令 values 为 ? IterableToList(object, usingIterator).
-   2. 令 len 为 the number of elements in values.
+   2. 令 len 为值中元素的数量。
    3. 执行 ? AllocateTypedArrayBuffer(O, len).
    4. 令 k 为 0.
    5. 重复，直到 k < len
       1. 令 Pk 为 ! ToString(k).
-      2. 令 kValue 为 the first element of values and remove that element from values.
+      2. 令 kValue 为值的第一个元素并从值中删除该元素。
       3. 执行 ? Set(O, Pk, kValue, true).
       4. k 增加 1。
-   6. 断言：values is now an empty List.
+   6. 断言：值现在是一个空列表。
    7. 返回 O.
-7. NOTE: object is not an Iterable so assume it is already an array-like object.
+7. 注意：对象不是一个可迭代的，所以假设它已经是一个类似数组的对象。
 8. 令 arrayLike 为 object.
 9. 令 len 为 ? ToLength(? Get(arrayLike, "length")).
 10. 执行 ? AllocateTypedArrayBuffer(O, len).
@@ -2178,22 +2178,22 @@ TypedArray called with argument object performs the following steps:
 
 #### 22.2.4.5 TypedArray ( buffer [ , byteOffset [ , length ] ] ) <div id="sec-typedarray-buffer-byteoffset-length"></div>
 
-This description applies only if the TypedArray function is called with at least one argument and the Type of the first argument is Object and that object has an [[ArrayBufferData]] internal slot.
+这种描述只适用于以下情况:使用至少一个参数调用TypedArray函数，且第一个参数的类型是Object，且该对象具有[[ArrayBufferData]]内部槽。
 
-TypedArray called with at least one argument buffer performs the following steps:
+使用至少一个参数缓冲区调用TypedArray执行以下步骤:
 
-1. 断言：Type(buffer) is Object and buffer has an [[ArrayBufferData]] internal slot.
+1. 断言：类型(buffer)是对象，buffer有一个[[ArrayBufferData]]内部槽。
 2. 若 NewTarget 是 undefined, 抛出 TypeError 异常
-3. 令 constructorName 为 the String value of the Constructor Name value specified in Table 59 for this TypedArray constructor.
+3. 令 constructorName 指定为构造函数的名称值在表59 TypedArray构造函数的字符串值。
 4. 令 O 为 ? AllocateTypedArray(constructorName, NewTarget, "%TypedArrayPrototype%").
-5. 令 elementSize 为 the Number value of the Element Size value in Table 59 for constructorName.
+5. 令 elementSize 为表59中用于构造名称的元素大小值的数值。
 6. 令 offset 为 ? ToIndex(byteOffset).
 7. 若 offset modulo elementSize ≠ 0, 抛出 RangeError 异常
-8. 若 length is present and length 不是 undefined，那么
+8. 若 length 存在，并且 length 不是 undefined，那么
    1. 令 newLength 为 ? ToIndex(length).
 9. 若 IsDetachedBuffer(buffer) 是 true, 抛出 TypeError 异常
 10. 令 bufferByteLength 为 buffer.[[ArrayBufferByteLength]].
-11. 若 length 是 either not present or undefined，那么
+11. 若 length 是不存在的或为 undefined 的，那么
     1. 若 bufferByteLength modulo elementSize ≠ 0, 抛出 RangeError 异常
     2. 令 newByteLength 为 bufferByteLength - offset.
     3. 若 newByteLength < 0, 抛出 RangeError 异常
@@ -2208,7 +2208,7 @@ TypedArray called with at least one argument buffer performs the following steps
 
 #### 22.2.4.6 TypedArrayCreate ( constructor, argumentList ) <div id="typedarray-create"></div>
 
-The abstract operation TypedArrayCreate with arguments constructor and argumentList is used to specify the creation of a new TypedArray object using a constructor function. It performs the following steps:
+带有参数构造函数和argumentList的抽象操作TypedArrayCreate用于指定使用构造函数创建一个新的TypedArray对象。它执行以下步骤:
 
 1. 令 newTypedArray 为 ? Construct(constructor, argumentList).
 2. 执行 ? ValidateTypedArray(newTypedArray).
@@ -2218,51 +2218,51 @@ The abstract operation TypedArrayCreate with arguments constructor and argumentL
 
 #### 22.2.4.7 TypedArraySpeciesCreate ( exemplar, argumentList ) <div id="typedarray-species-create"></div>
 
-The abstract operation TypedArraySpeciesCreate with arguments exemplar and argumentList is used to specify the creation of a new TypedArray object using a constructor function that is derived from exemplar. It performs the following steps:
+带有参数范例和参数列表的抽象操作TypedArraySpeciesCreate用于指定使用来自范例的构造函数创建一个新的TypedArray对象。它执行以下步骤:
 
-1. 断言：exemplar is an Object that has a [[TypedArrayName]] internal slot.
-2. 令 defaultConstructor 为 the intrinsic object listed in column one of Table 59 for exemplar.[[TypedArrayName]].
+1. 断言：exemplar 是有 [[TypedArrayName]] 内部插槽的 Object.
+2. 令 defaultConstructor 为表59的第一列中列出的内在对象的范例[[TypedArrayName]]。
 3. 令 constructor 为 ? SpeciesConstructor(exemplar, defaultConstructor).
 4. 返回 ? TypedArrayCreate(constructor, argumentList).
 
 ### 22.2.5 TypedArray 构造器属性 <div id="sec-properties-of-the-typedarray-constructors"></div>
 
-Each TypedArray constructor:
+每个TypedArray构造函数:
 
-- has a [[Prototype]] internal slot whose value is the intrinsic object %TypedArray%.
-- has a name property whose value is the String value of the constructor name specified for it in Table 59.
-- has the following properties:
+- 有 [[Prototype]] 内部插槽其值为内部对象%TypedArray%。
+- 是否有一个name属性，其值是表59中为其指定的构造函数名称的字符串值。
+- 具有以下特性：
 
 #### 22.2.5.1 TypedArray.BYTES_PER_ELEMENT <div id="sec-typedarray.bytes_per_element"></div>
 
-The value of TypedArray.BYTES_PER_ELEMENT is the Number value of the Element Size value specified in Table 59 for TypedArray.
+TypedArray的值。BYTES_PER_ELEMENT是表59中为TypedArray指定的元素大小值的数值。
 
 此属性具有特性 { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }.
 
 #### 22.2.5.2 TypedArray.prototype <div id="sec-typedarray.prototype"></div>
 
-The initial value of TypedArray`.prototype` is the corresponding TypedArray prototype intrinsic object (22.2.6.
+TypedArray.prototype 的初始值为相应的 TypedArray 原型内部对象（22.2.6）。
 
 此属性具有特性 { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }.
 
 ### 22.2.6 TypedArray 原型对象属性 <div id="sec-properties-of-typedarray-prototype-objects"></div>
 
-Each TypedArray prototype object:
+每个TypedArray原型对象：
 
-- has a [[Prototype]] internal slot whose value is the intrinsic object %TypedArrayPrototype%.
-- is an ordinary object.
-- does not have a [[ViewedArrayBuffer]] or any other of the internal slots that are specific to TypedArray instance objects.
+- 有 [[Prototype]] 内部插槽其值是内部对象％TypedArrayPrototype％。
+- 是一个普通的对象。
+- 没有 [[ViewedArrayBuffer]] 或任何其他 TypedArray 实例对象专用的内部插槽
 
 #### 22.2.6.1 TypedArray.prototype.BYTES_PER_ELEMENT <div id="sec-typedarray.prototype.bytes_per_element"></div>
 
-The value of TypedArray.prototype.BYTES_PER_ELEMENT is the Number value of the Element Size value specified in Table 59 for TypedArray.
+TypedArray.prototype.BYTES_PER_ELEMENT 的值是表59中为 TypedArray 指定的元素大小值的Number值。
 
 此属性具有特性 { [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]: false }.
 
 #### 22.2.6.2 TypedArray.prototype.constructor <div id="sec-typedarray.prototype.constructor"></div>
 
-The initial value of a TypedArray.prototype.constructor is the corresponding %TypedArray% intrinsic object.
+TypedArray.prototype.constructor 的初始值为相应的 ％TypedArray％ 内部对象。
 
 ### 22.2.7 TypedArray 实例属性 <div id="sec-properties-of-typedarray-instances"></div>
 
-TypedArray instances are Integer-Indexed exotic objects. Each TypedArray instance inherits properties from the corresponding TypedArray prototype object. Each TypedArray instance has the following internal slots: [[TypedArrayName]], [[ViewedArrayBuffer]], [[ByteLength]], [[ByteOffset]], and [[ArrayLength]].
+TypedArray实例是整数索引的异类对象。每个TypedArray实例都从相应的TypedArray原型对象继承属性。每个TypedArray实例都有以下内部插槽：[[TypedArrayName]]，[[ViewedArrayBuffer]]，[[ByteLength]]，[[ByteOffset]]和[[ArrayLength]]。
