@@ -30,7 +30,7 @@ Gitbook 链接：https://lhzcode.github.io/es10-cn/
 - [x] [20 数字和日期](numbers-and-dates.md)
 - [x] [21 文字处理](text-processing.md)
 - [x] [22 索引集合](indexed-collections.md)
-- [ ] 23 带键的集合
+- [ ] [23 带键的集合](keyed-collections.md)
 - [ ] 24 结构化数据
 - [ ] 25 控制抽象对象
 - [ ] 26 反射
